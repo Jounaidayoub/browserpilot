@@ -31,7 +31,13 @@ import { Action, Actions } from "@/components/ai-elements/actions";
 import { Fragment, useState } from "react";
 import { useChat } from "@ai-sdk/react";
 import { Response } from "@/components/ai-elements/response";
-import { CopyIcon, GlobeIcon, RefreshCcwIcon } from "lucide-react";
+import {
+  Beaker,
+  CopyIcon,
+  GlobeIcon,
+  RefreshCcwIcon,
+  Upload,
+} from "lucide-react";
 import {
   Source,
   Sources,
@@ -44,8 +50,10 @@ import {
   ReasoningTrigger,
 } from "@/components/ai-elements/reasoning";
 import { Loader } from "@/components/ai-elements/loader";
-import { DefaultChatTransport } from "ai";
-
+import {
+  DefaultChatTransport,
+  lastAssistantMessageIsCompleteWithToolCalls,
+} from "ai";
 
 const models = [
   {
@@ -62,10 +70,72 @@ const ChatBotDemo = () => {
   const [input, setInput] = useState("");
   const [model, setModel] = useState<string>(models[0].value);
   const [webSearch, setWebSearch] = useState(false);
-  const { messages, sendMessage, status, regenerate } = useChat({
+  const { messages, sendMessage, status, regenerate, addToolResult } = useChat({
     transport: new DefaultChatTransport({
       api: "http://localhost:8080/",
     }),
+    sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
+    async onToolCall({ toolCall }) {
+      console.log("tool calls (cline side)", toolCall);
+      if (toolCall.dynamic) {
+        return;
+      }
+      switch (toolCall.toolName) {
+        case "get_tabs":
+          const tabs = await chrome.tabs.query({});
+
+          const tabs_meta = tabs.map((tab) => ({
+            id: tab.id,
+            title: tab.title,
+            url: tab.url,
+            groupid: tab.groupId,
+            index: tab.index,
+            windowid: tab.windowId,
+          }));
+
+          addToolResult({
+            tool: "get_tabs",
+            toolCallId: toolCall.toolCallId,
+            output: JSON.stringify(tabs_meta),
+          });
+
+          console.log("tabs", tabs_meta);
+
+          break;
+
+        case "group_tabs_by_ids":
+          const args: any =  toolCall.input;
+          const groups = args.groups;
+          console.log("grouping tabs by idees", groups);
+          if (!Array.isArray(groups)) {
+            console.error("Expected groups to be an array, got:", groups);
+            break;
+          }
+
+          groups.forEach(async (group) => {
+            console.log("grouping", group);
+            const { tabIds, title, color } = group;
+            const groupid = await chrome.tabs.group({ tabIds: tabIds });
+            console.log("created group", groupid);
+            await chrome.tabGroups.update(groupid, {
+              title: title, 
+              color: color,
+            });
+            console.log(
+              `Grouped tabs ${tabIds} into group ${groupid} with title "${title}" and color "${color}"`
+            );
+          });
+          addToolResult({
+            tool: "group_tabs_by_ids",
+            toolCallId: toolCall.toolCallId,
+            output: `Grouped ${groups.length} groups successfully.`,
+          });
+          break;
+
+        default:
+          break;
+      }
+    },
   });
 
   const handleSubmit = (message: PromptInputMessage) => {
@@ -168,6 +238,7 @@ const ChatBotDemo = () => {
                           <ReasoningContent>{part.text}</ReasoningContent>
                         </Reasoning>
                       );
+
                     default:
                       return null;
                   }
