@@ -17,7 +17,7 @@ export default defineManifest({
   background: {
     service_worker: "src/background.ts",
   },
-  permissions: ["sidePanel", "contentSettings","tabs","tabGroups"],
+  permissions: ["sidePanel", "contentSettings","tabs","tabGroups","history"],
 
   content_scripts: [
     {
