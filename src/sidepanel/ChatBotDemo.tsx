@@ -165,6 +165,33 @@ const ChatBotDemo = () => {
           });
           break;
 
+        case "search_history":
+          const history_args: any = toolCall.input;
+          let { query, maxResults, startTime, endTime } = history_args;
+          startTime = new Date(startTime).getTime();
+          endTime = new Date(endTime).getTime();
+
+          const historyItems = await chrome.history.search({
+            text: query, // Return every history item....
+            startTime: startTime, // that was accessed less than one week ago.
+            endTime: endTime,
+            maxResults: maxResults,
+          });
+
+          addToolResult({
+            tool: "search_history",
+            toolCallId: toolCall.toolCallId,
+            output: JSON.stringify(historyItems),
+          });
+          break;
+        case "get_current_time":
+          const now = new Date();
+          addToolResult({
+            tool: "get_current_time",
+            toolCallId: toolCall.toolCallId,
+            output: now.toISOString(),
+          });
+          break;
         default:
           break;
       }
@@ -248,7 +275,6 @@ const ChatBotDemo = () => {
                                   onClick={() => regenerate()}
                                   label="Retry"
                                 >
-                                  
                                   <RefreshCcwIcon className="size-3" />
                                 </Action>
                                 <Action
@@ -264,27 +290,33 @@ const ChatBotDemo = () => {
                         </Fragment>
                       );
                     case part.type.startsWith("tool-") ? part.type : null:
-                      return (<>
-
-                      
-                        {/* TODO : this needs better types handleling , `as` everywhere */}
-                        <Tool defaultOpen={false}>
-                          <ToolHeader type={`tool-${(part.type as string).split("-")[1]}`} state={(part as ToolUIPart).state } />
-                          <ToolContent>
-                            <ToolInput input={(part as ToolUIPart).input} />
-                            <ToolOutput
-                              output={
-                                <>
-                                  <Response>{(part as ToolUIPart).output as string}</Response>
-                                </>
-                              }
-                              errorText={(part as ToolUIPart).errorText}
+                      return (
+                        <>
+                          {/* TODO : this needs better types handleling , `as` everywhere */}
+                          <Tool defaultOpen={false}>
+                            <ToolHeader
+                              type={`tool-${
+                                (part.type as string).split("-")[1]
+                              }`}
+                              state={(part as ToolUIPart).state}
                             />
-                          </ToolContent>
-                        </Tool>
-                      </>);
+                            <ToolContent>
+                              <ToolInput input={(part as ToolUIPart).input} />
+                              <ToolOutput
+                                output={
+                                  <>
+                                    <Response>
+                                      {(part as ToolUIPart).output as string}
+                                    </Response>
+                                  </>
+                                }
+                                errorText={(part as ToolUIPart).errorText}
+                              />
+                            </ToolContent>
+                          </Tool>
+                        </>
+                      );
 
-                    
                     case "reasoning":
                       return (
                         <Reasoning
