@@ -1,6 +1,13 @@
 "use client";
 
 import {
+  Tool,
+  ToolContent,
+  ToolHeader,
+  ToolOutput,
+  ToolInput,
+} from "@/components/ai-elements/tool";
+import {
   Conversation,
   ConversationContent,
   ConversationScrollButton,
@@ -28,7 +35,7 @@ import {
   PromptInputTools,
 } from "@/components/ai-elements/prompt-input";
 import { Action, Actions } from "@/components/ai-elements/actions";
-import { Fragment, useState } from "react";
+import { Fragment, useEffect, useRef, useState } from "react";
 import { useChat } from "@ai-sdk/react";
 import { Response } from "@/components/ai-elements/response";
 import {
@@ -53,7 +60,10 @@ import { Loader } from "@/components/ai-elements/loader";
 import {
   DefaultChatTransport,
   lastAssistantMessageIsCompleteWithToolCalls,
+  // Tool,
+  ToolUIPart,
 } from "ai";
+import { CodeBlock } from "@/components/ai-elements/code-block";
 
 const models = [
   {
@@ -70,6 +80,7 @@ const ChatBotDemo = () => {
   const [input, setInput] = useState("");
   const [model, setModel] = useState<string>(models[0].value);
   const [webSearch, setWebSearch] = useState(false);
+  const promptInput = useRef<HTMLTextAreaElement>(null);
   const { messages, sendMessage, status, regenerate, addToolResult } = useChat({
     transport: new DefaultChatTransport({
       api: "http://localhost:8080/",
@@ -104,7 +115,7 @@ const ChatBotDemo = () => {
           break;
 
         case "group_tabs_by_ids":
-          const args: any =  toolCall.input;
+          const args: any = toolCall.input;
           const groups = args.groups;
           console.log("grouping tabs by idees", groups);
           if (!Array.isArray(groups)) {
@@ -118,7 +129,7 @@ const ChatBotDemo = () => {
             const groupid = await chrome.tabs.group({ tabIds: tabIds });
             console.log("created group", groupid);
             await chrome.tabGroups.update(groupid, {
-              title: title, 
+              title: title,
               color: color,
             });
             console.log(
@@ -137,11 +148,14 @@ const ChatBotDemo = () => {
           const tabIdsToClose = close_args.tabIds;
           console.log("closing tabs", tabIdsToClose);
           if (!Array.isArray(tabIdsToClose)) {
-            console.error("Expected tabIds to be an array, got:", tabIdsToClose);
+            console.error(
+              "Expected tabIds to be an array, got:",
+              tabIdsToClose
+            );
             break;
           }
           // await chrome.tabs.remove(tabIdsToClose);
-          chrome.tabs.query({},()=>{
+          chrome.tabs.query({}, () => {
             chrome.tabs.remove(tabIdsToClose);
           });
           addToolResult({
@@ -156,6 +170,12 @@ const ChatBotDemo = () => {
       }
     },
   });
+  useEffect(() => {
+    console.log("focusing input , component mounted");
+    if (promptInput.current) {
+      promptInput.current.focus();
+    }
+  }, []);
 
   const handleSubmit = (message: PromptInputMessage) => {
     const hasText = Boolean(message.text);
@@ -228,6 +248,7 @@ const ChatBotDemo = () => {
                                   onClick={() => regenerate()}
                                   label="Retry"
                                 >
+                                  
                                   <RefreshCcwIcon className="size-3" />
                                 </Action>
                                 <Action
@@ -242,6 +263,28 @@ const ChatBotDemo = () => {
                             )}
                         </Fragment>
                       );
+                    case part.type.startsWith("tool-") ? part.type : null:
+                      return (<>
+
+                      
+                        {/* TODO : this needs better types handleling , `as` everywhere */}
+                        <Tool defaultOpen={false}>
+                          <ToolHeader type={`tool-${(part.type as string).split("-")[1]}`} state={(part as ToolUIPart).state } />
+                          <ToolContent>
+                            <ToolInput input={(part as ToolUIPart).input} />
+                            <ToolOutput
+                              output={
+                                <>
+                                  <Response>{(part as ToolUIPart).output as string}</Response>
+                                </>
+                              }
+                              errorText={(part as ToolUIPart).errorText}
+                            />
+                          </ToolContent>
+                        </Tool>
+                      </>);
+
+                    
                     case "reasoning":
                       return (
                         <Reasoning
@@ -282,6 +325,8 @@ const ChatBotDemo = () => {
             <PromptInputTextarea
               onChange={(e) => setInput(e.target.value)}
               value={input}
+              autoFocus
+              ref={promptInput}
             />
           </PromptInputBody>
           <PromptInputToolbar>
