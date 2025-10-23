@@ -132,6 +132,25 @@ const ChatBotDemo = () => {
           });
           break;
 
+        case "close_tabs":
+          const close_args: any = toolCall.input;
+          const tabIdsToClose = close_args.tabIds;
+          console.log("closing tabs", tabIdsToClose);
+          if (!Array.isArray(tabIdsToClose)) {
+            console.error("Expected tabIds to be an array, got:", tabIdsToClose);
+            break;
+          }
+          // await chrome.tabs.remove(tabIdsToClose);
+          chrome.tabs.query({},()=>{
+            chrome.tabs.remove(tabIdsToClose);
+          });
+          addToolResult({
+            tool: "close_tabs",
+            toolCallId: toolCall.toolCallId,
+            output: `Closed tabs with IDs: ${tabIdsToClose.join(", ")}`,
+          });
+          break;
+
         default:
           break;
       }
