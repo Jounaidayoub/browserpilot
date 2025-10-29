@@ -1,5 +1,8 @@
 "use client";
 
+import { StickToBottom, useStickToBottomContext } from "use-stick-to-bottom";
+import { get_tabs, get_tab_content } from "@/sidepanel/tools";
+import { evaluateToolCall } from "@/sidepanel/tools";
 import {
   Tool,
   ToolContent,
@@ -35,7 +38,7 @@ import {
   PromptInputTools,
 } from "@/components/ai-elements/prompt-input";
 import { Action, Actions } from "@/components/ai-elements/actions";
-import { Fragment, useEffect, useRef, useState } from "react";
+import { Fragment, useEffect, useRef, useState,useCallback } from "react";
 import { useChat } from "@ai-sdk/react";
 import { Response } from "@/components/ai-elements/response";
 import {
@@ -64,6 +67,7 @@ import {
   ToolUIPart,
 } from "ai";
 import { CodeBlock } from "@/components/ai-elements/code-block";
+import { Button } from "@/components/ui/button";
 
 const models = [
   {
@@ -81,123 +85,32 @@ const ChatBotDemo = () => {
   const [model, setModel] = useState<string>(models[0].value);
   const [webSearch, setWebSearch] = useState(false);
   const promptInput = useRef<HTMLTextAreaElement>(null);
-  const { messages, sendMessage, status, regenerate, addToolResult } = useChat({
-    transport: new DefaultChatTransport({
-      api: "http://localhost:8080/",
-    }),
-    sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
-    async onToolCall({ toolCall }) {
-      console.log("tool calls (cline side)", toolCall);
-      if (toolCall.dynamic) {
-        return;
-      }
-      switch (toolCall.toolName) {
-        case "get_tabs":
-          const tabs = await chrome.tabs.query({});
+  // const { isAtBottom, scrollToBottom } = useStickToBottomContext();
+  // const { isAtBottom, scrollToBottom } = useStickToBottomContext();
 
-          const tabs_meta = tabs.map((tab) => ({
-            id: tab.id,
-            title: tab.title,
-            url: tab.url,
-            groupid: tab.groupId,
-            index: tab.index,
-            windowid: tab.windowId,
-          }));
+  // const handleScrollToBottom = useCallback(() => {
+  //   scrollToBottom();
+  // }, [scrollToBottom]);
 
-          addToolResult({
-            tool: "get_tabs",
-            toolCallId: toolCall.toolCallId,
-            output: JSON.stringify(tabs_meta),
-          });
+  const { messages, sendMessage, status, regenerate, addToolResult, stop } =
+    useChat({
+      transport: new DefaultChatTransport({
+        api: "http://localhost:8080/",
+      }),
 
-          console.log("tabs", tabs_meta);
+      sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
+      async onToolCall({ toolCall }) {
+        console.log("tool calls (cline side)", toolCall);
+        if (toolCall.dynamic) {
+          return;
+        }
+        evaluateToolCall(toolCall, addToolResult);
+      },
+    });
 
-          break;
-
-        case "group_tabs_by_ids":
-          const args: any = toolCall.input;
-          const groups = args.groups;
-          console.log("grouping tabs by idees", groups);
-          if (!Array.isArray(groups)) {
-            console.error("Expected groups to be an array, got:", groups);
-            break;
-          }
-
-          groups.forEach(async (group) => {
-            console.log("grouping", group);
-            const { tabIds, title, color } = group;
-            const groupid = await chrome.tabs.group({ tabIds: tabIds });
-            console.log("created group", groupid);
-            await chrome.tabGroups.update(groupid, {
-              title: title,
-              color: color,
-            });
-            console.log(
-              `Grouped tabs ${tabIds} into group ${groupid} with title "${title}" and color "${color}"`
-            );
-          });
-          addToolResult({
-            tool: "group_tabs_by_ids",
-            toolCallId: toolCall.toolCallId,
-            output: `Grouped ${groups.length} groups successfully.`,
-          });
-          break;
-
-        case "close_tabs":
-          const close_args: any = toolCall.input;
-          const tabIdsToClose = close_args.tabIds;
-          console.log("closing tabs", tabIdsToClose);
-          if (!Array.isArray(tabIdsToClose)) {
-            console.error(
-              "Expected tabIds to be an array, got:",
-              tabIdsToClose
-            );
-            break;
-          }
-          // await chrome.tabs.remove(tabIdsToClose);
-          chrome.tabs.query({}, () => {
-            chrome.tabs.remove(tabIdsToClose);
-          });
-          addToolResult({
-            tool: "close_tabs",
-            toolCallId: toolCall.toolCallId,
-            output: `Closed tabs with IDs: ${tabIdsToClose.join(", ")}`,
-          });
-          break;
-
-        case "search_history":
-          const history_args: any = toolCall.input;
-          let { query, maxResults, startTime, endTime } = history_args;
-          startTime = new Date(startTime).getTime();
-          endTime = new Date(endTime).getTime();
-
-          const historyItems = await chrome.history.search({
-            text: query, // Return every history item....
-            startTime: startTime, // that was accessed less than one week ago.
-            endTime: endTime,
-            maxResults: maxResults,
-          });
-
-          addToolResult({
-            tool: "search_history",
-            toolCallId: toolCall.toolCallId,
-            output: JSON.stringify(historyItems),
-          });
-          break;
-        case "get_current_time":
-          const now = new Date();
-          addToolResult({
-            tool: "get_current_time",
-            toolCallId: toolCall.toolCallId,
-            output: now.toISOString(),
-          });
-          break;
-        default:
-          break;
-      }
-    },
-  });
   useEffect(() => {
+    //
+
     console.log("focusing input , component mounted");
     if (promptInput.current) {
       promptInput.current.focus();
@@ -211,7 +124,7 @@ const ChatBotDemo = () => {
     if (!(hasText || hasAttachments)) {
       return;
     }
-
+    // handleScrollToBottom();
     sendMessage(
       {
         text: message.text || "Sent with attachments",
@@ -354,8 +267,12 @@ const ChatBotDemo = () => {
             <PromptInputAttachments>
               {(attachment) => <PromptInputAttachment data={attachment} />}
             </PromptInputAttachments>
+
+            {/* <Button onClick={() => get_tab_content(236433212)}>get tab content</Button> */}
             <PromptInputTextarea
-              onChange={(e) => setInput(e.target.value)}
+              onChange={(e) => {
+                setInput(e.target.value);
+              }}
               value={input}
               autoFocus
               ref={promptInput}
@@ -397,7 +314,11 @@ const ChatBotDemo = () => {
                 </PromptInputModelSelectContent>
               </PromptInputModelSelect>
             </PromptInputTools>
-            <PromptInputSubmit disabled={!input && !status} status={status} />
+            <PromptInputSubmit
+              disabled={!input && !status}
+              status={status}
+              onClick={stop}
+            />
           </PromptInputToolbar>
         </PromptInput>
       </div>
