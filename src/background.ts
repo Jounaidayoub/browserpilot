@@ -19,3 +19,16 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     return true;
 }
 });
+
+
+
+chrome.scripting.registerContentScripts([
+  
+    { id: "policy-script",
+      js: ["src/policy.js"],
+      runAt: "document_end",
+      matches: ["https://*/*"],
+      world: "MAIN",
+    }
+  ,
+]);
