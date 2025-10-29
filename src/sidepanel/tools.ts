@@ -17,13 +17,6 @@ export const get_tabs = async () => {
 };
 const getTabcontent = (tabid: number) => {};
 
-export const getTabMentionOptions = async (): Promise<MentionOption[]> => {
-  const tabs = await get_tabs();
-  return tabs.map((tab) => ({
-    label: tab.title ?? tab.url ?? `Tab ${tab.id}`,
-    value: tab.title?.toString() ?? "",
-  }));
-};
 export const evaluateToolCall = async (
   toolCall: InferUIMessageToolCall<UIMessage>,
   addToolResult: <TOOL extends string>({
@@ -49,6 +42,14 @@ export const evaluateToolCall = async (
       }) => Promise<void>
 ) => {
   switch (toolCall.toolName) {
+    case "get_groups":
+      const Groups = await chrome.tabGroups.query({});
+      addToolResult({
+        tool: "get_groups",
+        toolCallId: toolCall.toolCallId,
+        output: JSON.stringify(Groups),
+      });
+      break;
     case "get_tabs":
       const tabs = await chrome.tabs.query({});
 
@@ -129,7 +130,8 @@ export const evaluateToolCall = async (
       const historyItems = await chrome.history.search({
         text: query, // Return every history item....
         startTime: startTime, // that was accessed less than one week ago.
-        endTime: endTime,
+        
+        endTime:  endTime || undefined,
         maxResults: maxResults,
       });
 
@@ -147,28 +149,6 @@ export const evaluateToolCall = async (
         toolCallId: toolCall.toolCallId,
         output: now.toISOString(),
       });
-      break;
-    }
-    case "get_tab_content": {
-      const { tabId } = toolCall.input as { tabId: number };
-      try {
-        const results = await chrome.scripting.executeScript({
-          target: { tabId },
-          func: () => document.body.innerText,
-        });
-        addToolResult({
-          tool: "get_tab_content",
-          toolCallId: toolCall.toolCallId,
-          output: results[0].result,
-        });
-      } catch (error) {
-        addToolResult({
-          state: "output-error",
-          tool: "get_tab_content",
-          toolCallId: toolCall.toolCallId,
-          errorText: (error as Error).message,
-        });
-      }
       break;
     }
     case "run_script": {
