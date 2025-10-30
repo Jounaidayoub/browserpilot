@@ -17,15 +17,29 @@ export default defineManifest({
   background: {
     service_worker: "src/background.ts",
   },
-  permissions: ["sidePanel", "contentSettings","tabs","tabGroups","history"],
-
+  permissions: ["sidePanel", "contentSettings","tabs","tabGroups","history","activeTab","scripting"],
+  host_permissions: ["https://*/*", "http://*/*","chrome://*/*","chrome-extension://*/*"],
   content_scripts: [
     {
       js: ["src/content/main.tsx"],
       matches: ["https://*/*"],
+      
     },
+    {
+      js: ["src/policy.js"],
+      run_at: "document_start",
+      matches: ["https://*/*"],
+      
+    }
+
   ],
   side_panel: {
     default_path: "src/sidepanel/index.html",
   },
+  web_accessible_resources: [
+    {
+      resources: ["injector/runner.js"],
+      matches: ["<all_urls>"],
+    },
+  ],
 });
