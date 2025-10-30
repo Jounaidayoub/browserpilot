@@ -2,6 +2,9 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import App from './views/App.tsx'
 
+
+
+
 console.log('[CRXJS] Hello world from content script!')
 
 let panel = false;
