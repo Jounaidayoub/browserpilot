@@ -2,6 +2,7 @@ import type { UIMessage, InferUIMessageToolCall } from "ai";
 import type { MentionOption } from "mentis";
 import Readability from "@mozilla/readability";
 import { Archive, DoorClosed } from "lucide-react";
+import { act } from "react";
 export const get_tabs = async () => {
   const tabs = await chrome.tabs.query({});
 
@@ -242,7 +243,78 @@ export const evaluateToolCall = async (
         }),
       });
       break;
+    
+    case "open_new_tab":
+    {
+      const open_new_tab_args: any = toolCall.input;
+      const { url } = open_new_tab_args;
 
+      try {
+        // send a message to the background to open the new tab
+        const response = await chrome.runtime.sendMessage({
+          action: "open-new-tab",
+          url
+        });
+        if (response?.success) {
+          addToolResult({
+            tool: "open_new_tab",
+            toolCallId: toolCall.toolCallId,
+            output: `Opened new tab with id ${response.tabId ?? "unknown"} for url: ${url}`,
+          });
+        } else {
+          addToolResult({
+            state: "output-error",
+            tool: "open_new_tab",
+            toolCallId: toolCall.toolCallId,
+            errorText: response?.error || "Failed to open new tab",
+          });
+        }
+      } catch (err) {
+        addToolResult({
+          state: "output-error",
+          tool: "open_new_tab",
+          toolCallId: toolCall.toolCallId,
+          errorText: String(err),
+        });
+      }
+    }
+
+    break;
+
+    case "get_page_content":
+    {
+      const get_page_content_args: any = toolCall.input;
+      const { tabId } = get_page_content_args;
+
+      try {
+        // send a message to the background to get the page content
+        const response = await chrome.runtime.sendMessage({
+          action: "get-page-content",
+          tabId
+        });
+        if (response?.success) {
+          addToolResult({
+            tool: "get_page_content",
+            toolCallId: toolCall.toolCallId,
+            output: response.content,
+          });
+        } else {
+          addToolResult({
+            state: "output-error",
+            tool: "get_page_content",
+            toolCallId: toolCall.toolCallId,
+            errorText: response?.error || "Failed to get page content",
+          });
+        }
+      } catch (err) {
+        addToolResult({
+          state: "output-error",
+          tool: "get_page_content",
+          toolCallId: toolCall.toolCallId,
+          errorText: String(err),
+        });
+      }
+    }
     default:
       console.warn("Unknown tool:", toolCall.toolName);
       break;

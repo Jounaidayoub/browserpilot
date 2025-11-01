@@ -15,9 +15,10 @@ export default defineManifest({
     default_popup: "src/popup/index.html",
   },
   background: {
-    service_worker: "src/background.ts",
+    service_worker: "src/bg.ts",
+    type: "module",
   },
-  permissions: ["sidePanel", "contentSettings","tabs","tabGroups","history","activeTab","scripting"],
+  permissions: ["sidePanel", "contentSettings","tabs","tabGroups","history","activeTab","scripting","debugger"],
   host_permissions: ["https://*/*", "http://*/*","chrome://*/*","chrome-extension://*/*"],
   content_scripts: [
     {
