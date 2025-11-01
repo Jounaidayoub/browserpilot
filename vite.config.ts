@@ -1,30 +1,34 @@
-import path from 'node:path'
-import { crx } from '@crxjs/vite-plugin'
-import react from '@vitejs/plugin-react'
-import { defineConfig } from 'vite'
-import zip from 'vite-plugin-zip-pack'
-import manifest from './manifest.config.js'
-import { name, version } from './package.json'
-import tailwindcss from '@tailwindcss/vite'
-
+import path from "node:path";
+import { crx } from "@crxjs/vite-plugin";
+import react from "@vitejs/plugin-react";
+import { defineConfig } from "vite";
+import zip from "vite-plugin-zip-pack";
+import manifest from "./manifest.config.js";
+import { name, version } from "./package.json";
+import tailwindcss from "@tailwindcss/vite";
 
 export default defineConfig({
   resolve: {
     alias: {
-      '@': `${path.resolve(__dirname, 'src')}`,
+      "@": `${path.resolve(__dirname, "src")}`,
     },
   },
   plugins: [
     react(),
     crx({ manifest }),
-    zip({ outDir: 'release', outFileName: `crx-${name}-${version}.zip` }),
+    zip({ outDir: "release", outFileName: `crx-${name}-${version}.zip` }),
     tailwindcss(),
   ],
+  optimizeDeps: {
+    exclude: ["playwright-crx"],
+  },
+  build: {
+    minify: false,
+    sourcemap: true,
+  },
   server: {
     cors: {
-      origin: [
-        /chrome-extension:\/\//,
-      ],
+      origin: [/chrome-extension:\/\//],
     },
   },
-})
+});
