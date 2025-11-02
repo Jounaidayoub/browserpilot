@@ -7,10 +7,12 @@ import manifest from "./manifest.config.js";
 import { name, version } from "./package.json";
 import tailwindcss from "@tailwindcss/vite";
 
+
 export default defineConfig({
   resolve: {
     alias: {
       "@": `${path.resolve(__dirname, "src")}`,
+      "playwright_lib": `${path.resolve(__dirname, "./node_modules/playwright/lib")}`,
     },
   },
   plugins: [
@@ -18,11 +20,13 @@ export default defineConfig({
     crx({ manifest }),
     zip({ outDir: "release", outFileName: `crx-${name}-${version}.zip` }),
     tailwindcss(),
+    
   ],
   optimizeDeps: {
     exclude: ["playwright-crx"],
   },
   build: {
+    // commonjsOptions: { include: ["pixelmatch"] },
     minify: false,
     sourcemap: true,
   },

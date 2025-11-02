@@ -81,11 +81,9 @@ import { parseEnv } from "util";
           console.log("New tab/page ");
 
           // const page = await crxApp?.attach(236435725);
-          let wait=null;
-          while (wait) {}
-          wait=true;
+  
           const page = await crxApp!.newPage({ url: url });
-          wait=null;
+
           console.log("we are going back ");
           let _snap = null;
           if (Withcontent) {

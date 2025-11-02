@@ -38,7 +38,7 @@ import {
   PromptInputTools,
 } from "@/components/ai-elements/prompt-input";
 import { Action, Actions } from "@/components/ai-elements/actions";
-import { Fragment, useEffect, useRef, useState,useCallback } from "react";
+import { Fragment, useEffect, useRef, useState, useCallback } from "react";
 import { useChat } from "@ai-sdk/react";
 import { Response } from "@/components/ai-elements/response";
 import {
@@ -92,21 +92,28 @@ const ChatBotDemo = () => {
   //   scrollToBottom();
   // }, [scrollToBottom]);
 
-  const { messages, sendMessage, status, regenerate, addToolResult, stop } =
-    useChat({
-      transport: new DefaultChatTransport({
-        api: "http://localhost:8080/",
-      }),
+  const {
+    messages,
+    sendMessage,
+    status,
+    regenerate,
+    addToolResult,
+    stop,
+    error,
+  } = useChat({
+    transport: new DefaultChatTransport({
+      api: "http://localhost:8080/",
+    }),
 
-      sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
-      async onToolCall({ toolCall }) {
-        console.log("tool calls (cline side)", toolCall);
-        if (toolCall.dynamic) {
-          return;
-        }
-        evaluateToolCall(toolCall, addToolResult);
-      },
-    });
+    sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
+    async onToolCall({ toolCall }) {
+      console.log("tool calls (cline side)", toolCall);
+      if (toolCall.dynamic) {
+        return;
+      }
+      evaluateToolCall(toolCall, addToolResult);
+    },
+  });
 
   useEffect(() => {
     //
@@ -141,9 +148,9 @@ const ChatBotDemo = () => {
   };
 
   return (
-    <div className="max-w-4xl mx-auto p-6 relative size-full h-screen">
-      <div className="flex flex-col h-full">
-        <Conversation className="h-full">
+    <div className="max-w-4xl mx-auto   relative size-full h-screen">
+      <div className="flex flex-col p-4 overflow-hidden overflow-y-auto h-full">
+        <Conversation className="h-full ">
           <ConversationContent>
             {messages.map((message) => (
               <div key={message.id}>
@@ -177,7 +184,7 @@ const ChatBotDemo = () => {
                       return (
                         <Fragment key={`${message.id}-${i}`}>
                           <Message from={message.role}>
-                            <MessageContent>
+                            <MessageContent variant={"flat"}>
                               <Response>{part.text}</Response>
                             </MessageContent>
                           </Message>
@@ -250,16 +257,27 @@ const ChatBotDemo = () => {
                       return null;
                   }
                 })}
+                {error && (
+                  <Message from="assistant">
+                    <MessageContent>
+                      <Response className="text-red-500">
+                        {error.message ||
+                          "An unexpected error occurred. Please try again."}
+                      </Response>
+                    </MessageContent>
+                  </Message>
+                )}
               </div>
             ))}
             {status === "submitted" && <Loader />}
           </ConversationContent>
-          <ConversationScrollButton />
+
+          {/* <ConversationScrollButton  /> */}
         </Conversation>
 
         <PromptInput
           onSubmit={handleSubmit}
-          className="mt-4"
+          className=""
           globalDrop
           multiple
         >
@@ -286,7 +304,7 @@ const ChatBotDemo = () => {
                   <PromptInputActionAddAttachments />
                 </PromptInputActionMenuContent>
               </PromptInputActionMenu>
-              <PromptInputButton
+              {/*<PromptInputButton
                 variant={webSearch ? "default" : "ghost"}
                 onClick={() => setWebSearch(!webSearch)}
               >
@@ -312,7 +330,7 @@ const ChatBotDemo = () => {
                     </PromptInputModelSelectItem>
                   ))}
                 </PromptInputModelSelectContent>
-              </PromptInputModelSelect>
+              </PromptInputModelSelect>*/}
             </PromptInputTools>
             <PromptInputSubmit
               disabled={!input && !status}

@@ -1,0 +1,279 @@
+- generic [ref=e1]:
+  - generic [ref=e3]:
+    - region "Site notifications" [ref=e4]:
+      - generic [ref=e8]:
+        - generic [ref=e9]: ⚠️
+        - alert [ref=e11]:
+          - text: Important security changes to npm authentication take effect October 13, 2025. New token lifetime limits (90-day max) and TOTP 2FA restrictions become effective. Classic tokens will be revoked in November. Review changes and update your workflows now.
+          - link "Learn more about npm authentication changes" [ref=e12] [cursor=pointer]:
+            - /url: https://gh.io/npm-token-changes
+            - text: Learn more
+          - text: .
+        - button "Close notification" [ref=e13] [cursor=pointer]: ×
+    - generic [ref=e16]:
+      - banner [ref=e17]:
+        - generic [ref=e19]:
+          - generic [ref=e20]:
+            - text: "skip to:"
+            - link "skip to content" [ref=e21] [cursor=pointer]:
+              - /url: "#main"
+              - text: content
+            - link "skip to package search" [ref=e22] [cursor=pointer]:
+              - /url: "#search"
+              - text: package search
+            - link "skip to sign in" [ref=e23] [cursor=pointer]:
+              - /url: "#signin"
+              - text: sign in
+          - generic [ref=e24]:
+            - generic [ref=e1068]: ❤
+            - navigation "Product Navigation" [ref=e25]:
+              - list [ref=e26]:
+                - listitem [ref=e27]:
+                  - link "Pro" [ref=e28] [cursor=pointer]:
+                    - /url: /products/pro
+                - listitem [ref=e29]:
+                  - link "Teams" [ref=e30] [cursor=pointer]:
+                    - /url: /products/teams
+                - listitem [ref=e31]:
+                  - link "Pricing" [ref=e32] [cursor=pointer]:
+                    - /url: /products
+                - listitem [ref=e33]:
+                  - link "Documentation" [ref=e34] [cursor=pointer]:
+                    - /url: https://docs.npmjs.com
+        - generic [ref=e36]:
+          - generic [ref=e37]: npm
+          - link "Npm" [ref=e39] [cursor=pointer]:
+            - /url: /
+            - img [ref=e40] [cursor=pointer]
+          - generic [ref=e43]:
+            - generic [ref=e45]:
+              - img [ref=e47]
+              - combobox "Search packages" [ref=e53]
+            - button "Search" [ref=e55]
+          - generic [ref=e57]:
+            - link "Sign Up" [ref=e58] [cursor=pointer]:
+              - /url: /signup
+            - link "Sign In" [ref=e59] [cursor=pointer]:
+              - /url: /login
+      - main [ref=e60]:
+        - generic [ref=e61]:
+          - generic [ref=e62]:
+            - heading "diff TypeScript icon, indicating that this package has built-in type declarations" [level=1] [ref=e63]:
+              - generic [ref=e64]: diff
+              - img "TypeScript icon, indicating that this package has built-in type declarations" [ref=e66]
+            - generic [ref=e67]: 8.0.2 •
+            - generic [ref=e68]: Public
+            - generic [ref=e69]:
+              - text: • Published
+              - time [ref=e70]: 5 months ago
+          - tablist [ref=e71]:
+            - tab "Readme" [ref=e72] [cursor=pointer]:
+              - generic [ref=e73] [cursor=pointer]:
+                - img [ref=e74] [cursor=pointer]
+                - text: Readme
+            - tab "Code Beta" [selected] [ref=e76] [cursor=pointer]:
+              - generic [ref=e77] [cursor=pointer]:
+                - img [ref=e78] [cursor=pointer]
+                - text: Code
+                - generic [ref=e81] [cursor=pointer]: Beta
+            - tab "0 Dependencies" [ref=e82] [cursor=pointer]:
+              - generic [ref=e83] [cursor=pointer]:
+                - img [ref=e84] [cursor=pointer]
+                - text: 0 Dependencies
+            - tab "7282 Dependents" [ref=e86] [cursor=pointer]:
+              - generic [ref=e87] [cursor=pointer]:
+                - img [ref=e88] [cursor=pointer]
+                - text: 7282 Dependents
+            - tab "48 Versions" [ref=e90] [cursor=pointer]:
+              - generic [ref=e91] [cursor=pointer]:
+                - img [ref=e92] [cursor=pointer]
+                - text: 48 Versions
+          - generic [ref=e932]:
+            - tabpanel "Readme"
+            - tabpanel [ref=e1070]:
+              - generic [ref=e1072]:
+                - generic [ref=e1073]:
+                  - heading /diff/ [level=2] [ref=e1074]
+                  - generic [ref=e1075]:
+                    - generic [ref=e1076]: /
+                    - button "diff" [ref=e1077] [cursor=pointer]
+                    - generic [ref=e1078]: /
+                - table /diff/ [ref=e1080]:
+                  - rowgroup [ref=e1081]:
+                    - row "Name Type Size" [ref=e1082]:
+                      - columnheader "Name" [ref=e1083]
+                      - columnheader "Type" [ref=e1084]
+                      - columnheader "Size" [ref=e1085]
+                  - rowgroup [ref=e1086]:
+                    - row "dist/ folder 107 kB" [ref=e1087]:
+                      - cell "dist/" [ref=e1088]:
+                        - button "dist/" [ref=e1090] [cursor=pointer]
+                      - cell "folder" [ref=e1091]
+                      - cell "107 kB" [ref=e1092]
+                    - row "libcjs/ folder 163 kB" [ref=e1093]:
+                      - cell "libcjs/" [ref=e1094]:
+                        - button "libcjs/" [ref=e1096] [cursor=pointer]
+                      - cell "folder" [ref=e1097]
+                      - cell "163 kB" [ref=e1098]
+                    - row "libesm/ folder 146 kB" [ref=e1099]:
+                      - cell "libesm/" [ref=e1100]:
+                        - button "libesm/" [ref=e1102] [cursor=pointer]
+                      - cell "folder" [ref=e1103]
+                      - cell "146 kB" [ref=e1104]
+                    - row "CONTRIBUTING.md text/markdown 984 B" [ref=e1105]:
+                      - cell "CONTRIBUTING.md" [ref=e1106]:
+                        - button "CONTRIBUTING.md" [ref=e1108] [cursor=pointer]
+                      - cell "text/markdown" [ref=e1109]
+                      - cell "984 B" [ref=e1110]
+                    - row "LICENSE text/plain 1.55 kB" [ref=e1111]:
+                      - cell "LICENSE" [ref=e1112]:
+                        - button "LICENSE" [ref=e1114] [cursor=pointer]
+                      - cell "text/plain" [ref=e1115]
+                      - cell "1.55 kB" [ref=e1116]
+                    - row "README.md text/markdown 27.4 kB" [ref=e1117]:
+                      - cell "README.md" [ref=e1118]:
+                        - button "README.md" [ref=e1120] [cursor=pointer]
+                      - cell "text/markdown" [ref=e1121]
+                      - cell "27.4 kB" [ref=e1122]
+                    - row "eslint.config.mjs application/javascript 5.39 kB" [ref=e1123]:
+                      - cell "eslint.config.mjs" [ref=e1124]:
+                        - button "eslint.config.mjs" [ref=e1126] [cursor=pointer]
+                      - cell "application/javascript" [ref=e1127]
+                      - cell "5.39 kB" [ref=e1128]
+                    - row "package.json application/json 3.79 kB" [ref=e1129]:
+                      - cell "package.json" [ref=e1130]:
+                        - button "package.json" [ref=e1132] [cursor=pointer]
+                      - cell "application/json" [ref=e1133]
+                      - cell "3.79 kB" [ref=e1134]
+                    - row "release-notes.md text/markdown 36.3 kB" [ref=e1135]:
+                      - cell "release-notes.md" [ref=e1136]:
+                        - button "release-notes.md" [ref=e1138] [cursor=pointer]
+                      - cell "text/markdown" [ref=e1139]
+                      - cell "36.3 kB" [ref=e1140]
+            - tabpanel
+            - tabpanel "0 Dependencies"
+            - tabpanel "7282 Dependents"
+            - tabpanel "48 Versions"
+          - complementary "Package sidebar" [ref=e933]:
+            - heading "Package Sidebar" [level=2] [ref=e934]
+            - heading "Install" [level=3] [ref=e935]
+            - generic [ref=e936]:
+              - img
+              - paragraph [ref=e944]:
+                - generic [ref=e945]:
+                  - code [ref=e946]: npm i diff
+                  - button "Copy install command line" [ref=e947] [cursor=pointer]:
+                    - img
+            - generic [ref=e950]:
+              - heading "Repository" [level=3] [ref=e951]
+              - paragraph [ref=e952]:
+                - link "Repository github.com/kpdecker/jsdiff" [ref=e953] [cursor=pointer]:
+                  - /url: https://github.com/kpdecker/jsdiff
+                  - img [ref=e955] [cursor=pointer]
+                  - generic [ref=e958] [cursor=pointer]: github.com/kpdecker/jsdiff
+            - generic [ref=e959]:
+              - heading "Homepage" [level=3] [ref=e960]
+              - paragraph [ref=e961]:
+                - link "Homepage github.com/kpdecker/jsdiff#readme" [ref=e962] [cursor=pointer]:
+                  - /url: https://github.com/kpdecker/jsdiff#readme
+                  - img [ref=e963] [cursor=pointer]
+                  - generic [ref=e965] [cursor=pointer]: github.com/kpdecker/jsdiff#readme
+            - button "Showing weekly downloads" [ref=e967]:
+              - heading "Weekly Downloads" [level=3] [ref=e968]:
+                - img [ref=e969]
+                - text: Weekly Downloads
+              - generic [ref=e973]:
+                - img [ref=e974]
+                - paragraph [ref=e979]: 63,351,979
+            - generic [ref=e980]:
+              - heading "Version" [level=3] [ref=e981]
+              - paragraph [ref=e983]: 8.0.2
+            - generic [ref=e984]:
+              - heading "License" [level=3] [ref=e985]
+              - paragraph [ref=e986]: BSD-3-Clause
+            - generic [ref=e987]:
+              - heading "Unpacked Size" [level=3] [ref=e988]
+              - paragraph [ref=e989]: 492 kB
+            - generic [ref=e990]:
+              - heading "Total Files" [level=3] [ref=e991]
+              - paragraph [ref=e992]: "148"
+            - generic [ref=e993]:
+              - heading "Last publish" [level=3] [ref=e994]
+              - paragraph [ref=e995]:
+                - time [ref=e996]: 5 months ago
+            - generic [ref=e997]:
+              - heading "Collaborators" [level=3] [ref=e998]
+              - list "Collaborators" [ref=e999]:
+                - listitem [ref=e1000]:
+                  - link "kpdecker" [ref=e1002] [cursor=pointer]:
+                    - /url: /~kpdecker
+                    - img "kpdecker" [ref=e1003] [cursor=pointer]
+                - listitem [ref=e1004]:
+                  - link "explodingcabbage" [ref=e1006] [cursor=pointer]:
+                    - /url: /~explodingcabbage
+                    - img "explodingcabbage" [ref=e1007] [cursor=pointer]
+            - link "Try on RunKit" [ref=e1009] [cursor=pointer]:
+              - /url: https://runkit.com/npm/diff
+              - img [ref=e1010] [cursor=pointer]
+              - strong [ref=e1012] [cursor=pointer]: Try
+              - text: on RunKit
+            - link "Report malware" [ref=e1014] [cursor=pointer]:
+              - /url: /support?inquire=security&security-inquire=malware&package=diff&version=8.0.2
+              - img [ref=e1015] [cursor=pointer]
+              - strong [ref=e1017] [cursor=pointer]: Report
+              - text: malware
+      - contentinfo [ref=e1018]:
+        - heading "Footer" [level=2] [ref=e1019]
+        - generic [ref=e1020]:
+          - generic [ref=e1021]:
+            - link "Visit npm GitHub page" [ref=e1023] [cursor=pointer]:
+              - /url: https://github.com/npm
+              - img [ref=e1024] [cursor=pointer]
+            - link "GitHub" [ref=e1028] [cursor=pointer]:
+              - /url: https://github.com
+              - img [ref=e1029] [cursor=pointer]
+          - generic [ref=e1031]:
+            - heading "Support" [level=3] [ref=e1032]
+            - list "Support" [ref=e1033]:
+              - listitem [ref=e1034]:
+                - link "Help" [ref=e1035] [cursor=pointer]:
+                  - /url: https://docs.npmjs.com
+              - listitem [ref=e1036]:
+                - link "Advisories" [ref=e1037] [cursor=pointer]:
+                  - /url: https://github.com/advisories
+              - listitem [ref=e1038]:
+                - link "Status" [ref=e1039] [cursor=pointer]:
+                  - /url: http://status.npmjs.org/
+              - listitem [ref=e1040]:
+                - link "Contact npm" [ref=e1041] [cursor=pointer]:
+                  - /url: /support
+          - generic [ref=e1042]:
+            - heading "Company" [level=3] [ref=e1043]
+            - list "Company" [ref=e1044]:
+              - listitem [ref=e1045]:
+                - link "About" [ref=e1046] [cursor=pointer]:
+                  - /url: /about
+              - listitem [ref=e1047]:
+                - link "Blog" [ref=e1048] [cursor=pointer]:
+                  - /url: https://github.blog/tag/npm/
+              - listitem [ref=e1049]:
+                - link "Press" [ref=e1050] [cursor=pointer]:
+                  - /url: /press
+          - generic [ref=e1051]:
+            - heading "Terms & Policies" [level=3] [ref=e1052]
+            - list "Terms & Policies" [ref=e1053]:
+              - listitem [ref=e1054]:
+                - link "Policies" [ref=e1055] [cursor=pointer]:
+                  - /url: /policies/
+              - listitem [ref=e1056]:
+                - link "Terms of Use" [ref=e1057] [cursor=pointer]:
+                  - /url: /policies/terms
+              - listitem [ref=e1058]:
+                - link "Code of Conduct" [ref=e1059] [cursor=pointer]:
+                  - /url: /policies/conduct
+              - listitem [ref=e1060]:
+                - link "Privacy" [ref=e1061] [cursor=pointer]:
+                  - /url: /policies/privacy
+  - generic [ref=e1063]: Viewing diff version 8.0.2
+  - button "CRXJS logo" [ref=e1066] [cursor=pointer]:
+    - img "CRXJS logo" [ref=e1067] [cursor=pointer]
