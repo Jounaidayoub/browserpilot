@@ -131,8 +131,8 @@ export const evaluateToolCall = async (
       const historyItems = await chrome.history.search({
         text: query, // Return every history item....
         startTime: startTime, // that was accessed less than one week ago.
-        
-        endTime:  endTime || undefined,
+
+        endTime: endTime || undefined,
         maxResults: maxResults,
       });
 
@@ -243,60 +243,67 @@ export const evaluateToolCall = async (
         }),
       });
       break;
-    
-    case "open_new_tab":
-    {
-      const open_new_tab_args: any = toolCall.input;
-      const { url } = open_new_tab_args;
 
-      try {
-        // send a message to the background to open the new tab
-        const response = await chrome.runtime.sendMessage({
-          action: "open-new-tab",
-          url
-        });
-        if (response?.success) {
-          addToolResult({
-            tool: "open_new_tab",
-            toolCallId: toolCall.toolCallId,
-            output: `Opened new tab with id ${response.tabId ?? "unknown"} for url: ${url}`,
+    case "open_new_tab":
+      {
+        const open_new_tab_args: any = toolCall.input;
+        const { url , Withcontent} = open_new_tab_args;
+
+        try {
+          // send a message to the background to open the new tab
+          const response = await chrome.runtime.sendMessage({
+            action: "open-new-tab",
+            url,
+            Withcontent
           });
-        } else {
+          console.log("got response for open new tab ", response);
+          if (response?.success) {
+            addToolResult({
+              tool: "open_new_tab",
+              toolCallId: toolCall.toolCallId,
+              output: `Opened new tab with id ${
+                response.tabId ?? "unknown"
+              } for url: ${url} ${
+                Withcontent ? `, with content : ${response.content}` : ""
+              } `,
+            });
+          } else {
+            addToolResult({
+              state: "output-error",
+              tool: "open_new_tab",
+              toolCallId: toolCall.toolCallId,
+              errorText: response?.error || "Failed to open new tab",
+            });
+          }
+        } catch (err) {
           addToolResult({
             state: "output-error",
             tool: "open_new_tab",
             toolCallId: toolCall.toolCallId,
-            errorText: response?.error || "Failed to open new tab",
+            errorText: String(err),
           });
         }
-      } catch (err) {
-        addToolResult({
-          state: "output-error",
-          tool: "open_new_tab",
-          toolCallId: toolCall.toolCallId,
-          errorText: String(err),
-        });
       }
-    }
 
-    break;
+      break;
 
-    case "get_page_content":
-    {
+    case "get_page_content": {
       const get_page_content_args: any = toolCall.input;
       const { tabId } = get_page_content_args;
 
       try {
         // send a message to the background to get the page content
         const response = await chrome.runtime.sendMessage({
-          action: "get-page-content",
-          tabId
+          action: "get_page_dom_snapshot",
+          tabId,
         });
+        console.log("got response for get page content ", response);
+        // debugger
         if (response?.success) {
           addToolResult({
             tool: "get_page_content",
             toolCallId: toolCall.toolCallId,
-            output: response.content,
+            output: response._snap,
           });
         } else {
           addToolResult({
@@ -315,6 +322,225 @@ export const evaluateToolCall = async (
         });
       }
     }
+      break;
+
+    case "get_page_dom_snapshot": {
+      const { tabId, options }: any = toolCall.input;
+      try {
+        const response = await chrome.runtime.sendMessage({
+          action: "get_page_dom_snapshot",
+          toolName: "get_page_dom_snapshot",
+          tabId: tabId,
+          input: options,
+        });
+        if (response?.success) {
+          addToolResult({
+            tool: "get_page_dom_snapshot",
+            toolCallId: toolCall.toolCallId,
+            output: response.snapshot,
+              // JSON.stringify(response.result),
+          });
+        } else {
+          addToolResult({
+            state: "output-error",
+            tool: "browser_snapshot",
+            toolCallId: toolCall.toolCallId,
+            errorText: response?.error || "Failed to get snapshot",
+          });
+        }
+      } catch (err) {
+        addToolResult({
+          state: "output-error",
+          tool: "browser_snapshot",
+          toolCallId: toolCall.toolCallId,
+          errorText: String(err),
+        });
+      }
+      break;
+    }
+
+    case "browser_click": {
+      const click_args: any = toolCall.input;
+      const { element, ref, doubleClick, button, modifiers } = click_args;
+
+      try {
+        const response = await chrome.runtime.sendMessage({
+          action: "call-playwright-tool",
+          toolName: "browser_click",
+          arguments: { element, ref, doubleClick, button, modifiers },
+        });
+        if (response?.success) {
+          addToolResult({
+            tool: "browser_click",
+            toolCallId: toolCall.toolCallId,
+            output:
+              response.result?.content?.[0]?.text ||
+              JSON.stringify(response.result),
+          });
+        } else {
+          addToolResult({
+            state: "output-error",
+            tool: "browser_click",
+            toolCallId: toolCall.toolCallId,
+            errorText: response?.error || "Failed to click",
+          });
+        }
+      } catch (err) {
+        addToolResult({
+          state: "output-error",
+          tool: "browser_click",
+          toolCallId: toolCall.toolCallId,
+          errorText: String(err),
+        });
+      }
+      break;
+    }
+
+    case "browser_type": {
+      const type_args: any = toolCall.input;
+      const { element, ref, text, clear } = type_args;
+
+      try {
+        const response = await chrome.runtime.sendMessage({
+          action: "call-playwright-tool",
+          toolName: "browser_type",
+          arguments: { element, ref, text, clear },
+        });
+        if (response?.success) {
+          addToolResult({
+            tool: "browser_type",
+            toolCallId: toolCall.toolCallId,
+            output:
+              response.result?.content?.[0]?.text ||
+              JSON.stringify(response.result),
+          });
+        } else {
+          addToolResult({
+            state: "output-error",
+            tool: "browser_type",
+            toolCallId: toolCall.toolCallId,
+            errorText: response?.error || "Failed to type",
+          });
+        }
+      } catch (err) {
+        addToolResult({
+          state: "output-error",
+          tool: "browser_type",
+          toolCallId: toolCall.toolCallId,
+          errorText: String(err),
+        });
+      }
+      break;
+    }
+
+    case "browser_navigate_back": {
+      try {
+        const response = await chrome.runtime.sendMessage({
+          action: "call-playwright-tool",
+          toolName: "browser_navigate_back",
+          arguments: {},
+        });
+        if (response?.success) {
+          addToolResult({
+            tool: "browser_navigate_back",
+            toolCallId: toolCall.toolCallId,
+            output:
+              response.result?.content?.[0]?.text ||
+              JSON.stringify(response.result),
+          });
+        } else {
+          addToolResult({
+            state: "output-error",
+            tool: "browser_navigate_back",
+            toolCallId: toolCall.toolCallId,
+            errorText: response?.error || "Failed to navigate back",
+          });
+        }
+      } catch (err) {
+        addToolResult({
+          state: "output-error",
+          tool: "browser_navigate_back",
+          toolCallId: toolCall.toolCallId,
+          errorText: String(err),
+        });
+      }
+      break;
+    }
+
+    case "browser_evaluate": {
+      const evaluate_args: any = toolCall.input;
+      const { function: func, element, ref } = evaluate_args;
+
+      try {
+        const response = await chrome.runtime.sendMessage({
+          action: "call-playwright-tool",
+          toolName: "browser_evaluate",
+          arguments: { function: func, element, ref },
+        });
+        if (response?.success) {
+          addToolResult({
+            tool: "browser_evaluate",
+            toolCallId: toolCall.toolCallId,
+            output:
+              response.result?.content?.[0]?.text ||
+              JSON.stringify(response.result),
+          });
+        } else {
+          addToolResult({
+            state: "output-error",
+            tool: "browser_evaluate",
+            toolCallId: toolCall.toolCallId,
+            errorText: response?.error || "Failed to evaluate",
+          });
+        }
+      } catch (err) {
+        addToolResult({
+          state: "output-error",
+          tool: "browser_evaluate",
+          toolCallId: toolCall.toolCallId,
+          errorText: String(err),
+        });
+      }
+      break;
+    }
+
+    case "browser_screenshot": {
+      const screenshot_args: any = toolCall.input;
+      const { type, fullPage } = screenshot_args;
+
+      try {
+        const response = await chrome.runtime.sendMessage({
+          action: "call-playwright-tool",
+          toolName: "browser_screenshot",
+          arguments: { type, fullPage },
+        });
+        if (response?.success) {
+          addToolResult({
+            tool: "browser_screenshot",
+            toolCallId: toolCall.toolCallId,
+            output:
+              response.result?.content?.[0]?.text ||
+              JSON.stringify(response.result),
+          });
+        } else {
+          addToolResult({
+            state: "output-error",
+            tool: "browser_screenshot",
+            toolCallId: toolCall.toolCallId,
+            errorText: response?.error || "Failed to take screenshot",
+          });
+        }
+      } catch (err) {
+        addToolResult({
+          state: "output-error",
+          tool: "browser_screenshot",
+          toolCallId: toolCall.toolCallId,
+          errorText: String(err),
+        });
+      }
+      break;
+    }
+
     default:
       console.warn("Unknown tool:", toolCall.toolName);
       break;
