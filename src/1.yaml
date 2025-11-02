@@ -1,0 +1,667 @@
+- generic:
+  - generic [ref=e7]:
+    - banner [ref=e10]:
+      - generic [ref=e13]:
+        - generic [ref=e14]:
+          - button "Guide" [ref=e16] [cursor=pointer]:
+            - generic [ref=e19] [cursor=pointer]:
+              - img
+          - generic [ref=e25]:
+            - link "YouTube Home" [ref=e26] [cursor=pointer]:
+              - /url: /
+              - generic [ref=e31] [cursor=pointer]:
+                - img
+            - generic [ref=e44]: MA
+          - button "Skip navigation" [ref=e48] [cursor=pointer]:
+            - generic [ref=e50] [cursor=pointer]: Skip navigation
+        - generic [ref=e55]:
+          - search [ref=e56]:
+            - combobox "Search" [expanded] [ref=e59]
+            - button "Search" [ref=e60] [cursor=pointer]:
+              - generic [ref=e63] [cursor=pointer]:
+                - img
+          - generic [ref=e67]:
+            - button "Search with your voice" [ref=e69] [cursor=pointer]:
+              - generic [ref=e73] [cursor=pointer]:
+                - img
+            - tooltip "tooltip"
+        - generic [ref=e81]:
+          - button "Create" [ref=e84] [cursor=pointer]:
+            - generic [ref=e88] [cursor=pointer]:
+              - img
+            - generic [ref=e92] [cursor=pointer]: Create
+          - generic [ref=e97]:
+            - button "Notifications" [ref=e99] [cursor=pointer]:
+              - generic [ref=e101] [cursor=pointer]:
+                - generic [ref=e105] [cursor=pointer]:
+                  - img
+                - generic [ref=e108] [cursor=pointer]: "3"
+            - tooltip "tooltip"
+          - button "Account menu" [ref=e114]:
+            - img "Avatar image" [ref=e116] [cursor=pointer]
+    - navigation [ref=e118]:
+      - generic [ref=e119]:
+        - link "Home" [ref=e121] [cursor=pointer]:
+          - /url: /
+          - generic [ref=e124] [cursor=pointer]:
+            - img
+          - generic [ref=e127] [cursor=pointer]: Home
+        - link "Shorts" [ref=e132] [cursor=pointer]:
+          - /url: /shorts/
+          - generic [ref=e135] [cursor=pointer]:
+            - img
+          - generic [ref=e138] [cursor=pointer]: Shorts
+        - link "Subscriptions" [ref=e143] [cursor=pointer]:
+          - /url: /feed/subscriptions
+          - generic [ref=e146] [cursor=pointer]:
+            - img
+          - generic [ref=e149] [cursor=pointer]: Subscriptions
+        - link "You" [ref=e154] [cursor=pointer]:
+          - /url: /feed/you
+          - generic [ref=e157] [cursor=pointer]:
+            - img
+          - generic [ref=e160] [cursor=pointer]: You
+        - link "Downloads" [ref=e165] [cursor=pointer]:
+          - /url: /feed/downloads
+          - generic [ref=e168] [cursor=pointer]:
+            - img
+          - generic [ref=e171] [cursor=pointer]: Downloads
+    - main [ref=e176]:
+      - generic [ref=e184]:
+        - generic [ref=e188]:
+          - tablist [ref=e191]:
+            - tab "All" [selected] [ref=e195] [cursor=pointer]:
+              - generic [ref=e196] [cursor=pointer]: All
+            - tab "Podcasts" [ref=e203] [cursor=pointer]:
+              - generic [ref=e204] [cursor=pointer]: Podcasts
+            - tab "APIs" [ref=e211] [cursor=pointer]:
+              - generic [ref=e212] [cursor=pointer]: APIs
+            - tab "AI" [ref=e219] [cursor=pointer]:
+              - generic [ref=e220] [cursor=pointer]: AI
+            - tab "Linux" [ref=e227] [cursor=pointer]:
+              - generic [ref=e228] [cursor=pointer]: Linux
+            - tab "Computer Hardware" [ref=e235] [cursor=pointer]:
+              - generic [ref=e236] [cursor=pointer]: Computer Hardware
+            - tab "Gaming" [ref=e243] [cursor=pointer]:
+              - generic [ref=e244] [cursor=pointer]: Gaming
+            - tab "Variable (math)" [ref=e251] [cursor=pointer]:
+              - generic [ref=e252] [cursor=pointer]: Variable (math)
+            - tab "Inventions" [ref=e259] [cursor=pointer]:
+              - generic [ref=e260] [cursor=pointer]: Inventions
+            - tab "Security" [ref=e267] [cursor=pointer]:
+              - generic [ref=e268] [cursor=pointer]: Security
+            - tab "Music" [ref=e275] [cursor=pointer]:
+              - generic [ref=e276] [cursor=pointer]: Music
+            - tab "Mixes" [ref=e283] [cursor=pointer]:
+              - generic [ref=e284] [cursor=pointer]: Mixes
+            - tab "Physics" [ref=e291] [cursor=pointer]:
+              - generic [ref=e292] [cursor=pointer]: Physics
+            - tab "Cameras" [ref=e299] [cursor=pointer]:
+              - generic [ref=e300] [cursor=pointer]: Cameras
+            - tab "Thoughts" [ref=e307] [cursor=pointer]:
+              - generic [ref=e308] [cursor=pointer]: Thoughts
+            - tab "Seminars" [ref=e315] [cursor=pointer]:
+              - generic [ref=e316] [cursor=pointer]: Seminars
+            - tab "Recently uploaded" [ref=e323] [cursor=pointer]:
+              - generic [ref=e324] [cursor=pointer]: Recently uploaded
+            - tab "New to you" [ref=e331] [cursor=pointer]:
+              - generic [ref=e332] [cursor=pointer]: New to you
+          - generic [ref=e338]:
+            - button "Next" [ref=e340] [cursor=pointer]:
+              - generic [ref=e344] [cursor=pointer]:
+                - img
+            - tooltip "tooltip"
+        - generic [ref=e353]:
+          - generic [ref=e357] [cursor=pointer]:
+            - link [ref=e362] [cursor=pointer]:
+              - /url: /watch?v=XFhUI1fphKU
+              - generic [ref=e368] [cursor=pointer]: 27:07
+            - generic [ref=e370] [cursor=pointer]:
+              - button "Go to channel" [ref=e374] [cursor=pointer]
+              - generic [ref=e378] [cursor=pointer]:
+                - heading "Every Chinese AI Labs Explained 27 minutes" [level=3] [ref=e379] [cursor=pointer]:
+                  - link "Every Chinese AI Labs Explained 27 minutes" [ref=e380] [cursor=pointer]:
+                    - /url: /watch?v=XFhUI1fphKU
+                    - generic [ref=e381] [cursor=pointer]: Every Chinese AI Labs Explained
+                - generic [ref=e383] [cursor=pointer]:
+                  - link "bycloud" [ref=e387] [cursor=pointer]:
+                    - /url: /@bycloudAI
+                    - text: bycloud
+                    - img [ref=e390] [cursor=pointer]:
+                      - generic [ref=e392] [cursor=pointer]:
+                        - img
+                  - generic [ref=e395] [cursor=pointer]:
+                    - generic [ref=e396] [cursor=pointer]: 15K views
+                    - generic [ref=e397] [cursor=pointer]: •
+                    - generic [ref=e398] [cursor=pointer]: 13 hours ago
+              - button "More actions" [ref=e401] [cursor=pointer]:
+                - generic [ref=e405] [cursor=pointer]:
+                  - img
+          - generic [ref=e414] [cursor=pointer]:
+            - link [ref=e419] [cursor=pointer]:
+              - /url: /watch?v=zM9k0WI1FrM&pp=ugUEEgJlbg%3D%3D
+              - generic [ref=e425] [cursor=pointer]: 20:47
+            - generic [ref=e427] [cursor=pointer]:
+              - button "Go to channel" [ref=e431] [cursor=pointer]
+              - generic [ref=e435] [cursor=pointer]:
+                - heading "Why I'm no longer using Stripe 20 minutes" [level=3] [ref=e436] [cursor=pointer]:
+                  - link "Why I'm no longer using Stripe 20 minutes" [ref=e437] [cursor=pointer]:
+                    - /url: /watch?v=zM9k0WI1FrM&pp=ugUEEgJlbg%3D%3D
+                    - generic [ref=e438] [cursor=pointer]: Why I'm no longer using Stripe
+                - generic [ref=e440] [cursor=pointer]:
+                  - link "Dreams of Code" [ref=e444] [cursor=pointer]:
+                    - /url: /@dreamsofcode
+                    - text: Dreams of Code
+                    - img [ref=e447] [cursor=pointer]:
+                      - generic [ref=e449] [cursor=pointer]:
+                        - img
+                  - generic [ref=e452] [cursor=pointer]:
+                    - generic [ref=e453] [cursor=pointer]: 65K views
+                    - generic [ref=e454] [cursor=pointer]: •
+                    - generic [ref=e455] [cursor=pointer]: 3 weeks ago
+              - button "More actions" [ref=e458] [cursor=pointer]:
+                - generic [ref=e462] [cursor=pointer]:
+                  - img
+          - generic [ref=e471] [cursor=pointer]:
+            - link [ref=e476] [cursor=pointer]:
+              - /url: /watch?v=I3xYHYuMqZU
+              - generic [ref=e482] [cursor=pointer]: 19:53
+            - generic [ref=e484] [cursor=pointer]:
+              - button "Go to channel" [ref=e488] [cursor=pointer]
+              - generic [ref=e492] [cursor=pointer]:
+                - heading "Terrible News, Cloud Gaming is Good Now 19 minutes" [level=3] [ref=e493] [cursor=pointer]:
+                  - link "Terrible News, Cloud Gaming is Good Now 19 minutes" [ref=e494] [cursor=pointer]:
+                    - /url: /watch?v=I3xYHYuMqZU
+                    - generic [ref=e495] [cursor=pointer]: Terrible News, Cloud Gaming is Good Now
+                - generic [ref=e497] [cursor=pointer]:
+                  - link "Linus Tech Tips" [ref=e501] [cursor=pointer]:
+                    - /url: /@LinusTechTips
+                    - text: Linus Tech Tips
+                    - img [ref=e504] [cursor=pointer]:
+                      - generic [ref=e506] [cursor=pointer]:
+                        - img
+                  - generic [ref=e509] [cursor=pointer]:
+                    - generic [ref=e510] [cursor=pointer]: 627K views
+                    - generic [ref=e511] [cursor=pointer]: •
+                    - generic [ref=e512] [cursor=pointer]: 17 hours ago
+              - button "More actions" [ref=e515] [cursor=pointer]:
+                - generic [ref=e519] [cursor=pointer]:
+                  - img
+          - generic [ref=e528] [cursor=pointer]:
+            - link [ref=e533] [cursor=pointer]:
+              - /url: /watch?v=MsQACpcuTkU
+              - generic [ref=e539] [cursor=pointer]: 33:44
+            - generic [ref=e541] [cursor=pointer]:
+              - button "Go to channel" [ref=e545] [cursor=pointer]
+              - generic [ref=e549] [cursor=pointer]:
+                - heading "You've Been Using AI the Hard Way (Use This Instead) 33 minutes" [level=3] [ref=e550] [cursor=pointer]:
+                  - link "You've Been Using AI the Hard Way (Use This Instead) 33 minutes" [ref=e551] [cursor=pointer]:
+                    - /url: /watch?v=MsQACpcuTkU
+                    - generic [ref=e552] [cursor=pointer]: You've Been Using AI the Hard Way (Use This Instead)
+                - generic [ref=e554] [cursor=pointer]:
+                  - link "NetworkChuck" [ref=e558] [cursor=pointer]:
+                    - /url: /@NetworkChuck
+                    - text: NetworkChuck
+                    - img [ref=e561] [cursor=pointer]:
+                      - generic [ref=e563] [cursor=pointer]:
+                        - img
+                  - generic [ref=e566] [cursor=pointer]:
+                    - generic [ref=e567] [cursor=pointer]: 499K views
+                    - generic [ref=e568] [cursor=pointer]: •
+                    - generic [ref=e569] [cursor=pointer]: 4 days ago
+              - button "More actions" [ref=e572] [cursor=pointer]:
+                - generic [ref=e576] [cursor=pointer]:
+                  - img
+          - generic [ref=e585] [cursor=pointer]:
+            - link [ref=e590] [cursor=pointer]:
+              - /url: /watch?v=6gwF8mG3UUY&pp=ugUHEgVlbi1VUw%3D%3D
+              - generic [ref=e596] [cursor=pointer]: 9:21
+            - generic [ref=e598] [cursor=pointer]:
+              - button "Go to channel" [ref=e602] [cursor=pointer]
+              - generic [ref=e606] [cursor=pointer]:
+                - heading "Why I Use Golang In 2024 9 minutes, 21 seconds" [level=3] [ref=e607] [cursor=pointer]:
+                  - link "Why I Use Golang In 2024 9 minutes, 21 seconds" [ref=e608] [cursor=pointer]:
+                    - /url: /watch?v=6gwF8mG3UUY&pp=ugUHEgVlbi1VUw%3D%3D
+                    - generic [ref=e609] [cursor=pointer]: Why I Use Golang In 2024
+                - generic [ref=e611] [cursor=pointer]:
+                  - link "ThePrimeTime" [ref=e615] [cursor=pointer]:
+                    - /url: /@ThePrimeTimeagen
+                    - text: ThePrimeTime
+                    - img [ref=e618] [cursor=pointer]:
+                      - generic [ref=e620] [cursor=pointer]:
+                        - img
+                  - generic [ref=e623] [cursor=pointer]:
+                    - generic [ref=e624] [cursor=pointer]: 442K views
+                    - generic [ref=e625] [cursor=pointer]: •
+                    - generic [ref=e626] [cursor=pointer]: 1 year ago
+              - button "More actions" [ref=e629] [cursor=pointer]:
+                - generic [ref=e633] [cursor=pointer]:
+                  - img
+          - generic [ref=e642] [cursor=pointer]:
+            - link [ref=e647] [cursor=pointer]:
+              - /url: /watch?v=rH0NVA2my4E
+              - generic [ref=e653] [cursor=pointer]: 3:44:21
+            - generic [ref=e655] [cursor=pointer]:
+              - button "Go to channel" [ref=e659] [cursor=pointer]
+              - generic [ref=e663] [cursor=pointer]:
+                - heading "ياسر طاهري — موسيقى الراب، Python، تعلم البرمجة، Open Source، الفلسفة الإغريقية، Secure code، الزواج 3 hours, 44 minutes" [level=3] [ref=e664] [cursor=pointer]:
+                  - link "ياسر طاهري — موسيقى الراب، Python، تعلم البرمجة، Open Source، الفلسفة الإغريقية، Secure code، الزواج 3 hours, 44 minutes" [ref=e665] [cursor=pointer]:
+                    - /url: /watch?v=rH0NVA2my4E
+                    - generic [ref=e666] [cursor=pointer]: ياسر طاهري — موسيقى الراب، Python، تعلم البرمجة، Open Source، الفلسفة الإغريقية، Secure code، الزواج
+                - generic [ref=e668] [cursor=pointer]:
+                  - link "Kass Atay Podcast" [ref=e672] [cursor=pointer]:
+                    - /url: /@kassataypodcast
+                  - generic [ref=e673] [cursor=pointer]:
+                    - generic [ref=e674] [cursor=pointer]: 6.4K views
+                    - generic [ref=e675] [cursor=pointer]: •
+                    - generic [ref=e676] [cursor=pointer]: 3 years ago
+              - button "More actions" [ref=e679] [cursor=pointer]:
+                - generic [ref=e683] [cursor=pointer]:
+                  - img
+          - generic [ref=e692]:
+            - generic [ref=e694]:
+              - heading "Shorts" [level=2] [ref=e695]:
+                - generic [ref=e698]:
+                  - img
+                - generic [ref=e704]: Shorts
+              - button "Shorts - More actions" [ref=e714] [cursor=pointer]:
+                - generic [ref=e717] [cursor=pointer]:
+                  - img
+            - generic [ref=e724]:
+              - generic [ref=e728]:
+                - link [ref=e729] [cursor=pointer]:
+                  - /url: /shorts/jQPVkSbv5HM
+                - generic [ref=e732] [cursor=pointer]:
+                  - link "The Power of MacBook in a Touch!" [ref=e733] [cursor=pointer]:
+                    - /url: /shorts/jQPVkSbv5HM
+                    - generic [ref=e734] [cursor=pointer]: The Power of MacBook in a Touch!
+                  - generic [ref=e736] [cursor=pointer]: 829K views
+                - button "More actions" [ref=e738] [cursor=pointer]:
+                  - generic [ref=e742] [cursor=pointer]:
+                    - img
+              - generic [ref=e754]:
+                - link [ref=e755] [cursor=pointer]:
+                  - /url: /shorts/VBtsgPBSic4
+                - generic [ref=e758] [cursor=pointer]:
+                  - link "The Unix Philosophy Works For Everything!" [ref=e759] [cursor=pointer]:
+                    - /url: /shorts/VBtsgPBSic4
+                    - generic [ref=e760] [cursor=pointer]: The Unix Philosophy Works For Everything!
+                  - generic [ref=e762] [cursor=pointer]: 7K views
+                - button "More actions" [ref=e764] [cursor=pointer]:
+                  - generic [ref=e768] [cursor=pointer]:
+                    - img
+              - generic [ref=e780]:
+                - link [ref=e781] [cursor=pointer]:
+                  - /url: /shorts/Ka8dynxPz28
+                - generic [ref=e784] [cursor=pointer]:
+                  - link "I’m afraid of sr devs" [ref=e785] [cursor=pointer]:
+                    - /url: /shorts/Ka8dynxPz28
+                    - generic [ref=e786] [cursor=pointer]: I’m afraid of sr devs
+                  - generic [ref=e788] [cursor=pointer]: 49K views
+                - button "More actions" [ref=e790] [cursor=pointer]:
+                  - generic [ref=e794] [cursor=pointer]:
+                    - img
+              - generic [ref=e806]:
+                - link [ref=e807] [cursor=pointer]:
+                  - /url: /shorts/NZBxq42VJMg
+                - generic [ref=e810] [cursor=pointer]:
+                  - link "\"They don't use any front-end frameworks!\" @ThePrimeagen reacts to our fast site speed on stream" [ref=e811] [cursor=pointer]:
+                    - /url: /shorts/NZBxq42VJMg
+                    - generic [ref=e812] [cursor=pointer]: "\"They don't use any front-end frameworks!\" @ThePrimeagen reacts to our fast site speed on stream"
+                  - generic [ref=e814] [cursor=pointer]: 394K views
+                - button "More actions" [ref=e816] [cursor=pointer]:
+                  - generic [ref=e820] [cursor=pointer]:
+                    - img
+              - generic [ref=e832]:
+                - link [ref=e833] [cursor=pointer]:
+                  - /url: /shorts/CtUF5NWyglY
+                - generic [ref=e836] [cursor=pointer]:
+                  - link "تقريبا رهيب" [ref=e837] [cursor=pointer]:
+                    - /url: /shorts/CtUF5NWyglY
+                    - generic [ref=e838] [cursor=pointer]: تقريبا رهيب
+                  - generic [ref=e840] [cursor=pointer]: 1.8K views
+                - button "More actions" [ref=e842] [cursor=pointer]:
+                  - generic [ref=e846] [cursor=pointer]:
+                    - img
+          - generic [ref=e858] [cursor=pointer]:
+            - link [ref=e863] [cursor=pointer]:
+              - /url: /watch?v=K9KrZ9dqIdY
+              - generic [ref=e869] [cursor=pointer]: 49:08
+            - generic [ref=e871] [cursor=pointer]:
+              - button "Go to channel" [ref=e875] [cursor=pointer]
+              - generic [ref=e879] [cursor=pointer]:
+                - heading "Asahi Linux Maintainer Steps Down 49 minutes" [level=3] [ref=e880] [cursor=pointer]:
+                  - link "Asahi Linux Maintainer Steps Down 49 minutes" [ref=e881] [cursor=pointer]:
+                    - /url: /watch?v=K9KrZ9dqIdY
+                    - generic [ref=e882] [cursor=pointer]: Asahi Linux Maintainer Steps Down
+                - generic [ref=e884] [cursor=pointer]:
+                  - link "ThePrimeTime" [ref=e888] [cursor=pointer]:
+                    - /url: /@ThePrimeTimeagen
+                    - text: ThePrimeTime
+                    - img [ref=e891] [cursor=pointer]:
+                      - generic [ref=e893] [cursor=pointer]:
+                        - img
+                  - generic [ref=e896] [cursor=pointer]:
+                    - generic [ref=e897] [cursor=pointer]: 162K views
+                    - generic [ref=e898] [cursor=pointer]: •
+                    - generic [ref=e899] [cursor=pointer]: 8 months ago
+              - button "More actions" [ref=e902] [cursor=pointer]:
+                - generic [ref=e906] [cursor=pointer]:
+                  - img
+          - generic [ref=e915] [cursor=pointer]:
+            - link [ref=e920] [cursor=pointer]:
+              - /url: /watch?v=i0IfCfhOHN4&t=490s
+              - generic [ref=e927] [cursor=pointer]: 56:25
+            - generic [ref=e929] [cursor=pointer]:
+              - button "Go to channel" [ref=e933] [cursor=pointer]
+              - generic [ref=e937] [cursor=pointer]:
+                - 'heading "How to Hide in Plain Sight: Next-Level Digital Privacy | Ivan Banov at BSidesCache 2025 56 minutes" [level=3] [ref=e938] [cursor=pointer]':
+                  - 'link "How to Hide in Plain Sight: Next-Level Digital Privacy | Ivan Banov at BSidesCache 2025 56 minutes" [ref=e939] [cursor=pointer]':
+                    - /url: /watch?v=i0IfCfhOHN4&t=490s
+                    - generic [ref=e940] [cursor=pointer]: "How to Hide in Plain Sight: Next-Level Digital Privacy | Ivan Banov at BSidesCache 2025"
+                - generic [ref=e942] [cursor=pointer]:
+                  - link "BSidesSLC" [ref=e946] [cursor=pointer]:
+                    - /url: /@BsidesslcOrg
+                  - generic [ref=e947] [cursor=pointer]:
+                    - generic [ref=e948] [cursor=pointer]: 61K views
+                    - generic [ref=e949] [cursor=pointer]: •
+                    - generic [ref=e950] [cursor=pointer]: 12 days ago
+              - button "More actions" [ref=e953] [cursor=pointer]:
+                - generic [ref=e957] [cursor=pointer]:
+                  - img
+          - generic [ref=e966] [cursor=pointer]:
+            - link [ref=e971] [cursor=pointer]:
+              - /url: /watch?v=JkwQJzCfogQ
+              - generic [ref=e977] [cursor=pointer]: 11:24
+            - generic [ref=e979] [cursor=pointer]:
+              - button "Go to channel" [ref=e983] [cursor=pointer]
+              - generic [ref=e987] [cursor=pointer]:
+                - heading "I stream nothing, and I am happy. 11 minutes, 24 seconds" [level=3] [ref=e988] [cursor=pointer]:
+                  - link "I stream nothing, and I am happy. 11 minutes, 24 seconds" [ref=e989] [cursor=pointer]:
+                    - /url: /watch?v=JkwQJzCfogQ
+                    - generic [ref=e990] [cursor=pointer]: I stream nothing, and I am happy.
+                - generic [ref=e992] [cursor=pointer]:
+                  - link "Veronica Explains" [ref=e996] [cursor=pointer]:
+                    - /url: /@VeronicaExplains
+                    - text: Veronica Explains
+                    - img [ref=e999] [cursor=pointer]:
+                      - generic [ref=e1001] [cursor=pointer]:
+                        - img
+                  - generic [ref=e1004] [cursor=pointer]:
+                    - generic [ref=e1005] [cursor=pointer]: 44K views
+                    - generic [ref=e1006] [cursor=pointer]: •
+                    - generic [ref=e1007] [cursor=pointer]: 18 hours ago
+              - button "More actions" [ref=e1010] [cursor=pointer]:
+                - generic [ref=e1014] [cursor=pointer]:
+                  - img
+          - generic [ref=e1023] [cursor=pointer]:
+            - link [ref=e1028] [cursor=pointer]:
+              - /url: /watch?v=PUtG4Zmd_AY&pp=ugUEEgJlbg%3D%3D
+              - generic [ref=e1034] [cursor=pointer]: 21:10
+            - generic [ref=e1036] [cursor=pointer]:
+              - button "Go to channel" [ref=e1040] [cursor=pointer]
+              - generic [ref=e1044] [cursor=pointer]:
+                - heading "The Attention Economy Is Everywhere. Self-Hosting Is the Escape. 21 minutes" [level=3] [ref=e1045] [cursor=pointer]:
+                  - link "The Attention Economy Is Everywhere. Self-Hosting Is the Escape. 21 minutes" [ref=e1046] [cursor=pointer]:
+                    - /url: /watch?v=PUtG4Zmd_AY&pp=ugUEEgJlbg%3D%3D
+                    - generic [ref=e1047] [cursor=pointer]: The Attention Economy Is Everywhere. Self-Hosting Is the Escape.
+                - generic [ref=e1049] [cursor=pointer]:
+                  - link "Nathan Laundry" [ref=e1053] [cursor=pointer]:
+                    - /url: /@nathanlaundry
+                  - generic [ref=e1054] [cursor=pointer]:
+                    - generic [ref=e1055] [cursor=pointer]: 188K views
+                    - generic [ref=e1056] [cursor=pointer]: •
+                    - generic [ref=e1057] [cursor=pointer]: 4 weeks ago
+              - button "More actions" [ref=e1060] [cursor=pointer]:
+                - generic [ref=e1064] [cursor=pointer]:
+                  - img
+          - generic [ref=e1073] [cursor=pointer]:
+            - link [ref=e1078] [cursor=pointer]:
+              - /url: /watch?v=9z-__UY6Apg
+              - generic [ref=e1084] [cursor=pointer]: 1:49:23
+            - generic [ref=e1086] [cursor=pointer]:
+              - button "Go to channel" [ref=e1090] [cursor=pointer]
+              - generic [ref=e1094] [cursor=pointer]:
+                - heading "Dr Suarez Reinforces your Learning in C-- and CUDA 1 hour, 49 minutes" [level=3] [ref=e1095] [cursor=pointer]:
+                  - link "Dr Suarez Reinforces your Learning in C-- and CUDA 1 hour, 49 minutes" [ref=e1096] [cursor=pointer]:
+                    - /url: /watch?v=9z-__UY6Apg
+                    - generic [ref=e1097] [cursor=pointer]: Dr Suarez Reinforces your Learning in C-- and CUDA
+                - generic [ref=e1099] [cursor=pointer]:
+                  - link "Joseph Suarez" [ref=e1103] [cursor=pointer]:
+                    - /url: /@neuralmmo
+                  - generic [ref=e1104] [cursor=pointer]:
+                    - generic [ref=e1105] [cursor=pointer]: 311 views
+                    - generic [ref=e1106] [cursor=pointer]: •
+                    - generic [ref=e1107] [cursor=pointer]: Streamed 1 day ago
+              - button "More actions" [ref=e1110] [cursor=pointer]:
+                - generic [ref=e1114] [cursor=pointer]:
+                  - img
+          - generic [ref=e1123] [cursor=pointer]:
+            - link [ref=e1128] [cursor=pointer]:
+              - /url: /watch?v=gSQoA4SYhJY
+              - generic [ref=e1134] [cursor=pointer]: 51:26
+            - generic [ref=e1136] [cursor=pointer]:
+              - button "Go to channel" [ref=e1140] [cursor=pointer]
+              - generic [ref=e1144] [cursor=pointer]:
+                - heading "What happens before the Backend gets the Request 51 minutes" [level=3] [ref=e1145] [cursor=pointer]:
+                  - link "What happens before the Backend gets the Request 51 minutes" [ref=e1146] [cursor=pointer]:
+                    - /url: /watch?v=gSQoA4SYhJY
+                    - generic [ref=e1147] [cursor=pointer]: What happens before the Backend gets the Request
+                - generic [ref=e1149] [cursor=pointer]:
+                  - link "Hussein Nasser" [ref=e1153] [cursor=pointer]:
+                    - /url: /@hnasr
+                    - text: Hussein Nasser
+                    - img [ref=e1156] [cursor=pointer]:
+                      - generic [ref=e1158] [cursor=pointer]:
+                        - img
+                  - generic [ref=e1161] [cursor=pointer]:
+                    - generic [ref=e1162] [cursor=pointer]: 59K views
+                    - generic [ref=e1163] [cursor=pointer]: •
+                    - generic [ref=e1164] [cursor=pointer]: 2 years ago
+              - button "More actions" [ref=e1167] [cursor=pointer]:
+                - generic [ref=e1171] [cursor=pointer]:
+                  - img
+          - generic [ref=e1180] [cursor=pointer]:
+            - link [ref=e1185] [cursor=pointer]:
+              - /url: /watch?v=fxqcwK5OMag
+              - generic [ref=e1191] [cursor=pointer]: 49:42
+            - generic [ref=e1193] [cursor=pointer]:
+              - button "Go to channel" [ref=e1197] [cursor=pointer]
+              - generic [ref=e1201] [cursor=pointer]:
+                - 'heading "The Biggest Hacking Mystery of Our Time: Shadow Brokers 49 minutes" [level=3] [ref=e1202] [cursor=pointer]':
+                  - 'link "The Biggest Hacking Mystery of Our Time: Shadow Brokers 49 minutes" [ref=e1203] [cursor=pointer]':
+                    - /url: /watch?v=fxqcwK5OMag
+                    - generic [ref=e1204] [cursor=pointer]: "The Biggest Hacking Mystery of Our Time: Shadow Brokers"
+                - generic [ref=e1206] [cursor=pointer]:
+                  - link "Cybernews" [ref=e1210] [cursor=pointer]:
+                    - /url: /@cybernews
+                    - text: Cybernews
+                    - img [ref=e1213] [cursor=pointer]:
+                      - generic [ref=e1215] [cursor=pointer]:
+                        - img
+                  - generic [ref=e1218] [cursor=pointer]:
+                    - generic [ref=e1219] [cursor=pointer]: 1.3M views
+                    - generic [ref=e1220] [cursor=pointer]: •
+                    - generic [ref=e1221] [cursor=pointer]: 3 months ago
+              - button "More actions" [ref=e1224] [cursor=pointer]:
+                - generic [ref=e1228] [cursor=pointer]:
+                  - img
+          - generic [ref=e1237] [cursor=pointer]:
+            - link [ref=e1242] [cursor=pointer]:
+              - /url: /watch?v=j31dmodZ-5c&pp=ugUEEgJlbg%3D%3D
+              - generic [ref=e1248] [cursor=pointer]: 16:12
+            - generic [ref=e1250] [cursor=pointer]:
+              - button "Go to channel" [ref=e1254] [cursor=pointer]
+              - generic [ref=e1258] [cursor=pointer]:
+                - heading "The Problem with this Humanoid Robot 16 minutes" [level=3] [ref=e1259] [cursor=pointer]:
+                  - link "The Problem with this Humanoid Robot 16 minutes" [ref=e1260] [cursor=pointer]:
+                    - /url: /watch?v=j31dmodZ-5c&pp=ugUEEgJlbg%3D%3D
+                    - generic [ref=e1261] [cursor=pointer]: The Problem with this Humanoid Robot
+                - generic [ref=e1263] [cursor=pointer]:
+                  - link "Marques Brownlee" [ref=e1267] [cursor=pointer]:
+                    - /url: /@mkbhd
+                    - text: Marques Brownlee
+                    - img [ref=e1270] [cursor=pointer]:
+                      - generic [ref=e1272] [cursor=pointer]:
+                        - img
+                  - generic [ref=e1275] [cursor=pointer]:
+                    - generic [ref=e1276] [cursor=pointer]: 4.4M views
+                    - generic [ref=e1277] [cursor=pointer]: •
+                    - generic [ref=e1278] [cursor=pointer]: 3 days ago
+              - button "More actions" [ref=e1281] [cursor=pointer]:
+                - generic [ref=e1285] [cursor=pointer]:
+                  - img
+          - generic [ref=e1294] [cursor=pointer]:
+            - link [ref=e1299] [cursor=pointer]:
+              - /url: /watch?v=hREqirEXnLI
+              - generic [ref=e1305] [cursor=pointer]: 4:05
+            - generic [ref=e1307] [cursor=pointer]:
+              - button "Tap to watch live" [ref=e1311] [cursor=pointer]:
+                - generic [ref=e1315] [cursor=pointer]: LIVE
+              - generic [ref=e1317] [cursor=pointer]:
+                - heading "ملخص مباراة ليفربول وأستون فيلا (2-0) | الدوري الإنجليزي الممتاز - الجولة 10 4 minutes, 5 seconds" [level=3] [ref=e1318] [cursor=pointer]:
+                  - link "ملخص مباراة ليفربول وأستون فيلا (2-0) | الدوري الإنجليزي الممتاز - الجولة 10 4 minutes, 5 seconds" [ref=e1319] [cursor=pointer]:
+                    - /url: /watch?v=hREqirEXnLI
+                    - generic [ref=e1320] [cursor=pointer]: ملخص مباراة ليفربول وأستون فيلا (2-0) | الدوري الإنجليزي الممتاز - الجولة 10
+                - generic [ref=e1322] [cursor=pointer]:
+                  - link "beIN SPORTS" [ref=e1326] [cursor=pointer]:
+                    - /url: /@beINSPORTS
+                    - text: beIN SPORTS
+                    - img [ref=e1329] [cursor=pointer]:
+                      - generic [ref=e1331] [cursor=pointer]:
+                        - img
+                  - generic [ref=e1334] [cursor=pointer]:
+                    - generic [ref=e1335] [cursor=pointer]: 619K views
+                    - generic [ref=e1336] [cursor=pointer]: •
+                    - generic [ref=e1337] [cursor=pointer]: 12 hours ago
+              - button "More actions" [ref=e1340] [cursor=pointer]:
+                - generic [ref=e1344] [cursor=pointer]:
+                  - img
+          - generic [ref=e1353] [cursor=pointer]:
+            - link [ref=e1358] [cursor=pointer]:
+              - /url: /watch?v=dy-wFixuRVU&pp=ugUEEgJlbtIHCQkDCgGHKiGM7w%3D%3D
+              - generic [ref=e1364] [cursor=pointer]: 20:43
+            - generic [ref=e1366] [cursor=pointer]:
+              - button "Go to channel" [ref=e1370] [cursor=pointer]
+              - generic [ref=e1374] [cursor=pointer]:
+                - heading "I Powered My House Using 500 Disposable vapes 20 minutes" [level=3] [ref=e1375] [cursor=pointer]:
+                  - link "I Powered My House Using 500 Disposable vapes 20 minutes" [ref=e1376] [cursor=pointer]:
+                    - /url: /watch?v=dy-wFixuRVU&pp=ugUEEgJlbtIHCQkDCgGHKiGM7w%3D%3D
+                    - generic [ref=e1377] [cursor=pointer]: I Powered My House Using 500 Disposable vapes
+                - generic [ref=e1379] [cursor=pointer]:
+                  - link "Chris Doel" [ref=e1383] [cursor=pointer]:
+                    - /url: /@Chris_doel
+                  - generic [ref=e1384] [cursor=pointer]:
+                    - generic [ref=e1385] [cursor=pointer]: 791K views
+                    - generic [ref=e1386] [cursor=pointer]: •
+                    - generic [ref=e1387] [cursor=pointer]: 2 days ago
+              - button "More actions" [ref=e1390] [cursor=pointer]:
+                - generic [ref=e1394] [cursor=pointer]:
+                  - img
+          - generic [ref=e1403] [cursor=pointer]:
+            - link [ref=e1408] [cursor=pointer]:
+              - /url: /watch?v=ooTcnx066Do&pp=ugUEEgJlbg%3D%3D
+              - generic [ref=e1414] [cursor=pointer]: 10:25
+            - generic [ref=e1416] [cursor=pointer]:
+              - button "Go to channel" [ref=e1420] [cursor=pointer]
+              - generic [ref=e1424] [cursor=pointer]:
+                - heading "Neovim has it's own terminal?! 10 minutes, 25 seconds" [level=3] [ref=e1425] [cursor=pointer]:
+                  - link "Neovim has it's own terminal?! 10 minutes, 25 seconds" [ref=e1426] [cursor=pointer]:
+                    - /url: /watch?v=ooTcnx066Do&pp=ugUEEgJlbg%3D%3D
+                    - generic [ref=e1427] [cursor=pointer]: Neovim has it's own terminal?!
+                - generic [ref=e1429] [cursor=pointer]:
+                  - link "TJ DeVries" [ref=e1433] [cursor=pointer]:
+                    - /url: /@teej_dv
+                  - generic [ref=e1434] [cursor=pointer]:
+                    - generic [ref=e1435] [cursor=pointer]: 63K views
+                    - generic [ref=e1436] [cursor=pointer]: •
+                    - generic [ref=e1437] [cursor=pointer]: 10 months ago
+              - button "More actions" [ref=e1440] [cursor=pointer]:
+                - generic [ref=e1444] [cursor=pointer]:
+                  - img
+          - generic [ref=e1453] [cursor=pointer]:
+            - link [ref=e1458] [cursor=pointer]:
+              - /url: /watch?v=cqL3jvlU61c
+              - generic [ref=e1464] [cursor=pointer]: 48:24
+            - generic [ref=e1466] [cursor=pointer]:
+              - button "Go to channel" [ref=e1470] [cursor=pointer]
+              - generic [ref=e1474] [cursor=pointer]:
+                - heading "How DOOM Will Teach You What CS Degrees Miss 48 minutes" [level=3] [ref=e1475] [cursor=pointer]:
+                  - link "How DOOM Will Teach You What CS Degrees Miss 48 minutes" [ref=e1476] [cursor=pointer]:
+                    - /url: /watch?v=cqL3jvlU61c
+                    - generic [ref=e1477] [cursor=pointer]: How DOOM Will Teach You What CS Degrees Miss
+                - generic [ref=e1479] [cursor=pointer]:
+                  - link "Tariq10x" [ref=e1483] [cursor=pointer]:
+                    - /url: /@Tariq10x
+                  - generic [ref=e1484] [cursor=pointer]:
+                    - generic [ref=e1485] [cursor=pointer]: 465K views
+                    - generic [ref=e1486] [cursor=pointer]: •
+                    - generic [ref=e1487] [cursor=pointer]: 6 months ago
+              - button "More actions" [ref=e1490] [cursor=pointer]:
+                - generic [ref=e1494] [cursor=pointer]:
+                  - img
+          - generic [ref=e1503] [cursor=pointer]:
+            - link [ref=e1508] [cursor=pointer]:
+              - /url: /watch?v=sU0MXdvDpYg
+              - generic [ref=e1514] [cursor=pointer]: 19:34
+            - generic [ref=e1516] [cursor=pointer]:
+              - button "Go to channel" [ref=e1520] [cursor=pointer]
+              - generic [ref=e1524] [cursor=pointer]:
+                - heading "MIT Maker Portfolio [Accepted '27] + 2 Years Later 19 minutes" [level=3] [ref=e1525] [cursor=pointer]:
+                  - link "MIT Maker Portfolio [Accepted '27] + 2 Years Later 19 minutes" [ref=e1526] [cursor=pointer]:
+                    - /url: /watch?v=sU0MXdvDpYg
+                    - generic [ref=e1527] [cursor=pointer]: MIT Maker Portfolio [Accepted '27] + 2 Years Later
+                - generic [ref=e1529] [cursor=pointer]:
+                  - link "Miguel Flores-Acton" [ref=e1533] [cursor=pointer]:
+                    - /url: /@floresacton
+                  - generic [ref=e1534] [cursor=pointer]:
+                    - generic [ref=e1535] [cursor=pointer]: 57K views
+                    - generic [ref=e1536] [cursor=pointer]: •
+                    - generic [ref=e1537] [cursor=pointer]: 6 days ago
+              - button "More actions" [ref=e1540] [cursor=pointer]:
+                - generic [ref=e1544] [cursor=pointer]:
+                  - img
+          - generic [ref=e1553] [cursor=pointer]:
+            - link [ref=e1558] [cursor=pointer]:
+              - /url: /watch?v=v4Vqwipb5R4&pp=ugUHEgVlbi1VUw%3D%3D
+              - generic [ref=e1564] [cursor=pointer]: 18:55
+            - generic [ref=e1566] [cursor=pointer]:
+              - button "Go to channel" [ref=e1570] [cursor=pointer]
+              - generic [ref=e1574] [cursor=pointer]:
+                - heading "I'm locking in on Zig. 18 minutes" [level=3] [ref=e1575] [cursor=pointer]:
+                  - link "I'm locking in on Zig. 18 minutes" [ref=e1576] [cursor=pointer]:
+                    - /url: /watch?v=v4Vqwipb5R4&pp=ugUHEgVlbi1VUw%3D%3D
+                    - generic [ref=e1577] [cursor=pointer]: I'm locking in on Zig.
+                - generic [ref=e1579] [cursor=pointer]:
+                  - link "Code With Cypert" [ref=e1583] [cursor=pointer]:
+                    - /url: /@CodeWithCypert
+                  - generic [ref=e1584] [cursor=pointer]:
+                    - generic [ref=e1585] [cursor=pointer]: 1.1K views
+                    - generic [ref=e1586] [cursor=pointer]: •
+                    - generic [ref=e1587] [cursor=pointer]: 8 hours ago
+              - button "More actions" [ref=e1590] [cursor=pointer]:
+                - generic [ref=e1594] [cursor=pointer]:
+                  - img
+          - generic [ref=e1603] [cursor=pointer]:
+            - link [ref=e1608] [cursor=pointer]:
+              - /url: /watch?v=VDYvWGC-XxI
+              - generic [ref=e1614] [cursor=pointer]: 10:06
+            - generic [ref=e1616] [cursor=pointer]:
+              - button "Go to channel" [ref=e1620] [cursor=pointer]
+              - generic [ref=e1624] [cursor=pointer]:
+                - 'heading "NOC-umentary: Inside the Black Hat NOC 10 minutes, 6 seconds" [level=3] [ref=e1625] [cursor=pointer]':
+                  - 'link "NOC-umentary: Inside the Black Hat NOC 10 minutes, 6 seconds" [ref=e1626] [cursor=pointer]':
+                    - /url: /watch?v=VDYvWGC-XxI
+                    - generic [ref=e1627] [cursor=pointer]: "NOC-umentary: Inside the Black Hat NOC"
+                - generic [ref=e1629] [cursor=pointer]:
+                  - link "Palo Alto Networks" [ref=e1633] [cursor=pointer]:
+                    - /url: /@paloaltonetworks
+                  - generic [ref=e1634] [cursor=pointer]:
+                    - generic [ref=e1635] [cursor=pointer]: 24K views
+                    - generic [ref=e1636] [cursor=pointer]: •
+                    - generic [ref=e1637] [cursor=pointer]: 2 days ago
+              - button "More actions" [ref=e1640] [cursor=pointer]:
+                - generic [ref=e1644] [cursor=pointer]:
+                  - img
+  - button "CRXJS logo" [ref=e1734] [cursor=pointer]:
+    - img "CRXJS logo" [ref=e1735] [cursor=pointer]
