@@ -18,7 +18,16 @@ export default defineManifest({
     service_worker: "src/bg.ts",
     type: "module",
   },
-  permissions: ["sidePanel", "contentSettings","tabs","tabGroups","history","activeTab","scripting","debugger"],
+  commands:{
+    "open-side-panel": {
+      "suggested_key": {
+        "default": "Ctrl+Shift+K",
+        "mac": "Command+Shift+K"
+      },
+      "description": "Open the side panel."
+    }
+  },
+  permissions: ["sidePanel", "contentSettings","tabs","tabGroups","history","activeTab","scripting","debugger","storage",""],
   host_permissions: ["https://*/*", "http://*/*","chrome://*/*","chrome-extension://*/*"],
   content_scripts: [
     {
@@ -37,6 +46,7 @@ export default defineManifest({
   side_panel: {
     default_path: "src/sidepanel/index.html",
   },
+  
   web_accessible_resources: [
     {
       resources: ["injector/runner.js"],

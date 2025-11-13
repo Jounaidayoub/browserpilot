@@ -46,11 +46,29 @@ import { parseEnv } from "util";
     }
   });
 
+  console.log("Registered commands are :");
+  chrome.commands.getAll((commands) => {
+    console.log("Registered commands:", commands);
+  });
+
+
+  chrome.commands.onCommand.addListener((command) => {
+    console.log(`Command: ${command}`);
+    if (command === "open-side-panel") {
+
+      chrome.windows.getCurrent({ populate: true }, (win) => {
+        if (win.id) {
+          chrome.sidePanel.open({ windowId: win.id });
+        }
+      });
+    }
+  });
+
   chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     //the closing is handled in the sidepanel main.tsx
 
     if (message?.action === "open-sidepanel") {
-      chrome.tabs.create({ active: false });
+
       chrome.windows.getCurrent({ populate: true }, (win) => {
         if (win.id) {
           chrome.sidePanel.open({ windowId: win.id });
