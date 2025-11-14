@@ -1,5 +1,6 @@
-// Simple "hover to highlight and click to select" implementation
-// Enhanced to send selected element HTML back to extension
+// a lightweight element inspector script
+//like the inspector tool in devtools
+//it will highlight elements on hover and send the outerHTML of the selected element back to side panel(via content script)
 export default function Inspector() {
   console.log("Element inspector script injected");
 
