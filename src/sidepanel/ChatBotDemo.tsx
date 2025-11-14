@@ -1,7 +1,7 @@
 "use client";
 
 import { StickToBottom, useStickToBottomContext } from "use-stick-to-bottom";
-import { get_tabs, get_tab_content } from "@/sidepanel/tools";
+import { get_tabs, get_tab_content, injectInspector } from "@/sidepanel/tools";
 import { evaluateToolCall } from "@/sidepanel/tools";
 import {
   Tool,
@@ -21,6 +21,7 @@ import {
   PromptInputActionAddAttachments,
   PromptInputActionMenu,
   PromptInputActionMenuContent,
+  PromptInputActionMenuItem,
   PromptInputActionMenuTrigger,
   PromptInputAttachment,
   PromptInputAttachments,
@@ -36,6 +37,7 @@ import {
   PromptInputTextarea,
   PromptInputToolbar,
   PromptInputTools,
+  // usePromptInputAttachments
 } from "@/components/ai-elements/prompt-input";
 import { Action, Actions } from "@/components/ai-elements/actions";
 import { Fragment, useEffect, useRef, useState, useCallback } from "react";
@@ -47,6 +49,7 @@ import {
   GlobeIcon,
   RefreshCcwIcon,
   Upload,
+  Inspect,
 } from "lucide-react";
 import {
   Source,
@@ -84,7 +87,9 @@ const ChatBotDemo = () => {
   const [input, setInput] = useState("");
   const [model, setModel] = useState<string>(models[0].value);
   const [webSearch, setWebSearch] = useState(false);
+  const [isInspecting, setIsInspecting] = useState(false);
   const promptInput = useRef<HTMLTextAreaElement>(null);
+  // const attachements = usePromptInputAttachments();
   // const { isAtBottom, scrollToBottom } = useStickToBottomContext();
   // const { isAtBottom, scrollToBottom } = useStickToBottomContext();
 
@@ -145,6 +150,31 @@ const ChatBotDemo = () => {
       }
     );
     setInput("");
+  };
+
+  const handleInspect = async () => {
+    try {
+      setIsInspecting(true);
+      const elementHTML = await injectInspector();
+
+      // Append the selected element HTML to the prompt input
+      const inspectPrompt = `\n\nInspected element:\n\`\`\`html\n${elementHTML}\n\`\`\``;
+      const newInput = input + inspectPrompt;
+      // const blob = new Blob([newInput], { type: 'text/plain;charset=utf-8' }) as File;
+      // console.log("craet")
+      // attachements.add([file]);
+      setInput(newInput);
+
+      // Focus back on the textarea
+      if (promptInput.current) {
+        promptInput.current.focus();
+      }
+    } catch (error) {
+      console.error("Inspector error:", error);
+      // Optionally show error to user
+    } finally {
+      setIsInspecting(false);
+    }
   };
 
   return (
@@ -275,12 +305,7 @@ const ChatBotDemo = () => {
           {/* <ConversationScrollButton  /> */}
         </Conversation>
 
-        <PromptInput
-          onSubmit={handleSubmit}
-          className=""
-          globalDrop
-          multiple
-        >
+        <PromptInput onSubmit={handleSubmit} className="" globalDrop multiple>
           <PromptInputBody>
             <PromptInputAttachments>
               {(attachment) => <PromptInputAttachment data={attachment} />}
@@ -302,8 +327,18 @@ const ChatBotDemo = () => {
                 <PromptInputActionMenuTrigger />
                 <PromptInputActionMenuContent>
                   <PromptInputActionAddAttachments />
+                  {/* <PromptInputActionMenuItem onClick={handleInspect} disabled={isInspecting}>
+                  </PromptInputActionMenuItem> */}
                 </PromptInputActionMenuContent>
               </PromptInputActionMenu>
+              <PromptInputButton
+                onClick={handleInspect}
+                disabled={isInspecting}
+                size={"icon-sm"}
+              >
+                <Inspect className=" size-4" />
+                {/* {isInspecting ? "Inspecting..." : "Inspect element"} */}
+              </PromptInputButton>
               {/*<PromptInputButton
                 variant={webSearch ? "default" : "ghost"}
                 onClick={() => setWebSearch(!webSearch)}

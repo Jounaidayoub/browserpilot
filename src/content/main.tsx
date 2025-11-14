@@ -20,6 +20,28 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
+
+window.addEventListener("message", (event) => {
+  
+  if (event.source !== window) return;
+
+  if (event.data.type === "ELEMENT_INSPECTOR_SELECTED") {
+    console.log("Content script received message from page:", event.data);
+    
+    chrome.runtime.sendMessage({
+      type: "ELEMENT_INSPECTOR_RESULT",
+      elementHTML: event.data.elementHTML,
+      tagName: event.data.tagName,
+      className: event.data.className,
+      id: event.data.id,
+    }).then(() => {
+      console.log("Message forwarded to extension");
+    }).catch((error) => {
+      console.error("Error forwarding message:", error);
+    });
+  }
+});
+
 const container = document.createElement('div')
 container.id = 'crxjs-app'
 document.body.appendChild(container)

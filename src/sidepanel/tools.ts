@@ -3,6 +3,7 @@ import type { MentionOption } from "mentis";
 import Readability from "@mozilla/readability";
 import { Archive, DoorClosed } from "lucide-react";
 import { act } from "react";
+import Inspector  from "./Inspector";
 export const get_tabs = async () => {
   const tabs = await chrome.tabs.query({});
 
@@ -576,4 +577,49 @@ export const get_tab_content = async (id: number) => {
     article,
     meta: { title: payload.title, url: payload.url, text: payload.text },
   };
+};
+
+
+export const injectInspector = async (): Promise<string> => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      
+      const [tab] = await chrome.tabs.query({
+        active: true,
+        currentWindow: true,
+      });
+
+      if (!tab.id) {
+        reject(new Error("No active tab found"));
+        return;
+      }
+
+      const tabId = tab.id;
+
+      // this msglistener will get us the result of the Inspector
+      //the inspector will send the html via the content script to the side panel
+      const messageListener = (message: any) => {
+        if (message.type === "ELEMENT_INSPECTOR_RESULT") {
+          chrome.runtime.onMessage.removeListener(messageListener);
+          resolve(message.elementHTML);
+        }
+      };
+
+      chrome.runtime.onMessage.addListener(messageListener);
+
+      
+      await chrome.scripting.executeScript({
+        target: { tabId },
+        func: Inspector,
+      });
+
+      // reject after timeout
+      setTimeout(() => {
+        chrome.runtime.onMessage.removeListener(messageListener);
+        reject(new Error("Inspector timeout - no element selected"));
+      }, 60000); 
+    } catch (error) {
+      reject(error);
+    }
+  });
 };
