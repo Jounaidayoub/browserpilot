@@ -1,15 +1,34 @@
-import z, { ZodObject } from "zod";
+import z from "zod";
 import { emptyInput, Tool } from "./types";
-import { get } from "http";
+import { fetchTabContent } from "./Page";
+import { DatabaseSync } from "node:sqlite";
+import { debug } from "console";
+
+export const fetchTabGroups = async () => {
+  const groups = await chrome.tabGroups.query({});
+  return groups;
+};
+
+export const fetchTabsMeta = async () => {
+  const tabs = await chrome.tabs.query({});
+
+  return tabs.map((tab) => ({
+    active: tab.active,
+    id: tab.id,
+    title: tab.title,
+    url: tab.url,
+    groupid: tab.groupId,
+    index: tab.index,
+    windowid: tab.windowId,
+  }));
+};
 
 const get_groups: Tool<typeof emptyInput> = {
   name: "get_groups",
   description: "Get all tab groups in the browser.",
   inputSchema: emptyInput,
   execute: async () => {
-    const Groups = await chrome.tabGroups.query({});
-
-    return JSON.stringify(Groups);
+    return JSON.stringify(await fetchTabGroups());
   },
 };
 
@@ -18,19 +37,7 @@ const get_tabs: Tool<typeof emptyInput> = {
   description: "Get all tabs in the browser.",
   inputSchema: emptyInput,
   execute: async () => {
-    const tabs = await chrome.tabs.query({});
-
-    const tabs_meta = tabs.map((tab) => ({
-      active: tab.active,
-      id: tab.id,
-      title: tab.title,
-      url: tab.url,
-      groupid: tab.groupId,
-      index: tab.index,
-      windowid: tab.windowId,
-    }));
-
-    return JSON.stringify(tabs_meta);
+    return JSON.stringify(await fetchTabsMeta());
   },
 };
 
@@ -78,24 +85,61 @@ const group_tabs_by_ids: Tool<typeof group_tabs_by_idsInput> = {
     "Group the given tabs by their ids into new groups. Each group should include tabIds, color, and title. Organizes tabs into topics based on URLs and titles. Example: { groups: [{ tabIds: [123, 456], color: 'blue', title: 'Docs' }] }",
   inputSchema: group_tabs_by_idsInput,
   execute: async ({ groups }) => {
-    groups.forEach(async (group) => {
-      console.log("grouping", group);
-      const { tabIds, title, color } = group;
+    await Promise.all(
+      groups.map(async (group) => {
+        const { tabIds, title, color } = group;
 
-      const groupid = await chrome.tabs.group({
-        tabIds: tabIds as [number, ...number[]],
-      });
-      console.log("created group", groupid);
-      await chrome.tabGroups.update(groupid, {
-        title: title,
-        color: color,
-      });
-      console.log(
-        `Grouped tabs ${tabIds} into group ${groupid} with title "${title}" and color "${color}"`
-      );
-    });
+        const groupid = await chrome.tabs.group({
+          tabIds: tabIds as [number, ...number[]],
+        });
+
+        await chrome.tabGroups.update(groupid, {
+          title: title,
+          color: color,
+        });
+      })
+    );
     return "Grouped tabs into " + groups.length + " groups.";
   },
 };
 
-export { get_groups, get_tabs, close_tabs, group_tabs_by_ids };
+const open_new_tabInput = z.object({
+  url: z.string().min(1, "URL is required"),
+  Withcontent: z.boolean().optional(),
+});
+
+const open_new_tab: Tool<typeof open_new_tabInput> = {
+  name: "open_new_tab",
+  description: "Open a new browser tab with the provided URL.",
+  inputSchema: open_new_tabInput,
+  execute: async ({ url, Withcontent }) => {
+    const newTab = await chrome.tabs.create({ url: url, active: true });
+    
+    let content = null;
+    console.log("Withcontent:", Withcontent);
+    if (Withcontent) {
+      debugger;
+      console.log("Fetching content for new tab:", newTab.id);
+      content = await fetchTabContent(newTab.id!);
+      debugger;
+    }
+    // const response = await chrome.runtime.sendMessage({
+    //   action: "open-new-tab",
+    //   url,
+    //   Withcontent,
+    // });
+
+    // if (!response?.success) {
+    //   throw new Error(response?.error || "Failed to open new tab");
+    // }
+
+    const tabId = newTab.id ?? "unknown";
+    const contentSuffix = Withcontent
+      ? `, with content : ${content?.article?.textContent}`
+      : "";
+
+    return `Opened new tab with id ${tabId} for url: ${url}${contentSuffix}`;
+  },
+};
+
+export { get_groups, get_tabs, close_tabs, group_tabs_by_ids, open_new_tab };
