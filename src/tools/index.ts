@@ -35,12 +35,12 @@ const registeredTools: Tool<ZodType | null>[] = [
 
 ];
 
-const toolMap = new Map(registeredTools.map((tool) => [tool.name, tool]));
+const ToolStore = new Map(registeredTools.map((tool) => [tool.name, tool]));
 
 
 export {
   registeredTools,
-  toolMap,
+  ToolStore,
   fetchTabGroups,
   fetchTabsMeta,
   fetchTabContent,
