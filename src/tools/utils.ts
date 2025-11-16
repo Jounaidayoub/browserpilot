@@ -7,3 +7,16 @@ export const formatZodIssues = (error: ZodError) => error.issues
     return path ? `${path}: ${issue.message}` : issue.message;
   })
   .join("; ");
+export const toTimestamp = (value: string | number | Date | undefined) => {
+  if (value === undefined) {
+    return undefined;
+  }
+
+  if (value instanceof Date) {
+    const ts = value.getTime();
+    return Number.isFinite(ts) ? ts : undefined;
+  }
+
+  const timestamp = new Date(value).getTime();
+  return Number.isFinite(timestamp) ? timestamp : undefined;
+};
