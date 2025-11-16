@@ -1,8 +1,8 @@
 "use client";
 
-import { StickToBottom, useStickToBottomContext } from "use-stick-to-bottom";
-import { get_tabs, get_tab_content, injectInspector } from "@/sidepanel/tools";
-import { evaluateToolCall } from "@/sidepanel/tools";
+// import { get_tabs, get_tab_content } from "@/sidepanel/evaluator";
+import { injectInspector } from "@/tools/Page";
+import { evaluateToolCall } from "@/sidepanel/evaluator";
 import {
   Tool,
   ToolContent,
@@ -15,6 +15,7 @@ import {
   ConversationContent,
   ConversationScrollButton,
 } from "@/components/ai-elements/conversation";
+import { ShimmeringText } from "@/components/ui/shimmering-text";
 import { Message, MessageContent } from "@/components/ai-elements/message";
 import {
   PromptInput,
@@ -243,7 +244,7 @@ const ChatBotDemo = () => {
                       return (
                         <>
                           {/* TODO : this needs better types handleling , `as` everywhere */}
-                          <Tool defaultOpen={false}>
+                          {/* <Tool defaultOpen={false}>
                             <ToolHeader
                               type={`tool-${
                                 (part.type as string).split("-")[1]
@@ -263,7 +264,13 @@ const ChatBotDemo = () => {
                                 errorText={(part as ToolUIPart).errorText}
                               />
                             </ToolContent>
-                          </Tool>
+                          </Tool> */}
+                          <ShimmeringText
+                            text={`${(part.type as string).split("-")[1].replace("-", " ")} `}
+                            className="text-base font-bold"
+                            duration={1.5}
+                            repeatDelay={1}
+                          />
                         </>
                       );
 
