@@ -59,10 +59,17 @@ import { messageHandlers } from "./background/messageHandlers";
           chrome.sidePanel.open({ windowId: win.id });
         }
       });
+    } else if (command === "open-tab-next-to-current") {
+      chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+        const currentTab = tabs[0];
+        // if (currentTab && currentTab.id && currentTab.index !== undefined) {
+        chrome.tabs.create({
+          index: currentTab.index + 1,
+        });
+        // }
+  });
     }
   });
-
-  
 
   chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
     // dispatch to appropriate handler based on action
