@@ -146,7 +146,7 @@ const ChatBotDemo = () => {
     }),
 
     sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
-    async onToolCall({ toolCall }) {
+    async onToolCall({ toolCall  }) {
       console.log("tool calls (cline side)", toolCall);
       if (toolCall.dynamic) {
         return;
