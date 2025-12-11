@@ -1,8 +1,4 @@
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { cn } from "@/lib/utils";
 import type { UIMessage } from "ai";
 import { cva, type VariantProps } from "class-variance-authority";
@@ -35,9 +31,9 @@ const messageContentVariants = cva(
         ],
         flat: [
           "max-w-[100%]  py-3 ",
-          "group-[.is-user]:max-w-[80%] group-[.is-user]:bg-secondary  group-[.is-user]:py-3 group-[.is-user]:text-foreground",
-          "group-[.is-assistant]:text-foreground ",
-        ],
+          "group-[.is-user]:max-w-[85%] group-[.is-user]:bg-secondary  group-[.is-user]:p-3  group-[.is-user]:text-foreground",
+          "group-[.is-assistant]:text-foreground ", 
+        ],  
       },
     },
     defaultVariants: {

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 
 export type Tab = {
   id: number;
@@ -13,14 +13,14 @@ export const useTabs = () => {
     const fetchTabs = async () => {
       try {
         const chromeTabs = await chrome.tabs.query({});
-        const formattedTabs = chromeTabs.map(tab => ({
+        const formattedTabs = chromeTabs.map((tab) => ({
           id: tab.id!,
-          title: tab.title || '',
-          url: tab.url || '',
+          title: tab.title || "",
+          url: tab.url || "",
         }));
         setTabs(formattedTabs);
       } catch (error) {
-        console.error('Error fetching tabs:', error);
+        console.error("Error fetching tabs:", error);
       }
     };
 
