@@ -49,11 +49,9 @@ import { messageHandlers } from "./background/messageHandlers";
     console.log("Registered commands:", commands);
   });
 
-
   chrome.commands.onCommand.addListener((command) => {
     console.log(`Command: ${command}`);
     if (command === "open-side-panel") {
-
       chrome.windows.getCurrent({ populate: true }, (win) => {
         if (win.id) {
           chrome.sidePanel.open({ windowId: win.id });
@@ -67,7 +65,7 @@ import { messageHandlers } from "./background/messageHandlers";
           index: currentTab.index + 1,
         });
         // }
-  });
+      });
     }
   });
 

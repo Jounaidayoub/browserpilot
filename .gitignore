@@ -12,7 +12,9 @@ dist
 release
 dist-ssr
 *.local
+directories
 docs
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
