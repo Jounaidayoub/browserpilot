@@ -6,13 +6,13 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
-
+THOUGHTS.md
 node_modules
 dist
 release
 dist-ssr
 *.local
-
+docs
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
