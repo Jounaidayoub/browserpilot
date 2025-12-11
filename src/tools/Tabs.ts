@@ -1,8 +1,6 @@
 import z from "zod";
 import { emptyInput, Tool } from "./types";
 import { fetchTabContent } from "./Page";
-import { DatabaseSync } from "node:sqlite";
-import { debug } from "console";
 
 export const fetchTabGroups = async () => {
   const groups = await chrome.tabGroups.query({});
@@ -114,14 +112,12 @@ const open_new_tab: Tool<typeof open_new_tabInput> = {
   inputSchema: open_new_tabInput,
   execute: async ({ url, Withcontent }) => {
     const newTab = await chrome.tabs.create({ url: url, active: true });
-    
+
     let content = null;
     console.log("Withcontent:", Withcontent);
     if (Withcontent) {
-      debugger;
       console.log("Fetching content for new tab:", newTab.id);
       content = await fetchTabContent(newTab.id!);
-      debugger;
     }
     // const response = await chrome.runtime.sendMessage({
     //   action: "open-new-tab",
