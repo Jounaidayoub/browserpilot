@@ -19,6 +19,12 @@ export default defineManifest({
     type: "module",
   },
   commands:{
+    "open-tab-next-to-current": {
+      "suggested_key": {
+        "windows": "Alt+T",
+      },
+      "description": "Open a new tab next to the current tab."
+    },
     "open-side-panel": {
       "suggested_key": {
         "default": "Ctrl+Shift+K",
