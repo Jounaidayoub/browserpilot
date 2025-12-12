@@ -146,5 +146,34 @@ export const ChatMessage = memo(
         )}
       </div>
     );
+  },
+  (prevProps, nextProps) => {
+    // Only re-render if this is the most recent message that's streaming
+    // or if the message content has actually changed
+    const isStreamingMessage = nextProps.isMostRecentMessage && nextProps.status === "streaming";
+    
+    // If this is not a streaming message and the message parts haven't changed, skip re-render
+    if (!isStreamingMessage && prevProps.message.id === nextProps.message.id) {
+      // Compare the actual parts content
+      if (prevProps.message.parts.length === nextProps.message.parts.length) {
+        const partsEqual = prevProps.message.parts.every((part, i) => {
+          const nextPart = nextProps.message.parts[i];
+          if (part.type !== nextPart.type) return false;
+          if (part.type === "text" && nextPart.type === "text") {
+            return part.text === nextPart.text;
+          }
+          return true;
+        });
+        
+        if (partsEqual && prevProps.error === nextProps.error) {
+          return true; // Skip re-render
+        }
+      }
+    }
+    
+    // Allow re-render for streaming messages or when content changed
+    return false;
   }
 );
+
+ChatMessage.displayName = "ChatMessage";

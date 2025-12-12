@@ -7,7 +7,7 @@ import {
   Conversation,
   ConversationContent,
 } from "@/components/ai-elements/conversation";
-import { useState } from "react";
+import { useState, useMemo, useCallback } from "react";
 import { useChat } from "@ai-sdk/react";
 import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -64,7 +64,7 @@ const ChatBotDemo = () => {
     onFinish: saveMessagesToStorage,
   });
 
-  const handleSubmit = async (message: any) => {
+  const handleSubmit = useCallback(async (message: any) => {
     const hasText = Boolean(message.text);
     const hasAttachments = Boolean(message.files?.length);
 
@@ -89,22 +89,22 @@ const ChatBotDemo = () => {
       }
     );
     setInput("");
-  };
+  }, [currentChatId, model, webSearch, createNewChat, sendMessage]);
 
-  const handleNewChat = () => {
+  const handleNewChat = useCallback(() => {
     clearCurrentChat(setMessages);
     setInput("");
     setIsSidebarOpen(false);
-  };
+  }, [clearCurrentChat, setMessages]);
 
-  const handleSelectChat = async (chatId: string) => {
+  const handleSelectChat = useCallback(async (chatId: string) => {
     await selectChat(chatId, setMessages, setModel);
     setIsSidebarOpen(false);
-  };
+  }, [selectChat, setMessages]);
 
-  const handleDeleteChat = async (chatId: string) => {
+  const handleDeleteChat = useCallback(async (chatId: string) => {
     await deleteChat(chatId, handleNewChat);
-  };
+  }, [deleteChat, handleNewChat]);
 
   return (
     <>
