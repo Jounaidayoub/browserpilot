@@ -1,5 +1,4 @@
 import {
-  UIMessage,
   DefaultChatTransport,
   lastAssistantMessageIsCompleteWithToolCalls,
 } from "ai";
@@ -8,26 +7,21 @@ import {
   Conversation,
   ConversationContent,
 } from "@/components/ai-elements/conversation";
-import { Fragment, useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { useChat } from "@ai-sdk/react";
-import { RefreshCcwIcon, CopyIcon, Menu } from "lucide-react";
+import { Menu } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ChatSidebar } from "@/components/ChatSidebar";
 import { useChatSessions } from "@/hooks/useChatSessions";
 import { ChatMessage } from "@/components/ChatMessage";
 import { ChatPromptInput } from "@/components/ChatPromptInput";
 import { Loader } from "@/components/ai-elements/loader";
-import { fa } from "zod/v4/locales";
 
 const models = [
-  {
-    name: "GPT 4o",
-    value: "openai/gpt-4o",
-  },
-  {
-    name: "Deepseek R1",
-    value: "deepseek/deepseek-r1",
-  },
+  { name: "GPT-4.1", value: "gpt-4.1-2025-04-14" },
+  { name: "Grok Code Fast 1", value: "grok-code-fast-1" },
+  { name: "GPT-4o", value: "gpt-4o-2024-05-13" },
+  { name: "GPT-5 mini", value: "gpt-5-mini" },
 ];
 
 const ChatBotDemo = () => {
@@ -124,7 +118,7 @@ const ChatBotDemo = () => {
         onDeleteChat={handleDeleteChat}
       />
       <div className="max-w-4xl mx-auto relative size-full h-screen">
-        <div className="flex flex-col p-3 overflow-hidden overflow-y-auto h-full">
+        <div className="flex flex-col p-3 overflow-hidden h-full">
           <div className="flex items-center justify-between mb-2">
             <Button
               variant="ghost"
@@ -143,16 +137,21 @@ const ChatBotDemo = () => {
           </div>
           <Conversation className="h-full ">
             <ConversationContent>
-              {messages.map((message) => (
-                <ChatMessage
-                  key={message.id}
-                  message={message}
-                  messages={messages}
-                  status={status}
-                  regenerate={regenerate}
-                  error={error}
-                />
-              ))}
+              {messages.map((message) => {
+                const isMostRecentMessage =
+                  message.id === messages[messages.length - 1]?.id;
+
+                return (
+                  <ChatMessage
+                    key={message.id}
+                    message={message}
+                    isMostRecentMessage={isMostRecentMessage}
+                    status={status}
+                    regenerate={regenerate}
+                    error={error}
+                  />
+                );
+              })}
               {status === "submitted" && <Loader />}
             </ConversationContent>
           </Conversation>
