@@ -1,4 +1,4 @@
-import { Fragment } from "react";
+import { Fragment, memo } from "react";
 import { ToolUIPart, UIMessage, UITool } from "ai";
 import { Message, MessageContent } from "@/components/ai-elements/message";
 import { Response } from "@/components/ai-elements/response";
@@ -26,55 +26,34 @@ import {
 
 interface ChatMessageProps {
   message: UIMessage;
-  messages: UIMessage[];
+  // messages: UIMessage[];
+  isMostRecentMessage: boolean;
   status: string;
   regenerate: () => void;
   error: Error | undefined;
 }
 
-export const ChatMessage = ({
-  message,
-  messages,
-  status,
-  regenerate,
-  error,
-}: ChatMessageProps) => {
-  return (
-    <div key={message.id}>
-      {message.role === "assistant" &&
-        message.parts.filter((part) => part.type === "source-url").length >
-          0 && (
-          <Sources>
-            <SourcesTrigger
-              count={
-                message.parts.filter((part) => part.type === "source-url")
-                  .length
-              }
-            />
-            {message.parts
-              .filter((part) => part.type === "source-url")
-              .map((part, i) => (
-                <SourcesContent key={`${message.id}-${i}`}>
-                  <Source
-                    key={`${message.id}-${i}`}
-                    href={part.url}
-                    title={part.url}
-                  />
-                </SourcesContent>
-              ))}
-          </Sources>
-        )}
-      {message.parts.map((part, i) => {
-        switch (part.type) {
-          case "text":
-            return (
-              <Fragment key={`${message.id}-${i}`}>
-                <Message from={message.role}>
-                  <MessageContent variant={"flat"}>
-                    <Response>{part.text}</Response>
-                  </MessageContent>
-                </Message>
-                {message.role === "assistant" && i === messages.length - 1 && (
+export const ChatMessage = memo(
+  ({
+    message,
+    isMostRecentMessage,
+    status,
+    regenerate,
+    error,
+  }: ChatMessageProps) => {
+    return (
+      <div key={message.id}>
+        {message.parts.map((part, i) => {
+          switch (part.type) {
+            case "text":
+              return (
+                <Fragment key={`${message.id}-${i}`}>
+                  <Message from={message.role}>
+                    <MessageContent variant={"flat"}>
+                      <Response>{part.text}</Response>
+                    </MessageContent>
+                  </Message>
+                  {/* {message.role === "assistant" && i === messages.length - 1 && (
                   <Actions className="mt-2">
                     <Action onClick={() => regenerate()} label="Retry">
                       <RefreshCcwIcon className="size-3" />
@@ -86,14 +65,15 @@ export const ChatMessage = ({
                       <CopyIcon className="size-3" />
                     </Action>
                   </Actions>
-                )}
-              </Fragment>
-            );
-          case part.type.startsWith("tool-") ? part.type : null:
-            console.log("we got a toolcall (rendering !!)", part.type);
-            return (
-              <>
-                <div className="flex flex-row items-center gap-2">
+                )} */}
+                </Fragment>
+              );
+
+            case part.type.startsWith("tool-") ? part.type : null:
+              console.log("we got a toolcall (rendering !!)", part.type);
+              return (
+                <>
+                  {/* <div className="flex flex-row items-center gap-2">
                   <Wrench className="size-4.5 opacity-60 translate-y-[2px]" />
                   <ShimmeringText
                     key={`${message.id}-${i}`}
@@ -108,11 +88,11 @@ export const ChatMessage = ({
                         : true
                     }
                   />
-                </div>
-                {/* TODO : this needs better types handleling , `as` everywhere */}
-                {/* this an alernameive toolcall rendeirng method , for debguuge but mostly i want use hte simple one above
+                </div> */}
+                  {/* TODO : this needs better types handleling , `as` everywhere */}
+                  {/* this an alernameive toolcall rendeirng method , for debguuge but mostly i want use hte simple one above
                 with shimmmer text effect */}
-                {/* <Tool defaultOpen={false}>
+                  {/* <Tool defaultOpen={false}>
                   <ToolHeader
                     type={`tool-${(part.type as string).split("-")[1]}`}
                     state={(part as ToolUIPart).state}
@@ -131,39 +111,40 @@ export const ChatMessage = ({
                     />
                   </ToolContent>
                 </Tool> */}
-              </>
-            );
+                </>
+              );
 
-          case "reasoning":
-            return (
-              <Reasoning
-                key={`${message.id}-${i}`}
-                className="w-full"
-                isStreaming={
-                  status === "streaming" &&
-                  i === message.parts.length - 1 &&
-                  message.id === messages[messages.length - 1]?.id
-                }
-              >
-                <ReasoningTrigger />
-                <ReasoningContent>{part.text}</ReasoningContent>
-              </Reasoning>
-            );
+            case "reasoning":
+              return (
+                <Reasoning
+                  key={`${message.id}-${i}`}
+                  className="w-full"
+                  isStreaming={
+                    String(status) === "streaming" &&
+                    i === message.parts.length - 1 &&
+                    isMostRecentMessage
+                  }
+                >
+                  <ReasoningTrigger />
+                  <ReasoningContent>{part.text}</ReasoningContent>
+                </Reasoning>
+              );
 
-          default:
-            return null;
-        }
-      })}
-      {error && (
-        <Message from="assistant">
-          <MessageContent>
-            <Response className="text-red-500">
-              {error.message ||
-                "An unexpected error occurred. Please try again."}
-            </Response>
-          </MessageContent>
-        </Message>
-      )}
-    </div>
-  );
-};
+            default:
+              return null;
+          }
+        })}
+        {error && (
+          <Message from="assistant">
+            <MessageContent>
+              <Response className="text-red-500">
+                {error.message ||
+                  "An unexpected error occurred. Please try again."}
+              </Response>
+            </MessageContent>
+          </Message>
+        )}
+      </div>
+    );
+  }
+);
