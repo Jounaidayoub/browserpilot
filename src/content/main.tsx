@@ -1,14 +1,63 @@
+import { convertHtmlToMarkdown } from "dom-to-semantic-markdown";
+
+const start = new Date().getTime();
+const MD = convertHtmlToMarkdown(document.body.outerHTML, {
+  extractMainContent: true,
+  // refifyUrls:true,
+  // urlMap:urlMap,
+  //we look more on this token efficency later, use in a refercne for the bae url
+  //and let the llm contruct link if needed(i dunot if this is a good idea) but it saves tokens
+});
+const end = new Date().getTime();
+// console.log(
+//   "Conversion took ",
+//   end - start,
+//   "ms",
+//   "word count:",
+//   MD.split(" ").length
+// );
+// console.log(MD);
+
+console.log("[CRXJS] Hello world from content script!");
+console.log("we are setting up message listener");
+chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
+
+  console.log(`[CRXJS LOG]: ${message.message}`,"snder:",_sender);
+  if(message?.action==="get_tab_content_md"){
+    sendResponse({content:MD});
+    return;
+  }
+  sendResponse({ received: true });
+});
+console.log("message listener set up complete");
 
 
 
-console.log('[CRXJS] Hello world from content script!')
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 let panel = false;
 document.addEventListener("keydown", (e) => {
   if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "s") {
     e.preventDefault();
     panel = !panel;
-    if (!panel){
+    if (!panel) {
       console.log("Closing side panel...");
       chrome.runtime.sendMessage({ action: "close-sidepanel" });
       return;
@@ -18,25 +67,26 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
-
 window.addEventListener("message", (event) => {
-  
   if (event.source !== window) return;
 
   if (event.data.type === "ELEMENT_INSPECTOR_SELECTED") {
     console.log("Content script received message from page:", event.data);
-    
-    chrome.runtime.sendMessage({
-      type: "ELEMENT_INSPECTOR_RESULT",
-      elementHTML: event.data.elementHTML,
-      tagName: event.data.tagName,
-      className: event.data.className,
-      id: event.data.id,
-    }).then(() => {
-      console.log("Message forwarded to extension");
-    }).catch((error) => {
-      console.error("Error forwarding message:", error);
-    });
+
+    chrome.runtime
+      .sendMessage({
+        type: "ELEMENT_INSPECTOR_RESULT",
+        elementHTML: event.data.elementHTML,
+        tagName: event.data.tagName,
+        className: event.data.className,
+        id: event.data.id,
+      })
+      .then(() => {
+        console.log("Message forwarded to extension");
+      })
+      .catch((error) => {
+        console.error("Error forwarding message:", error);
+      });
   }
 });
 

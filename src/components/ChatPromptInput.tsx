@@ -93,13 +93,7 @@ export const ChatPromptInput = ({
           >
             <Inspect className=" size-4" />
           </PromptInputButton>
-          <PromptInputButton
-            variant={webSearch ? "default" : "ghost"}
-            onClick={() => setWebSearch(!webSearch)}
-          >
-            <GlobeIcon size={16} />
-            <span>Search</span>
-          </PromptInputButton>
+        
           <PromptInputModelSelect
             onValueChange={(value) => {
               setModel(value);

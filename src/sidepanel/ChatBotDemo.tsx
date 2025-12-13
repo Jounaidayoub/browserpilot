@@ -26,7 +26,7 @@ const models = [
 
 const ChatBotDemo = () => {
   const [input, setInput] = useState("");
-  const [model, setModel] = useState<string>(models[0].value);
+  const [model, setModel] = useState<string>("gpt-4o-2024-05-13");
   const [webSearch, setWebSearch] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 

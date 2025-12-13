@@ -4,6 +4,18 @@ import type { Tool } from "./types";
 import Inspector from "@/sidepanel/Inspector";
 
 export const fetchTabContent = async (id: number) => {
+ 
+
+  const markdown = await chrome.tabs
+    .sendMessage(id, {
+      action: "get_tab_content_md",
+      message: `Fetching tab content for tab ID: ${id}`,
+    })
+    .then((response) => {
+      return response.content as string;
+    });
+  console.log("got markdown from content script ", markdown);
+  // chrome.runtime.sendMessage();
   const res = await chrome.scripting.executeScript({
     target: { tabId: id },
     world: "MAIN",
@@ -37,6 +49,7 @@ export const fetchTabContent = async (id: number) => {
   return {
     article,
     meta: { title: payload.title, url: payload.url, text: payload.text },
+    markdown,
   };
 };
 
@@ -53,7 +66,7 @@ const get_tab_content: Tool<typeof get_tab_contentInput> = {
     const tabContent = await fetchTabContent(tabId);
 
     return JSON.stringify({
-      textContent: tabContent?.meta?.text ?? "",
+      textContent: tabContent?.markdown ?? "",
       title: tabContent?.meta?.title ?? "",
       url: tabContent?.meta?.url ?? "",
     });
@@ -85,9 +98,7 @@ const get_page_content: Tool<typeof get_page_contentInput> = {
 
 const get_page_dom_snapshotInput = z.object({
   tabId: z.number(),
-  options: z
-    .record(z.string(), z.unknown())
-    .optional(),
+  options: z.record(z.string(), z.unknown()).optional(),
 });
 
 const get_page_dom_snapshot: Tool<typeof get_page_dom_snapshotInput> = {
@@ -114,42 +125,41 @@ const get_page_dom_snapshot: Tool<typeof get_page_dom_snapshotInput> = {
 
 export { get_tab_content, get_page_content, get_page_dom_snapshot };
 
-
 export const injectInspector = async (): Promise<string> => {
-    return new Promise(async (resolve, reject) => {
-      try {
-        const [tab] = await chrome.tabs.query({
-          active: true,
-          currentWindow: true,
-        });
+  return new Promise(async (resolve, reject) => {
+    try {
+      const [tab] = await chrome.tabs.query({
+        active: true,
+        currentWindow: true,
+      });
 
-        if (!tab.id) {
-          reject(new Error("No active tab found"));
-          return;
-        }
-
-        const tabId = tab.id;
-
-        const messageListener = (message: any) => {
-          if (message.type === "ELEMENT_INSPECTOR_RESULT") {
-            chrome.runtime.onMessage.removeListener(messageListener);
-            resolve(message.elementHTML);
-          }
-        };
-
-        chrome.runtime.onMessage.addListener(messageListener);
-
-        await chrome.scripting.executeScript({
-          target: { tabId },
-          func: Inspector,
-        });
-
-        setTimeout(() => {
-          chrome.runtime.onMessage.removeListener(messageListener);
-          reject(new Error("Inspector timeout - no element selected"));
-        }, 30000);
-      } catch (error) {
-        reject(error);
+      if (!tab.id) {
+        reject(new Error("No active tab found"));
+        return;
       }
-    });
-  };
+
+      const tabId = tab.id;
+
+      const messageListener = (message: any) => {
+        if (message.type === "ELEMENT_INSPECTOR_RESULT") {
+          chrome.runtime.onMessage.removeListener(messageListener);
+          resolve(message.elementHTML);
+        }
+      };
+
+      chrome.runtime.onMessage.addListener(messageListener);
+
+      await chrome.scripting.executeScript({
+        target: { tabId },
+        func: Inspector,
+      });
+
+      setTimeout(() => {
+        chrome.runtime.onMessage.removeListener(messageListener);
+        reject(new Error("Inspector timeout - no element selected"));
+      }, 30000);
+    } catch (error) {
+      reject(error);
+    }
+  });
+};

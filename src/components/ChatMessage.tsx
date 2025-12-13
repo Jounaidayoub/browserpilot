@@ -70,10 +70,10 @@ export const ChatMessage = memo(
               );
 
             case part.type.startsWith("tool-") ? part.type : null:
-              console.log("we got a toolcall (rendering !!)", part.type);
+              // console.log("we got a toolcall (rendering !!)", part.type);
               return (
                 <>
-                  {/* <div className="flex flex-row items-center gap-2">
+                  <div className="flex flex-row items-center gap-2">
                   <Wrench className="size-4.5 opacity-60 translate-y-[2px]" />
                   <ShimmeringText
                     key={`${message.id}-${i}`}
@@ -88,7 +88,7 @@ export const ChatMessage = memo(
                         : true
                     }
                   />
-                </div> */}
+                </div>
                   {/* TODO : this needs better types handleling , `as` everywhere */}
                   {/* this an alernameive toolcall rendeirng method , for debguuge but mostly i want use hte simple one above
                 with shimmmer text effect */}

@@ -10,6 +10,7 @@ export const evaluateToolCall = async (
   toolCall: InferUIMessageToolCall<UIMessage>,
   addToolResult: AddToolResultFn
 ) => {
+
   const tool = ToolStore.get(toolCall.toolName);
 
   if (!tool) {

@@ -1,6 +1,8 @@
 import z from "zod";
 import { emptyInput, Tool } from "./types";
 import { fetchTabContent } from "./Page";
+import { AwardIcon, Underline } from "lucide-react";
+import { delay } from "motion/react";
 
 export const fetchTabGroups = async () => {
   const groups = await chrome.tabGroups.query({});
@@ -106,32 +108,44 @@ const open_new_tabInput = z.object({
   Withcontent: z.boolean().optional(),
 });
 
+async function createTabAndWait(
+  createProperties: chrome.tabs.CreateProperties
+): Promise<chrome.tabs.Tab> {
+  const tab = await chrome.tabs.create(createProperties);
+
+  return new Promise((resolve) => {
+    chrome.tabs.onUpdated.addListener(function listener(tabId, info) {
+      if (tabId === tab.id && info.status === "complete") {
+        chrome.tabs.onUpdated.removeListener(listener);
+        resolve(tab);
+      }
+    });
+  });
+}
+
 const open_new_tab: Tool<typeof open_new_tabInput> = {
   name: "open_new_tab",
   description: "Open a new browser tab with the provided URL.",
   inputSchema: open_new_tabInput,
   execute: async ({ url, Withcontent }) => {
-    const newTab = await chrome.tabs.create({ url: url, active: true });
-
+    // const newTab = await chrome.tabs.create({ url: url, active: true });
+    const newTab = await createTabAndWait({ url: url });
+    
     let content = null;
     console.log("Withcontent:", Withcontent);
+    try {
     if (Withcontent) {
       console.log("Fetching content for new tab:", newTab.id);
-      content = await fetchTabContent(newTab.id!);
-    }
-    // const response = await chrome.runtime.sendMessage({
-    //   action: "open-new-tab",
-    //   url,
-    //   Withcontent,
-    // });
 
-    // if (!response?.success) {
-    //   throw new Error(response?.error || "Failed to open new tab");
-    // }
+      content = await fetchTabContent(newTab.id!);
+    }}
+    catch (error) {
+      console.error("Error fetching content for new tab:", error);
+    }
 
     const tabId = newTab.id ?? "unknown";
     const contentSuffix = Withcontent
-      ? `, with content : ${content?.article?.textContent}`
+      ? `, with content : ${content?.markdown}`
       : "";
 
     return `Opened new tab with id ${tabId} for url: ${url}${contentSuffix}`;
