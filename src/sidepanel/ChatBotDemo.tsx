@@ -16,17 +16,18 @@ import { useChatSessions } from "@/hooks/useChatSessions";
 import { ChatMessage } from "@/components/ChatMessage";
 import { ChatPromptInput } from "@/components/ChatPromptInput";
 import { Loader } from "@/components/ai-elements/loader";
+import { currentcontext } from "@/tools/utils";
 
 const models = [
   { name: "GPT-4.1", value: "gpt-4.1-2025-04-14" },
   { name: "Grok Code Fast 1", value: "grok-code-fast-1" },
-  { name: "GPT-4o", value: "gpt-4o-2024-05-13" },
+  { name: "GPT-4o", value: "gpt-4o-2024-11-20" },
   { name: "GPT-5 mini", value: "gpt-5-mini" },
 ];
 
 const ChatBotDemo = () => {
   const [input, setInput] = useState("");
-  const [model, setModel] = useState<string>("gpt-4o-2024-05-13");
+  const [model, setModel] = useState<string>("gpt-4o-2024-11-20");
   const [webSearch, setWebSearch] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
@@ -76,6 +77,10 @@ const ChatBotDemo = () => {
       await createNewChat(message.text, model);
     }
 
+    console.debug("Fetching current context before sending message...");
+    const currentcontextData = await currentcontext();
+    console.debug("Current context fetched:", currentcontextData);
+
     sendMessage(
       {
         text: message.text || "Sent with attachments",
@@ -85,6 +90,7 @@ const ChatBotDemo = () => {
         body: {
           model: model,
           webSearch: webSearch,
+          currentcontext: currentcontextData,
         },
       }
     );

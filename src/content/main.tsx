@@ -1,56 +1,23 @@
 import { convertHtmlToMarkdown } from "dom-to-semantic-markdown";
-
-const start = new Date().getTime();
-const MD = convertHtmlToMarkdown(document.body.outerHTML, {
-  extractMainContent: true,
-  // refifyUrls:true,
-  // urlMap:urlMap,
-  //we look more on this token efficency later, use in a refercne for the bae url
-  //and let the llm contruct link if needed(i dunot if this is a good idea) but it saves tokens
-});
-const end = new Date().getTime();
-// console.log(
-//   "Conversion took ",
-//   end - start,
-//   "ms",
-//   "word count:",
-//   MD.split(" ").length
-// );
-// console.log(MD);
-
 console.log("[CRXJS] Hello world from content script!");
 console.log("we are setting up message listener");
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
-
-  console.log(`[CRXJS LOG]: ${message.message}`,"snder:",_sender);
-  if(message?.action==="get_tab_content_md"){
-    sendResponse({content:MD});
+  console.log(`[CRXJS LOG]: ${message.message}`, "snder:", _sender);
+  if (message?.action === "get_tab_content_md") {
+    const MD = convertHtmlToMarkdown(document.body.outerHTML, {
+      extractMainContent: true,
+      // refifyUrls:true,
+      // urlMap:urlMap,
+      //we look more on this token efficency later, use in a refercne for the bae url
+      //and let the llm contruct link if needed(i dunot if this is a good idea) but it saves tokens
+    });
+    console.debug("Converted Markdown content:", MD);
+    sendResponse({ content: MD });
     return;
   }
   sendResponse({ received: true });
 });
 console.log("message listener set up complete");
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 let panel = false;
 document.addEventListener("keydown", (e) => {

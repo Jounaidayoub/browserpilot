@@ -10,7 +10,8 @@ export const fetchTabGroups = async () => {
 };
 
 export const fetchTabsMeta = async () => {
-  const tabs = await chrome.tabs.query({});
+  //TODO : handel tabs on different windows
+  const tabs = await chrome.tabs.query({ lastFocusedWindow: true });
 
   return tabs.map((tab) => ({
     active: tab.active,
@@ -19,7 +20,7 @@ export const fetchTabsMeta = async () => {
     url: tab.url,
     groupid: tab.groupId,
     index: tab.index,
-    windowid: tab.windowId,
+    windowid: tab.windowId,// ??
   }));
 };
 
@@ -130,16 +131,16 @@ const open_new_tab: Tool<typeof open_new_tabInput> = {
   execute: async ({ url, Withcontent }) => {
     // const newTab = await chrome.tabs.create({ url: url, active: true });
     const newTab = await createTabAndWait({ url: url });
-    
+
     let content = null;
     console.log("Withcontent:", Withcontent);
     try {
-    if (Withcontent) {
-      console.log("Fetching content for new tab:", newTab.id);
+      if (Withcontent) {
+        console.log("Fetching content for new tab:", newTab.id);
 
-      content = await fetchTabContent(newTab.id!);
-    }}
-    catch (error) {
+        content = await fetchTabContent(newTab.id!);
+      }
+    } catch (error) {
       console.error("Error fetching content for new tab:", error);
     }
 

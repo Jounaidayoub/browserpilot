@@ -1,4 +1,6 @@
+import { TableOfContents } from "lucide-react";
 import { ZodError } from "zod";
+import { fetchTabsMeta } from "./Tabs";
 
 export const formatZodIssues = (error: ZodError) =>
   error.issues
@@ -45,3 +47,25 @@ export type AddToolResultFn = <TOOL extends string>(
         errorText: string;
       }
 ) => Promise<void>;
+
+export const currentcontext = async () => {
+  console.log("fetching current context...");
+  const opentabs = await fetchTabsMeta();
+
+  const activetabID = opentabs.find((tab) => tab.active)?.id;
+
+  if (!activetabID) {
+    return { activeTabcontent: "", opentabs };
+  }
+
+  const activetabContent = await chrome.tabs
+    .sendMessage(activetabID, {
+      action: "get_tab_content_md",
+      message: `Fetching tab content for tab ID: ${activetabID}`,
+    })
+    .then((response) => {
+      return response.content as string;
+    });
+
+  return { activetabContent, opentabs };
+};
