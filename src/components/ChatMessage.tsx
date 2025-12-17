@@ -92,7 +92,7 @@ export const ChatMessage = memo(
                   {/* TODO : this needs better types handleling , `as` everywhere */}
                   {/* this an alernameive toolcall rendeirng method , for debguuge but mostly i want use hte simple one above
                 with shimmmer text effect */}
-                  {/* <Tool defaultOpen={false}>
+                  <Tool defaultOpen={false}>
                   <ToolHeader
                     type={`tool-${(part.type as string).split("-")[1]}`}
                     state={(part as ToolUIPart).state}
@@ -110,7 +110,7 @@ export const ChatMessage = memo(
                       errorText={(part as ToolUIPart).errorText}
                     />
                   </ToolContent>
-                </Tool> */}
+                </Tool>
                 </>
               );
 

@@ -20,7 +20,7 @@ export const fetchTabsMeta = async () => {
     url: tab.url,
     groupid: tab.groupId,
     index: tab.index,
-    windowid: tab.windowId,// ??
+    windowid: tab.windowId, // ??
   }));
 };
 
@@ -133,11 +133,8 @@ const open_new_tab: Tool<typeof open_new_tabInput> = {
     const newTab = await createTabAndWait({ url: url });
 
     let content = null;
-    console.log("Withcontent:", Withcontent);
     try {
       if (Withcontent) {
-        console.log("Fetching content for new tab:", newTab.id);
-
         content = await fetchTabContent(newTab.id!);
       }
     } catch (error) {

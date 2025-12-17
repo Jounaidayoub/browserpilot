@@ -57,15 +57,15 @@ export const currentcontext = async () => {
   if (!activetabID) {
     return { activeTabcontent: "", opentabs };
   }
+  //TODO : enable fetching active tab content, this disabled temporarily until we figure out a way to reduce token usage  
+  // const activetabContent = await chrome.tabs
+  //   .sendMessage(activetabID, {
+  //     action: "get_tab_content_md",
+  //     message: `Fetching tab content for tab ID: ${activetabID}`,
+  //   })
+  //   .then((response) => {
+  //     return response.content as string;
+  //   });
 
-  const activetabContent = await chrome.tabs
-    .sendMessage(activetabID, {
-      action: "get_tab_content_md",
-      message: `Fetching tab content for tab ID: ${activetabID}`,
-    })
-    .then((response) => {
-      return response.content as string;
-    });
-
-  return { activetabContent, opentabs };
+  return { opentabs };
 };

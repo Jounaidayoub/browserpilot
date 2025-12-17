@@ -4,8 +4,11 @@ import type { Tool } from "./types";
 import Inspector from "@/sidepanel/Inspector";
 
 export const fetchTabContent = async (id: number) => {
- 
-
+  //we sending a msg to the content script to get the md from there
+  //cuz we needed the original tab html , need a better way to do this later
+  // well we get the html from the scripting api , so we can recreate the dom using the DOMParser
+  //and passing to the readability or convertHtmlToMarkdown()
+  //TODO: try to do all in the using the scripting api only , less things to maintain
   const markdown = await chrome.tabs
     .sendMessage(id, {
       action: "get_tab_content_md",
@@ -15,7 +18,6 @@ export const fetchTabContent = async (id: number) => {
       return response.content as string;
     });
   console.log("got markdown from content script ", markdown);
-  // chrome.runtime.sendMessage();
   const res = await chrome.scripting.executeScript({
     target: { tabId: id },
     world: "MAIN",
@@ -64,9 +66,23 @@ const get_tab_content: Tool<typeof get_tab_contentInput> = {
   inputSchema: get_tab_contentInput,
   execute: async ({ tabId }) => {
     const tabContent = await fetchTabContent(tabId);
+    let usePlainText = false;
+    if (
+      tabContent?.markdown &&
+      tabContent.markdown.split(/\s+/).length > 6000
+    ) {
+      usePlainText = true;
+      // i know this not corret token count , but just to save the context window
+      // from being overloaded ,
+      // Reminder : the library html-to-md has major flaw with tabeles and it blows up the whooe things
+      //reference : test teh libray with hackernews which the whole page is a giant table
+      console.warn("Markdown conent too large fallback to just textcontent");
+    }
 
     return JSON.stringify({
-      textContent: tabContent?.markdown ?? "",
+      textContent: usePlainText
+        ? tabContent?.article?.textContent ?? ""
+        : tabContent?.markdown ?? "",
       title: tabContent?.meta?.title ?? "",
       url: tabContent?.meta?.url ?? "",
     });
