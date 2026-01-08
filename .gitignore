@@ -15,6 +15,9 @@ dist-ssr
 directories
 docs
 DOCS/
+.claude/
+CLAUDE.md
+coverage
 
 # Editor directories and files
 .vscode/*
