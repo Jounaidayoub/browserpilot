@@ -2,23 +2,27 @@ import Readability from "@mozilla/readability";
 import z from "zod";
 import type { Tool } from "./types";
 import Inspector from "@/sidepanel/Inspector";
+import { services as defaultServices, IServices } from "@/services";
 
-export const fetchTabContent = async (id: number) => {
+export const fetchTabContent = async (
+  id: number,
+  svc: IServices = defaultServices
+) => {
   //we sending a msg to the content script to get the md from there
   //cuz we needed the original tab html , need a better way to do this later
   // well we get the html from the scripting api , so we can recreate the dom using the DOMParser
   //and passing to the readability or convertHtmlToMarkdown()
   //TODO: try to do all in the using the scripting api only , less things to maintain
-  const markdown = await chrome.tabs
+  const markdown = await svc.tabs
     .sendMessage(id, {
       action: "get_tab_content_md",
       message: `Fetching tab content for tab ID: ${id}`,
     })
     .then((response) => {
-      return response.content as string;
+      return (response as { content: string }).content;
     });
   console.log("got markdown from content script ", markdown);
-  const res = await chrome.scripting.executeScript({
+  const res = await svc.scripting.executeScript({
     target: { tabId: id },
     world: "MAIN",
     func: () => {
@@ -33,11 +37,11 @@ export const fetchTabContent = async (id: number) => {
 
   const payload = res?.[0]?.result as
     | {
-        title: string;
-        url: string;
-        html: string;
-        text: string;
-      }
+      title: string;
+      url: string;
+      html: string;
+      text: string;
+    }
     | undefined;
 
   if (!payload?.html) {
@@ -64,8 +68,8 @@ const get_tab_content: Tool<typeof get_tab_contentInput> = {
   description:
     "Get distilled readable content, title, and URL for the specified tab.",
   inputSchema: get_tab_contentInput,
-  execute: async ({ tabId }) => {
-    const tabContent = await fetchTabContent(tabId);
+  execute: async ({ tabId }, services = defaultServices) => {
+    const tabContent = await fetchTabContent(tabId, services);
     let usePlainText = false;
     if (
       tabContent?.markdown &&
@@ -97,17 +101,18 @@ const get_page_content: Tool<typeof get_page_contentInput> = {
   name: "get_page_content",
   description: "Retrieve the serialized DOM snapshot for the given tab.",
   inputSchema: get_page_contentInput,
-  execute: async ({ tabId }) => {
-    const response = await chrome.runtime.sendMessage({
+  execute: async ({ tabId }, services = defaultServices) => {
+    const response = await services.messaging.sendMessage({
       action: "get_page_dom_snapshot",
       tabId,
     });
 
-    if (!response?.success) {
-      throw new Error(response?.error || "Failed to get page content");
+    const resp = response as { success?: boolean; error?: string; _snap?: unknown };
+    if (!resp?.success) {
+      throw new Error(resp?.error || "Failed to get page content");
     }
 
-    const snapshot = response._snap;
+    const snapshot = resp._snap;
     return typeof snapshot === "string" ? snapshot : JSON.stringify(snapshot);
   },
 };
@@ -122,56 +127,60 @@ const get_page_dom_snapshot: Tool<typeof get_page_dom_snapshotInput> = {
   description:
     "Request a DOM snapshot via the background service with optional options.",
   inputSchema: get_page_dom_snapshotInput,
-  execute: async ({ tabId, options }) => {
-    const response = await chrome.runtime.sendMessage({
+  execute: async ({ tabId, options }, services = defaultServices) => {
+    const response = await services.messaging.sendMessage({
       action: "get_page_dom_snapshot",
       toolName: "get_page_dom_snapshot",
       tabId,
       input: options,
     });
 
-    if (!response?.success) {
-      throw new Error(response?.error || "Failed to get snapshot");
+    const resp = response as { success?: boolean; error?: string; snapshot?: unknown };
+    if (!resp?.success) {
+      throw new Error(resp?.error || "Failed to get snapshot");
     }
 
-    const snapshot = response.snapshot;
+    const snapshot = resp.snapshot;
     return typeof snapshot === "string" ? snapshot : JSON.stringify(snapshot);
   },
 };
 
 export { get_tab_content, get_page_content, get_page_dom_snapshot };
 
-export const injectInspector = async (): Promise<string> => {
+export const injectInspector = async (
+  svc: IServices = defaultServices
+): Promise<string> => {
   return new Promise(async (resolve, reject) => {
     try {
-      const [tab] = await chrome.tabs.query({
+      const tabs = await svc.tabs.query({
         active: true,
         currentWindow: true,
       });
+      const tab = tabs[0];
 
-      if (!tab.id) {
+      if (!tab?.id) {
         reject(new Error("No active tab found"));
         return;
       }
 
       const tabId = tab.id;
 
-      const messageListener = (message: any) => {
+      const messageListener = (message: { type?: string; elementHTML?: string }) => {
         if (message.type === "ELEMENT_INSPECTOR_RESULT") {
-          chrome.runtime.onMessage.removeListener(messageListener);
-          resolve(message.elementHTML);
+          svc.messaging.onMessage.removeListener(messageListener as Parameters<typeof svc.messaging.onMessage.removeListener>[0]);
+          resolve(message.elementHTML ?? "");
         }
       };
 
-      chrome.runtime.onMessage.addListener(messageListener);
+      svc.messaging.onMessage.addListener(messageListener as Parameters<typeof svc.messaging.onMessage.addListener>[0]);
 
-      await chrome.scripting.executeScript({
+      await svc.scripting.executeScript({
         target: { tabId },
         func: Inspector,
       });
 
       setTimeout(() => {
-        chrome.runtime.onMessage.removeListener(messageListener);
+        svc.messaging.onMessage.removeListener(messageListener as Parameters<typeof svc.messaging.onMessage.removeListener>[0]);
         reject(new Error("Inspector timeout - no element selected"));
       }, 30000);
     } catch (error) {

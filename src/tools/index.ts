@@ -19,6 +19,9 @@ import {
   fetchTabContent,
 } from "./Page";
 
+// Re-export services for convenience
+export { services, createServices } from "@/services";
+export type { IServices } from "@/services";
 
 const registeredTools: Tool<ZodType | null>[] = [
   get_groups,
@@ -32,11 +35,9 @@ const registeredTools: Tool<ZodType | null>[] = [
   get_tab_content_tool,
   get_page_content,
   get_page_dom_snapshot,
-
 ];
 
 const ToolStore = new Map(registeredTools.map((tool) => [tool.name, tool]));
-
 
 export {
   registeredTools,
@@ -45,4 +46,3 @@ export {
   fetchTabsMeta,
   fetchTabContent,
 };
-

@@ -1,6 +1,7 @@
 import z from "zod";
 import type { Tool } from "./types";
 import { toTimestamp } from "./utils";
+import { services as defaultServices, IServices } from "@/services";
 
 const search_historyInput = z.object({
   query: z.string().optional(),
@@ -14,13 +15,16 @@ const search_history: Tool<typeof search_historyInput> = {
   description:
     "Search the browser history within an optional time range and result limit.",
   inputSchema: search_historyInput,
-  execute: async ({ query = "", maxResults, startTime, endTime }) => {
+  execute: async (
+    { query = "", maxResults, startTime, endTime },
+    services = defaultServices
+  ) => {
     const [startTimestamp, endTimestamp] = [
       toTimestamp(startTime),
       toTimestamp(endTime),
     ];
 
-    const historyItems = await chrome.history.search({
+    const historyItems = await services.history.search({
       text: query,
       startTime: startTimestamp,
       endTime: endTimestamp,
