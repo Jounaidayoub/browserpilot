@@ -1,4 +1,3 @@
-// import { openai } from '@ai-sdk/openai';
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
 import { createOpenAI } from "@ai-sdk/openai";
 import { serve } from "@hono/node-server";
