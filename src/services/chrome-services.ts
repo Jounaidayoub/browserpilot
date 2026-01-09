@@ -4,11 +4,11 @@
  */
 
 import type {
-    ITabsService,
-    ITabGroupsService,
-    IScriptingService,
-    IMessagingService,
-    IHistoryService,
+  ITabsService,
+  ITabGroupsService,
+  IScriptingService,
+  IMessagingService,
+  IHistoryService,
 } from "./interfaces";
 
 // =============================================================================
@@ -16,16 +16,22 @@ import type {
 // =============================================================================
 
 export const chromeTabsService: ITabsService = {
-    query: (queryInfo) => chrome.tabs.query(queryInfo),
-    remove: (tabIds) => chrome.tabs.remove(tabIds),
-    create: (createProperties) => chrome.tabs.create(createProperties),
-    group: (options) => chrome.tabs.group(options),
-    sendMessage: (tabId, message) => chrome.tabs.sendMessage(tabId, message),
-    onUpdated: {
-        addListener: (callback) => chrome.tabs.onUpdated.addListener(callback),
-        removeListener: (callback) =>
-            chrome.tabs.onUpdated.removeListener(callback),
-    },
+  query: (queryInfo) => chrome.tabs.query(queryInfo),
+  remove: (tabIds: number | number[]) => {
+    if (Array.isArray(tabIds)) {
+      return chrome.tabs.remove(tabIds);
+    }
+    return chrome.tabs.remove(tabIds);
+  },
+
+  create: (createProperties) => chrome.tabs.create(createProperties),
+  group: (options) => chrome.tabs.group(options),
+  sendMessage: (tabId, message) => chrome.tabs.sendMessage(tabId, message),
+  onUpdated: {
+    addListener: (callback) => chrome.tabs.onUpdated.addListener(callback),
+    removeListener: (callback) =>
+      chrome.tabs.onUpdated.removeListener(callback),
+  },
 };
 
 // =============================================================================
@@ -33,9 +39,9 @@ export const chromeTabsService: ITabsService = {
 // =============================================================================
 
 export const chromeTabGroupsService: ITabGroupsService = {
-    query: (queryInfo) => chrome.tabGroups.query(queryInfo ?? {}),
-    update: (groupId, updateProperties) =>
-        chrome.tabGroups.update(groupId, updateProperties),
+  query: (queryInfo) => chrome.tabGroups.query(queryInfo ?? {}),
+  update: (groupId, updateProperties) =>
+    chrome.tabGroups.update(groupId, updateProperties),
 };
 
 // =============================================================================
@@ -43,7 +49,7 @@ export const chromeTabGroupsService: ITabGroupsService = {
 // =============================================================================
 
 export const chromeScriptingService: IScriptingService = {
-    executeScript: (injection) => chrome.scripting.executeScript(injection),
+  executeScript: (injection) => chrome.scripting.executeScript(injection),
 };
 
 // =============================================================================
@@ -51,13 +57,13 @@ export const chromeScriptingService: IScriptingService = {
 // =============================================================================
 
 export const chromeMessagingService: IMessagingService = {
-    sendMessage: (message) => chrome.runtime.sendMessage(message),
-    getURL: (path) => chrome.runtime.getURL(path),
-    onMessage: {
-        addListener: (callback) => chrome.runtime.onMessage.addListener(callback),
-        removeListener: (callback) =>
-            chrome.runtime.onMessage.removeListener(callback),
-    },
+  sendMessage: (message) => chrome.runtime.sendMessage(message),
+  getURL: (path) => chrome.runtime.getURL(path),
+  onMessage: {
+    addListener: (callback) => chrome.runtime.onMessage.addListener(callback),
+    removeListener: (callback) =>
+      chrome.runtime.onMessage.removeListener(callback),
+  },
 };
 
 // =============================================================================
@@ -65,5 +71,5 @@ export const chromeMessagingService: IMessagingService = {
 // =============================================================================
 
 export const chromeHistoryService: IHistoryService = {
-    search: (query) => chrome.history.search(query),
+  search: (query) => chrome.history.search(query),
 };
