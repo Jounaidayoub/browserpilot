@@ -19,7 +19,7 @@ import {
   fetchTabContent,
 } from "./Page";
 
-// Re-export services for convenience
+// Re-export services for convenience (used for mockinggs tests)
 export { services, createServices } from "@/services";
 export type { IServices } from "@/services";
 

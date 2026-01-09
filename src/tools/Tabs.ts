@@ -1,5 +1,9 @@
-import z from "zod";
 import { emptyInput, Tool } from "./types";
+import {
+  close_tabsSchema,
+  group_tabs_by_idsSchema,
+  open_new_tabSchema,
+} from "./definitions";
 import { fetchTabContent } from "./Page";
 import { services as defaultServices, IServices } from "@/services";
 
@@ -42,46 +46,21 @@ const get_tabs: Tool<typeof emptyInput> = {
   },
 };
 
-const close_tabsType = z.object({
-  tabIds: z.array(z.number()),
-});
-const close_tabs: Tool<typeof close_tabsType> = {
+const close_tabs: Tool<typeof close_tabsSchema> = {
   name: "close_tabs",
   description: "Close tabs by their IDs.",
-  inputSchema: close_tabsType,
+  inputSchema: close_tabsSchema,
   execute: async ({ tabIds }, services = defaultServices) => {
     await services.tabs.remove(tabIds);
     return "Tabs closed with IDs: " + tabIds.join(", ");
   },
 };
 
-const group_tabs_by_idsInput = z.object({
-  groups: z.array(
-    z.object({
-      tabIds: z.array(z.number()),
-      color: z
-        .enum([
-          "blue",
-          "cyan",
-          "green",
-          "grey",
-          "orange",
-          "pink",
-          "purple",
-          "red",
-          "yellow",
-        ])
-        .optional(),
-      title: z.string(),
-    })
-  ),
-});
-
-const group_tabs_by_ids: Tool<typeof group_tabs_by_idsInput> = {
+const group_tabs_by_ids: Tool<typeof group_tabs_by_idsSchema> = {
   name: "group_tabs_by_ids",
   description:
     "Group the given tabs by their ids into new groups. Each group should include tabIds, color, and title. Organizes tabs into topics based on URLs and titles. Example: { groups: [{ tabIds: [123, 456], color: 'blue', title: 'Docs' }] }",
-  inputSchema: group_tabs_by_idsInput,
+  inputSchema: group_tabs_by_idsSchema,
   execute: async ({ groups }, services = defaultServices) => {
     await Promise.all(
       groups.map(async (group) => {
@@ -101,11 +80,6 @@ const group_tabs_by_ids: Tool<typeof group_tabs_by_idsInput> = {
   },
 };
 
-const open_new_tabInput = z.object({
-  url: z.string().min(1, "URL is required"),
-  Withcontent: z.boolean().optional(),
-});
-
 async function createTabAndWait(
   createProperties: chrome.tabs.CreateProperties,
   services: IServices = defaultServices
@@ -115,7 +89,7 @@ async function createTabAndWait(
   return new Promise((resolve) => {
     const listener = (
       tabId: number,
-      info: chrome.tabs.TabChangeInfo,
+      info: chrome.tabs.OnUpdatedInfo,
       _tab: chrome.tabs.Tab
     ) => {
       if (tabId === tab.id && info.status === "complete") {
@@ -127,10 +101,10 @@ async function createTabAndWait(
   });
 }
 
-const open_new_tab: Tool<typeof open_new_tabInput> = {
+const open_new_tab: Tool<typeof open_new_tabSchema> = {
   name: "open_new_tab",
   description: "Open a new browser tab with the provided URL.",
-  inputSchema: open_new_tabInput,
+  inputSchema: open_new_tabSchema,
   execute: async ({ url, Withcontent }, services = defaultServices) => {
     const newTab = await createTabAndWait({ url: url }, services);
 

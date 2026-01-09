@@ -59,6 +59,13 @@ export const run_scriptSchema = z.object({
   tabId: z.number().optional(),
 });
 
+export const search_historySchema = z.object({
+  query: z.string().optional(),
+  maxResults: z.number().int().positive().optional(),
+  startTime: z.union([z.string(), z.number(), z.date()]).optional(),
+  endTime: z.union([z.string(), z.number(), z.date()]).optional(),
+});
+
 // ============ Tool Definition Interface ============
 
 export interface ToolDefinition<T extends z.ZodType = z.ZodType> {
@@ -121,5 +128,16 @@ export const toolDefinitions: ToolDefinition[] = [
     name: "get_page_dom_snapshot",
     description: "Capture a DOM snapshot of the current page given a TabId.",
     inputSchema: get_page_dom_snapshotSchema,
+  },
+  {
+    name: "search_history",
+    description:
+      "Search the browser history within an optional time range and result limit.",
+    inputSchema: search_historySchema,
+  },
+  {
+    name: "get_current_time",
+    description: "Get the current time in ISO 8601 format.",
+    inputSchema: emptyInput,
   },
 ];

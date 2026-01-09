@@ -1,18 +1,13 @@
-import z from "zod";
 import type { Tool } from "./types";
+import { run_scriptSchema } from "./definitions";
 import { findActiveTabId } from "./utils";
 import { services as defaultServices, IServices } from "@/services";
 
-const run_scriptInput = z.object({
-  code: z.string().min(1, "Code is required"),
-  tabId: z.number().optional(),
-});
-
-const run_script: Tool<typeof run_scriptInput> = {
+const run_script: Tool<typeof run_scriptSchema> = {
   name: "run_script",
   description:
     "Inject and execute a JavaScript snippet within the specified or active tab.",
-  inputSchema: run_scriptInput,
+  inputSchema: run_scriptSchema,
   execute: async ({ code, tabId }, services = defaultServices) => {
     let targetTabId = tabId;
 

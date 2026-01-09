@@ -10,4 +10,5 @@ export interface Tool<ToolInput extends z.ZodType | null> {
   //need a better handelling later
 }
 
-export const emptyInput = z.object({});
+// Re-export emptyInput from definitions for backwards compatibility
+export { emptyInput } from "./definitions";

@@ -1,6 +1,10 @@
 import Readability from "@mozilla/readability";
-import z from "zod";
 import type { Tool } from "./types";
+import {
+  get_tab_contentSchema,
+  get_page_contentSchema,
+  get_page_dom_snapshotSchema,
+} from "./definitions";
 import Inspector from "@/sidepanel/Inspector";
 import { services as defaultServices, IServices } from "@/services";
 
@@ -59,15 +63,11 @@ export const fetchTabContent = async (
   };
 };
 
-const get_tab_contentInput = z.object({
-  tabId: z.number(),
-});
-
-const get_tab_content: Tool<typeof get_tab_contentInput> = {
+const get_tab_content: Tool<typeof get_tab_contentSchema> = {
   name: "get_tab_content",
   description:
     "Get distilled readable content, title, and URL for the specified tab.",
-  inputSchema: get_tab_contentInput,
+  inputSchema: get_tab_contentSchema,
   execute: async ({ tabId }, services = defaultServices) => {
     const tabContent = await fetchTabContent(tabId, services);
     let usePlainText = false;
@@ -93,14 +93,10 @@ const get_tab_content: Tool<typeof get_tab_contentInput> = {
   },
 };
 
-const get_page_contentInput = z.object({
-  tabId: z.number(),
-});
-
-const get_page_content: Tool<typeof get_page_contentInput> = {
+const get_page_content: Tool<typeof get_page_contentSchema> = {
   name: "get_page_content",
   description: "Retrieve the serialized DOM snapshot for the given tab.",
-  inputSchema: get_page_contentInput,
+  inputSchema: get_page_contentSchema,
   execute: async ({ tabId }, services = defaultServices) => {
     const response = await services.messaging.sendMessage({
       action: "get_page_dom_snapshot",
@@ -117,16 +113,11 @@ const get_page_content: Tool<typeof get_page_contentInput> = {
   },
 };
 
-const get_page_dom_snapshotInput = z.object({
-  tabId: z.number(),
-  options: z.record(z.string(), z.unknown()).optional(),
-});
-
-const get_page_dom_snapshot: Tool<typeof get_page_dom_snapshotInput> = {
+const get_page_dom_snapshot: Tool<typeof get_page_dom_snapshotSchema> = {
   name: "get_page_dom_snapshot",
   description:
     "Request a DOM snapshot via the background service with optional options.",
-  inputSchema: get_page_dom_snapshotInput,
+  inputSchema: get_page_dom_snapshotSchema,
   execute: async ({ tabId, options }, services = defaultServices) => {
     const response = await services.messaging.sendMessage({
       action: "get_page_dom_snapshot",
