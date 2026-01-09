@@ -23,6 +23,10 @@ import {
 export { services, createServices } from "@/services";
 export type { IServices } from "@/services";
 
+// Re-export shared definitions (no browser dependencies)
+export { toolDefinitions } from "./definitions";
+export type { ToolDefinition } from "./definitions";
+
 const registeredTools: Tool<ZodType | null>[] = [
   get_groups,
   get_tabs,

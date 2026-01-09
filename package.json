@@ -5,6 +5,7 @@
   "private": true,
   "exports": {
     "./tools": "./src/tools/index.ts",
+    "./tools/definitions": "./src/tools/definitions.ts",
     "./tools/*": "./src/tools/*"
   },
   "scripts": {

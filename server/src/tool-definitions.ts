@@ -1,14 +1,14 @@
 import { z } from "zod";
 import type { ToolSet } from "ai";
-import { registeredTools } from "browser-assistant-extension/tools";
+import { toolDefinitions } from "browser-assistant-extension/tools/definitions";
 
 /**
- * Maps extension tools to AI SDK ToolSet format.
- * Extension tools have: { name, description, inputSchema, execute }
+ * Maps extension tool definitions to AI SDK ToolSet format.
+ * Extension tool definitions have: { name, description, inputSchema }
  * AI SDK expects: { name, description, inputSchema, outputSchema }
  */
 export const tools: ToolSet = Object.fromEntries(
-  registeredTools.map((tool) => [
+  toolDefinitions.map((tool) => [
     tool.name,
     {
       name: tool.name,
