@@ -107,18 +107,23 @@ export const injectInspector = async (svc: IServices = services): Promise<string
       const tabId = tab.id;
 
       const messageListener = (message: { type?: string; elementHTML?: string }) => {
+        console.log("[Inspector] Received message in sidepanel:", message);
         if (message.type === "ELEMENT_INSPECTOR_RESULT") {
+          console.log("[Inspector] Got ELEMENT_INSPECTOR_RESULT, resolving with HTML");
           svc.messaging.onMessage.removeListener(messageListener as Parameters<typeof svc.messaging.onMessage.removeListener>[0]);
           resolve(message.elementHTML ?? "");
         }
       };
 
+      console.log("[Inspector] Setting up message listener");
       svc.messaging.onMessage.addListener(messageListener as Parameters<typeof svc.messaging.onMessage.addListener>[0]);
 
+      console.log("[Inspector] Injecting inspector script into tab:", tabId);
       await svc.scripting.executeScript({
         target: { tabId },
         func: Inspector,
       });
+      console.log("[Inspector] Script injected, waiting for element selection...");
 
       setTimeout(() => {
         svc.messaging.onMessage.removeListener(messageListener as Parameters<typeof svc.messaging.onMessage.removeListener>[0]);
