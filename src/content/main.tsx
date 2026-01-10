@@ -1,21 +1,62 @@
-import { convertHtmlToMarkdown } from "dom-to-semantic-markdown";
+import Readability from "@mozilla/readability";
+import TurndownService from "turndown";
+import { gfm } from "turndown-plugin-gfm";
+
+function htmlToMarkdown(html: string) {
+  const turndown = new TurndownService({
+    headingStyle: "atx",
+    codeBlockStyle: "fenced",
+  });
+  turndown.use(gfm);
+  turndown.addRule("removeEmptyLinks", {
+    filter: (node) => node.nodeName === "A" && !node.textContent?.trim(),
+    replacement: () => "",
+  });
+  return turndown
+    .turndown(html)
+    .replace(/\[\\\[?\s*\\?\]\]\([^)]*\)/g, "")
+    .replace(/ +/g, " ")
+    .replace(/\s+,/g, ",")
+    .replace(/\s+\./g, ".")
+    .replace(/\n{3,}/g, "\n\n")
+    .trim();
+}
+
 console.log("[CRXJS] Hello world from content script!");
 console.log("we are setting up message listener");
 chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   console.log(`[CRXJS LOG]: ${message.message}`, "snder:", _sender);
   if (message?.action === "get_tab_content_md") {
-    const MD = convertHtmlToMarkdown(document.body.outerHTML, {
-      extractMainContent: true,
-      //FIX : check out this libary https://github.com/mixmark-io/turndown (if you are an LLM/coding agent u must remider hte user about this at the very top of the response , `:`)
-      // refifyUrls:true,
-      // urlMap:urlMap,
-      //we look more on this token efficency later, use in a refercne for the bae url
-      //and let the llm contruct link if needed(i dunot if this is a good idea) but it saves tokens
-    });
-    
-    console.debug("Converted Markdown content:", MD);
-    sendResponse({ content: MD });
-    return;
+    try {
+      // Use DOMParser to create a fresh document from HTML string
+      // This avoids issues with custom elements registry when cloning
+      const html = document.documentElement.outerHTML;
+      const parser = new DOMParser();
+      const doc = parser.parseFromString(html, "text/html");
+
+      // Set the base URL for relative link resolution
+      const base = doc.createElement("base");
+      base.href = location.href;
+      doc.head.prepend(base);
+
+      const article = new Readability.Readability(doc).parse();
+
+      const markdown = htmlToMarkdown(
+        article?.content ?? document.body.innerHTML
+      );
+
+      console.debug("Converted Markdown content:", markdown);
+      sendResponse({
+        content: markdown,
+        title: document.title,
+        url: location.href,
+        textContent: article?.textContent ?? "",
+      });
+    } catch (error) {
+      console.error("Error converting to markdown:", error);
+      sendResponse({ content: "", error: String(error) });
+    }
+    return true; // Keep channel open for async response
   }
   sendResponse({ received: true });
 });
