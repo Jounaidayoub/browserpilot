@@ -1,5 +1,4 @@
-import type { ZodType } from "zod";
-import type { Tool } from "./types";
+import type { Tool } from "./defineTool";
 import {
   get_groups,
   get_tabs,
@@ -13,32 +12,33 @@ import { search_history } from "./History";
 import { get_current_time } from "./Time";
 import { run_script } from "./Scripting";
 import {
-  get_tab_content as get_tab_content_tool,
+  get_tab_content,
   get_page_content,
   get_page_dom_snapshot,
   fetchTabContent,
 } from "./Page";
 
-// Re-export services for convenience (used for mockinggs tests)
+// Re-export services for convenience
 export { services, createServices } from "@/services";
 export type { IServices } from "@/services";
 
-// Re-export shared definitions (no browser dependencies)
+// Re-export definitions (server imports from here)
 export { toolDefinitions } from "./definitions";
-export type { ToolDefinition } from "./definitions";
+export type { ToolDefinition } from "./types";
+export type { Tool } from "./defineTool";
 
-const registeredTools: Tool<ZodType | null>[] = [
+const registeredTools: Tool[] = [
   get_groups,
   get_tabs,
   close_tabs,
   group_tabs_by_ids,
   open_new_tab,
-  // search_history,
-  // get_current_time,
   run_script,
-  get_tab_content_tool,
+  get_tab_content,
   get_page_content,
   get_page_dom_snapshot,
+  search_history,
+  get_current_time,
 ];
 
 const ToolStore = new Map(registeredTools.map((tool) => [tool.name, tool]));

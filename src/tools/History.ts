@@ -1,31 +1,16 @@
-import type { Tool } from "./types";
-import { search_historySchema } from "./definitions";
+import { defineTool } from "./defineTool";
+import { searchHistoryDef } from "./definitions/history.def";
 import { toTimestamp } from "./utils";
-import { services as defaultServices, IServices } from "@/services";
 
-const search_history: Tool<typeof search_historySchema> = {
-  name: "search_history",
-  description:
-    "Search the browser history within an optional time range and result limit.",
-  inputSchema: search_historySchema,
-  execute: async (
-    { query = "", maxResults, startTime, endTime },
-    services = defaultServices
-  ) => {
-    const [startTimestamp, endTimestamp] = [
-      toTimestamp(startTime),
-      toTimestamp(endTime),
-    ];
+export const search_history = defineTool(searchHistoryDef, async ({ query = "", maxResults, startTime, endTime }, services) => {
+  const [startTimestamp, endTimestamp] = [toTimestamp(startTime), toTimestamp(endTime)];
 
-    const historyItems = await services.history.search({
-      text: query,
-      startTime: startTimestamp,
-      endTime: endTimestamp,
-      maxResults,
-    });
+  const historyItems = await services.history.search({
+    text: query,
+    startTime: startTimestamp,
+    endTime: endTimestamp,
+    maxResults,
+  });
 
-    return JSON.stringify(historyItems);
-  },
-};
-
-export { search_history };
+  return JSON.stringify(historyItems);
+});
