@@ -1,4 +1,3 @@
-import Readability from "@mozilla/readability";
 import { defineTool } from "./defineTool";
 import {
   getTabContentDef,
@@ -9,43 +8,32 @@ import Inspector from "@/sidepanel/Inspector";
 import { services, type IServices } from "@/services";
 
 export const fetchTabContent = async (id: number, svc: IServices) => {
-  const markdown = await svc.tabs
+  // Use content script to convert HTML to Markdown in page context
+  // This ensures relative URLs are resolved against the actual page URL
+  const response = await svc.tabs
     .sendMessage(id, {
       action: "get_tab_content_md",
       message: `Fetching tab content for tab ID: ${id}`,
-    })
-    .then((response) => (response as { content: string }).content);
+    }) as { content: string; title?: string; url?: string; textContent?: string; error?: string };
 
-  const res = await svc.scripting.executeScript({
-    target: { tabId: id },
-    world: "MAIN",
-    func: () => ({
-      title: document.title,
-      url: location.href,
-      html: document.documentElement?.outerHTML ?? "",
-      text: document.body?.innerText ?? "",
-    }),
-  });
-
-  const payload = res?.[0]?.result as
-    | { title: string; url: string; html: string; text: string }
-    | undefined;
-
-  if (!payload?.html) return null;
-
-  const parser = new DOMParser();
-  const doc = parser.parseFromString(payload.html, "text/html");
-  const article = new Readability.Readability(doc).parse();
+  if (response.error) {
+    console.error("Error from content script:", response.error);
+    return null;
+  }
 
   return {
-    article,
-    meta: { title: payload.title, url: payload.url, text: payload.text },
-    markdown,
+    markdown: response.content,
+    meta: {
+      title: response.title ?? "",
+      url: response.url ?? "",
+      text: response.textContent ?? ""
+    },
   };
 };
 
 export const get_tab_content = defineTool(getTabContentDef, async ({ tabId }, services) => {
   const tabContent = await fetchTabContent(tabId, services);
+  console.log("thenew Markdown", tabContent?.markdown);
   let usePlainText = false;
   if (tabContent?.markdown && tabContent.markdown.split(/\s+/).length > 6000) {
     usePlainText = true;
@@ -53,9 +41,12 @@ export const get_tab_content = defineTool(getTabContentDef, async ({ tabId }, se
   }
 
   return JSON.stringify({
-    textContent: usePlainText
-      ? tabContent?.article?.textContent ?? ""
-      : tabContent?.markdown ?? "",
+    textContent: tabContent?.markdown,
+    //HACK : bring the thereshold back with better handleing this is just for testing this new conversion method
+
+    // textContent: usePlainText
+    //   ? tabContent?.article?.textContent ?? "" 
+    //   : tabContent?.markdown ?? "",
     title: tabContent?.meta?.title ?? "",
     url: tabContent?.meta?.url ?? "",
   });
