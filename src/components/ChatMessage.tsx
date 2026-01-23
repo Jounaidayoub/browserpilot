@@ -146,5 +146,60 @@ export const ChatMessage = memo(
         )}
       </div>
     );
+  },
+  (prevProps, nextProps) => {
+    // Only re-render if this is the most recent message that's streaming
+    // or if the message content has actually changed
+    const isStreamingMessage = nextProps.isMostRecentMessage && nextProps.status === "streaming";
+    const wasStreamingMessage = prevProps.isMostRecentMessage && prevProps.status === "streaming";
+    
+    // Always re-render if streaming status changed for this message
+    if (isStreamingMessage || wasStreamingMessage) {
+      return false; // Allow re-render
+    }
+    
+    // Check if isMostRecentMessage status changed (affects reasoning isStreaming prop)
+    if (prevProps.isMostRecentMessage !== nextProps.isMostRecentMessage) {
+      return false; // Allow re-render
+    }
+    
+    // If this is not a streaming message and the message parts haven't changed, skip re-render
+    if (prevProps.message.id === nextProps.message.id) {
+      // Compare the actual parts content
+      if (prevProps.message.parts.length === nextProps.message.parts.length) {
+        const partsEqual = prevProps.message.parts.every((part, i) => {
+          const nextPart = nextProps.message.parts[i];
+          if (part.type !== nextPart.type) return false;
+          
+          // Handle different part types
+          if (part.type === "text" && nextPart.type === "text") {
+            return part.text === nextPart.text;
+          } else if (part.type === "reasoning" && nextPart.type === "reasoning") {
+            return part.text === nextPart.text;
+          } else if (part.type.startsWith("tool-") && nextPart.type.startsWith("tool-")) {
+            // For tool parts, compare the state and content
+            const toolPart = part as ToolUIPart;
+            const nextToolPart = nextPart as ToolUIPart;
+            return (
+              toolPart.state === nextToolPart.state &&
+              JSON.stringify(toolPart.input) === JSON.stringify(nextToolPart.input) &&
+              toolPart.output === nextToolPart.output
+            );
+          }
+          
+          // For any other part type, assume equal if type matches
+          return true;
+        });
+        
+        if (partsEqual && prevProps.error === nextProps.error) {
+          return true; // Skip re-render
+        }
+      }
+    }
+    
+    // Allow re-render for any other case
+    return false;
   }
 );
+
+ChatMessage.displayName = "ChatMessage";

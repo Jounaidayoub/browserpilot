@@ -3,6 +3,7 @@ import { cn } from "@/lib/utils";
 import type { UIMessage } from "ai";
 import { cva, type VariantProps } from "class-variance-authority";
 import type { ComponentProps, HTMLAttributes } from "react";
+import { memo } from "react";
 
 export type MessageProps = HTMLAttributes<HTMLDivElement> & {
   from: UIMessage["role"];
@@ -45,7 +46,7 @@ const messageContentVariants = cva(
 export type MessageContentProps = HTMLAttributes<HTMLDivElement> &
   VariantProps<typeof messageContentVariants>;
 
-export const MessageContent = ({
+export const MessageContent = memo(({
   children,
   className,
   variant,
@@ -57,7 +58,9 @@ export const MessageContent = ({
   >
     {children}
   </div>
-);
+));
+
+MessageContent.displayName = "MessageContent";
 
 export type MessageAvatarProps = ComponentProps<typeof Avatar> & {
   src: string;
