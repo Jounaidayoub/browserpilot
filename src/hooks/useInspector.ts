@@ -9,7 +9,7 @@ export function useInspector() {
     setIsInspecting(true);
     try {
       console.log("starting:")
-      const html = await injectInspector(services);
+      const html = await injectInspector(services);//dont need to pass services here as its defaulted
       console.log("got html ", html)
       return html;
     } finally {

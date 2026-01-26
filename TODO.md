@@ -12,5 +12,6 @@ the project need alot of refactor and improvments , i ll put some that come to m
 - add a service layer to wrap the browser sevices (tabservice, pageservices etc ) and wrap also the chrome api as browserServces
     this is good and modular and will help us if we want to support other browsers that my have diffrenet implentatuion of the browser/chrome api
 - **I NEED A TEST SUITE** , the project is getting harder to work on , i break things witout evene noticing and testing this shity code  is hard af 
-
+- to get some free llm credeuts for free users we can use openrouter as an oauth prvider thet offer an aothe server so users can use the free tier
+moders abd their credids there with a smooth oauth sign in expreirecne
     

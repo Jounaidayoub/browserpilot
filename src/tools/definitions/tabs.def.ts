@@ -50,6 +50,6 @@ export const groupTabsByIdsDef: ToolDefinition<typeof groupTabsByIdsSchema> = {
 
 export const openNewTabDef: ToolDefinition<typeof openNewTabSchema> = {
     name: "open_new_tab",
-    description: "Open a new tab with a given URL. The `Withcontent` option determines whether to include the page content. if the user query involves reading or summarizing the page content, set Withcontent to true.(this better that opening a tab and then getting the content separately , fallback to get tab content tool if this does not work)",
+    description: "Open a new tab with a given URL. The `Withcontent` option determines whether to include the page content. if the user query involves reading or summarizing the page content, set Withcontent to true.(this better that opening a tab and then getting the content separately , fallback to get tab content tool if this does not work) , NOTE : this may return a large amount of data , SET WITHCONTENT TO FALSE IF THE USER QUERY IS NOT RELATED TO THE PAGE CONTENT, or the task does not involve having an idae about the tab actual content.",
     inputSchema: openNewTabSchema,
 };
