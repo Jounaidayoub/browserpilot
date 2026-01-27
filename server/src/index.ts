@@ -7,7 +7,12 @@ import "dotenv/config";
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { tools } from "./tool-definitions.js";
+import { env } from "process";
+import { auth } from "./lib/auth.js";
 
+
+
+console.log(env.BETTER_AUTH_SECRET)
 
 const app = new Hono();
 app.use("*", cors());
@@ -101,5 +106,8 @@ app.post("/", async (c) => {
   // }
   return result.toUIMessageStreamResponse({ sendReasoning: true });
 });
+
+
+app.on(["POST", "GET"], "/api/auth/*", (c) => auth.handler(c.req.raw));
 
 serve({ fetch: app.fetch, port: 8080 });

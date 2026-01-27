@@ -29,7 +29,7 @@ coverage
 *.njsproj
 *.sln
 *.sw?
-
+*.db
 # Server
 server/node_modules
 server/dist
