@@ -54,7 +54,6 @@ export const ChatSidebar = ({
           isOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
-        {/* Header */}
         <div className="flex items-center justify-between p-4 border-b">
           <h2 className="text-lg font-semibold">Chat History</h2>
           <Button variant="ghost" size="icon" onClick={onClose}>
@@ -62,12 +61,11 @@ export const ChatSidebar = ({
           </Button>
         </div>
 
-        {/* New Chat Button */}
         <div className="p-4 border-b">
           <Button
             className="w-full justify-start"
-            variant="outline"
             onClick={onNewChat}
+            variant="secondary"
           >
             <Plus className="h-4 w-4 mr-2" />
             New Chat

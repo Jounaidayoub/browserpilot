@@ -23,6 +23,7 @@ import { GlobeIcon, Inspect } from "lucide-react";
 import { useRef } from "react";
 import useInspector from "@/hooks/useInspector";
 import { ChatStatus } from "ai";
+import {  Button} from "@/components/ui/button";
 
 interface ChatPromptInputProps {
   input: string;
@@ -93,7 +94,6 @@ export const ChatPromptInput = ({
           >
             <Inspect className=" size-4" />
           </PromptInputButton>
-        
           <PromptInputModelSelect
             onValueChange={(value) => {
               setModel(value);
@@ -116,6 +116,7 @@ export const ChatPromptInput = ({
           </PromptInputModelSelect>
         </PromptInputTools>
         <PromptInputSubmit
+          className="btn-primary"
           disabled={!input && !status}
           status={status}
           onClick={stop}
