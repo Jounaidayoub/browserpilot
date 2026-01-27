@@ -30,6 +30,8 @@ coverage
 *.sln
 *.sw?
 *.db
+.agents/
+.agent/
 # Server
 server/node_modules
 server/dist

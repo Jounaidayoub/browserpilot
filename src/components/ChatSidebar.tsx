@@ -1,8 +1,10 @@
-import { X, Trash2, Plus, MessageSquare } from "lucide-react";
+import { X, Trash2, Plus, MessageSquare, LogOut, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ChatSession } from "@/lib/storage";
 import { cn } from "@/lib/utils";
+import { signOut, useSession } from "@/lib/auth-client";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 interface ChatSidebarProps {
   isOpen: boolean;
@@ -23,6 +25,13 @@ export const ChatSidebar = ({
   onNewChat,
   onDeleteChat,
 }: ChatSidebarProps) => {
+  const { data: session } = useSession();
+
+  const handleSignOut = async () => {
+    await signOut();
+    // No need to redirect manually, App.tsx will handle the state change
+  };
+
   const formatDate = (timestamp: number) => {
     const date = new Date(timestamp);
     const now = new Date();
@@ -50,7 +59,7 @@ export const ChatSidebar = ({
       {/* Sidebar */}
       <div
         className={cn(
-          "fixed top-0 left-0 h-full w-80 bg-background border-r shadow-lg z-50 transition-transform duration-300 ease-in-out",
+          "fixed top-0 left-0 h-full w-80 bg-background border-r shadow-lg z-50 transition-transform duration-300 ease-in-out flex flex-col",
           isOpen ? "translate-x-0" : "-translate-x-full"
         )}
       >
@@ -73,7 +82,7 @@ export const ChatSidebar = ({
         </div>
 
         {/* Chat List */}
-        <ScrollArea className="h-[calc(100vh-140px)]">
+        <ScrollArea className="flex-1">
           <div className="p-2">
             {chats.length === 0 ? (
               <div className="flex flex-col items-center justify-center p-8 text-center text-muted-foreground">
@@ -119,6 +128,38 @@ export const ChatSidebar = ({
             )}
           </div>
         </ScrollArea>
+
+        {/* User Profile Section */}
+        {session && (
+          <div className="p-4 border-t bg-muted/20">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-3 overflow-hidden">
+                <Avatar className="h-9 w-9">
+                  <AvatarImage src={session.user.image || undefined} />
+                  <AvatarFallback className="bg-primary/10">
+                    {session.user.name?.charAt(0).toUpperCase() || <User className="h-4 w-4" />}
+                  </AvatarFallback>
+                </Avatar>
+                <div className="flex flex-col min-w-0">
+                  <span className="text-sm font-medium truncate">
+                    {session.user.name}
+                  </span>
+                  <span className="text-xs text-muted-foreground truncate">
+                    {session.user.email}
+                  </span>
+                </div>
+              </div>
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={handleSignOut}
+                title="Sign Out"
+              >
+                <LogOut className="h-4 w-4 text-muted-foreground hover:text-destructive transition-colors" />
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
     </>
   );

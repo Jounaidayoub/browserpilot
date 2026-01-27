@@ -17,6 +17,7 @@ import { ChatMessage } from "@/components/ChatMessage";
 import { ChatPromptInput } from "@/components/ChatPromptInput";
 import { Loader } from "@/components/ai-elements/loader";
 import { currentcontext } from "@/tools/utils";
+import { useAuth } from "@/lib/auth-context";
 
 const models = [
   { name: "GPT-4.1", value: "gpt-4.1-2025-04-14" },
@@ -26,6 +27,7 @@ const models = [
 ];
 
 const ChatBotDemo = () => {
+  const { isAuthenticated, triggerAuthDialog } = useAuth();
   const [input, setInput] = useState("");
   const [model, setModel] = useState<string>("gpt-4o-2024-11-20");
   const [webSearch, setWebSearch] = useState(false);
@@ -73,6 +75,12 @@ const ChatBotDemo = () => {
       return;
     }
 
+    // Show auth dialog if user is not authenticated
+    if (!isAuthenticated) {
+      triggerAuthDialog();
+      return;
+    }
+
     if (!currentChatId) {
       await createNewChat(message.text, model);
     }
@@ -92,7 +100,7 @@ const ChatBotDemo = () => {
           webSearch: webSearch,
           currentcontext: currentcontextData,
         },
-      }
+      },
     );
     setInput("");
   };
