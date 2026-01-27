@@ -6,47 +6,55 @@ import {
 } from "./definitions/page.def";
 import Inspector from "@/sidepanel/Inspector";
 import { services, type IServices } from "@/services";
+import { convertHtmlToMarkdown } from "dom-to-semantic-markdown";
+
+function getPageHTML() {
+  return document.documentElement.outerHTML;
+}
 
 export const fetchTabContent = async (id: number, svc: IServices) => {
-  // Use content script to convert HTML to Markdown in page context
-  // This ensures relative URLs are resolved against the actual page URL
-  const response = await svc.tabs
-    .sendMessage(id, {
-      action: "get_tab_content_md",
-      message: `Fetching tab content for tab ID: ${id}`,
-    }) as { content: string; title?: string; url?: string; textContent?: string; error?: string };
+  try {
+    const results = await svc.scripting.executeScript({
+      target: { tabId: id },
+      func: getPageHTML,
+    });
 
-  if (response.error) {
-    console.error("Error from content script:", response.error);
+    if (!results || !results[0] || !results[0].result) {
+      throw new Error("Failed to retrieve page content via script injection");
+    }
+
+    const html = results[0].result;
+
+    const markdown = convertHtmlToMarkdown(html, {
+      extractMainContent: true,
+    });
+
+    const tab = await svc.tabs.get(id);
+
+    return {
+      markdown: markdown,
+      meta: {
+        title: tab.title ?? "",
+        url: tab.url ?? "",
+        text: markdown 
+      },
+    };
+  } catch (error) {
+    console.error("Error fetching tab content:", error);
     return null;
   }
-
-  return {
-    markdown: response.content,
-    meta: {
-      title: response.title ?? "",
-      url: response.url ?? "",
-      text: response.textContent ?? ""
-    },
-  };
 };
 
 export const get_tab_content = defineTool(getTabContentDef, async ({ tabId }, services) => {
   const tabContent = await fetchTabContent(tabId, services);
   console.log("thenew Markdown", tabContent?.markdown);
-  let usePlainText = false;
+
   if (tabContent?.markdown && tabContent.markdown.split(/\s+/).length > 6000) {
-    usePlainText = true;
-    console.warn("Markdown content too large fallback to just textcontent");
+    console.warn("Markdown content too large (over 6000 words)");
   }
 
   return JSON.stringify({
-    textContent: tabContent?.markdown,
-    //HACK : bring the thereshold back with better handleing this is just for testing this new conversion method
-
-    // textContent: usePlainText
-    //   ? tabContent?.article?.textContent ?? "" 
-    //   : tabContent?.markdown ?? "",
+    textContent: tabContent?.markdown ?? "",
     title: tabContent?.meta?.title ?? "",
     url: tabContent?.meta?.url ?? "",
   });

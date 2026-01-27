@@ -8,18 +8,20 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { tools } from "./tool-definitions.js";
 
+
 const app = new Hono();
 app.use("*", cors());
 
 const google = createGoogleGenerativeAI({
   apiKey: process.env.GOOGLE_API_KEY!,
+  
 });
-
 const openai = createOpenAI({
   apiKey: process.env.GOOGLE_API_KEY,
   baseURL: "http://localhost:4141/v1/",
   name: "copilot-openai-provider",
 });
+
 const provider = createOpenAICompatible({
   apiKey: process.env.GOOGLE_API_KEY,
   baseURL: "http://localhost:4141/v1",
@@ -46,6 +48,8 @@ app.post("/", async (c) => {
   const result = streamText({
     // model: google("gemini-2.5-flash-lite"),
     model: provider(model),
+    // model: provider(model),
+    
     system: `
       You are a browser-based assistant with access to a set of specialized tools. 
       Your goal is to help users accomplish any task or answer any question .

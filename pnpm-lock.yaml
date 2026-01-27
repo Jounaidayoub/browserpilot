@@ -65,6 +65,9 @@ importers:
       diff:
         specifier: ^8.0.2
         version: 8.0.2
+      dom-to-semantic-markdown:
+        specifier: ^1.5.0
+        version: 1.5.0
       embla-carousel-react:
         specifier: ^8.6.0
         version: 8.6.0(react@19.2.0)
@@ -156,9 +159,6 @@ importers:
       '@vitest/coverage-v8':
         specifier: ^4.0.16
         version: 4.0.16(vitest@4.0.16(@opentelemetry/api@1.9.0)(@types/node@24.9.2)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.1))
-      dom-to-semantic-markdown:
-        specifier: ^1.5.0
-        version: 1.5.0
       tw-animate-css:
         specifier: ^1.4.0
         version: 1.4.0

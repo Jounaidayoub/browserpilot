@@ -23,6 +23,7 @@ export const chromeTabsService: ITabsService = {
     }
     return chrome.tabs.remove(tabIds);
   },
+  get: (tabId) => chrome.tabs.get(tabId),
 
   create: (createProperties) => chrome.tabs.create(createProperties),
   group: (options) => chrome.tabs.group(options),

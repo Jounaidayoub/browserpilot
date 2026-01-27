@@ -10,6 +10,7 @@ export interface ITabsService {
   query(queryInfo: chrome.tabs.QueryInfo): Promise<chrome.tabs.Tab[]>;
   remove(tabIds: number[]): Promise<void>;
   remove(tabIds: number): Promise<void>;
+  get(tabId: number): Promise<chrome.tabs.Tab>;
 
   create(
     createProperties: chrome.tabs.CreateProperties
