@@ -5,6 +5,7 @@ import { ChatSession } from "@/lib/storage";
 import { cn } from "@/lib/utils";
 import { signOut, useSession } from "@/lib/auth-client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useAuth } from "@/lib/auth-context";
 
 interface ChatSidebarProps {
   isOpen: boolean;
@@ -25,7 +26,7 @@ export const ChatSidebar = ({
   onNewChat,
   onDeleteChat,
 }: ChatSidebarProps) => {
-  const { data: session } = useSession();
+  const { session } = useAuth();
 
   const handleSignOut = async () => {
     await signOut();
@@ -36,7 +37,7 @@ export const ChatSidebar = ({
     const date = new Date(timestamp);
     const now = new Date();
     const diffInDays = Math.floor(
-      (now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24)
+      (now.getTime() - date.getTime()) / (1000 * 60 * 60 * 24),
     );
 
     if (diffInDays === 0) return "Today";
@@ -60,7 +61,7 @@ export const ChatSidebar = ({
       <div
         className={cn(
           "fixed top-0 left-0 h-full w-80 bg-background border-r shadow-lg z-50 transition-transform duration-300 ease-in-out flex flex-col",
-          isOpen ? "translate-x-0" : "-translate-x-full"
+          isOpen ? "translate-x-0" : "-translate-x-full",
         )}
       >
         <div className="flex items-center justify-between p-4 border-b">
@@ -98,7 +99,7 @@ export const ChatSidebar = ({
                   key={chat.id}
                   className={cn(
                     "group relative flex items-start p-3 mb-2 rounded-lg cursor-pointer transition-colors hover:bg-accent",
-                    currentChatId === chat.id && "bg-accent"
+                    currentChatId === chat.id && "bg-accent",
                   )}
                   onClick={() => onSelectChat(chat.id)}
                 >
@@ -130,6 +131,7 @@ export const ChatSidebar = ({
         </ScrollArea>
 
         {/* User Profile Section */}
+        {/* why not isAuthenticated? , just to please dear typescript */}
         {session && (
           <div className="p-4 border-t bg-muted/20">
             <div className="flex items-center justify-between">
@@ -137,7 +139,9 @@ export const ChatSidebar = ({
                 <Avatar className="h-9 w-9">
                   <AvatarImage src={session.user.image || undefined} />
                   <AvatarFallback className="bg-primary/10">
-                    {session.user.name?.charAt(0).toUpperCase() || <User className="h-4 w-4" />}
+                    {session.user.name?.charAt(0).toUpperCase() || (
+                      <User className="h-4 w-4" />
+                    )}
                   </AvatarFallback>
                 </Avatar>
                 <div className="flex flex-col min-w-0">
