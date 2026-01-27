@@ -5,5 +5,7 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
   },
+  trustedOrigins: ["chrome-extension://onlephlmhdpaaafgbicaieamdaadabln"],
   database: new Database("./sqlite.db"),
 });
+    
