@@ -332,9 +332,7 @@ body {
   overflow: hidden;
 }
 
-/* ============================================
-   Button Reset - Only for non-shadcn buttons
-   ============================================ */
+/* Button Reset - Only for non-shadcn buttons */
 /* button:not([data-slot="button"]) {
   border: none;
   background: transparent;
@@ -349,10 +347,8 @@ body {
   outline: none;
 } */
 
-/* ============================================
-   .btn-primary - Fancy 3D button with effects
-   (From Uiverse.io by elijahgummer)
-   ============================================ */
+/* .btn-primary - Fancy 3D button with effects
+   (From Uiverse.io by elijahgummer) */
 .btn-primary {
   position: relative;
   border: 1.5px solid var(--primary-light20);

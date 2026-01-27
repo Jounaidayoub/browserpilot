@@ -20,9 +20,7 @@ import {
     open_new_tab,
 } from "@/tools/Tabs";
 
-// =============================================================================
 // fetchTabGroups Tests
-// =============================================================================
 
 describe("fetchTabGroups", () => {
     it("returns empty array when no groups exist", async () => {
@@ -48,9 +46,7 @@ describe("fetchTabGroups", () => {
     });
 });
 
-// =============================================================================
 // fetchTabsMeta Tests
-// =============================================================================
 
 describe("fetchTabsMeta", () => {
     it("returns empty array when no tabs exist", async () => {
@@ -100,9 +96,7 @@ describe("fetchTabsMeta", () => {
     });
 });
 
-// =============================================================================
 // get_groups Tool Tests
-// =============================================================================
 
 describe("get_groups tool", () => {
     it("returns JSON stringified groups", async () => {
@@ -118,9 +112,7 @@ describe("get_groups tool", () => {
     });
 });
 
-// =============================================================================
 // get_tabs Tool Tests
-// =============================================================================
 
 describe("get_tabs tool", () => {
     it("returns JSON stringified tab metadata", async () => {
@@ -138,9 +130,7 @@ describe("get_tabs tool", () => {
     });
 });
 
-// =============================================================================
 // close_tabs Tool Tests
-// =============================================================================
 
 describe("close_tabs tool", () => {
     it("closes specified tabs", async () => {
@@ -160,9 +150,7 @@ describe("close_tabs tool", () => {
     });
 });
 
-// =============================================================================
 // group_tabs_by_ids Tool Tests
-// =============================================================================
 
 describe("group_tabs_by_ids tool", () => {
     it("creates groups with correct properties", async () => {

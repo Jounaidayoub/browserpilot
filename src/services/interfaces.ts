@@ -3,9 +3,7 @@
  * Enables unit testing with mocks while keeping production behavior unchanged
  */
 
-// =============================================================================
 // Tabs Service
-// =============================================================================
 export interface ITabsService {
   query(queryInfo: chrome.tabs.QueryInfo): Promise<chrome.tabs.Tab[]>;
   remove(tabIds: number[]): Promise<void>;
@@ -36,9 +34,7 @@ export interface ITabsService {
   };
 }
 
-// =============================================================================
 // Tab Groups Service
-// =============================================================================
 
 export interface ITabGroupsService {
   query(
@@ -50,9 +46,7 @@ export interface ITabGroupsService {
   ): Promise<chrome.tabGroups.TabGroup | undefined>;
 }
 
-// =============================================================================
 // Scripting Service
-// =============================================================================
 export interface IScriptingService {
   executeScript<Args extends any[], Result>(
     injection: chrome.scripting.ScriptInjection<Args, Result>
@@ -61,9 +55,7 @@ export interface IScriptingService {
   >;
 }
 
-// =============================================================================
 // Messaging Service (chrome.runtime messaging)
-// =============================================================================
 
 export interface IMessagingService {
   sendMessage<T = unknown>(message: unknown): Promise<T>;
@@ -86,9 +78,7 @@ export interface IMessagingService {
   };
 }
 
-// =============================================================================
 // History Service
-// =============================================================================
 
 export interface IHistoryService {
   search(
@@ -96,9 +86,7 @@ export interface IHistoryService {
   ): Promise<chrome.history.HistoryItem[]>;
 }
 
-// =============================================================================
 // Service Container Type
-// =============================================================================
 
 export interface IServices {
   tabs: ITabsService;

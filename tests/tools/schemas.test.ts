@@ -9,9 +9,7 @@ import { z } from "zod";
 // We'll import schemas once they're exported, for now define inline
 // This pattern shows how to test schema validation
 
-// =============================================================================
 // Tabs Schema Tests
-// =============================================================================
 
 describe("Tabs Input Schemas", () => {
     const close_tabsType = z.object({
@@ -130,9 +128,7 @@ describe("Tabs Input Schemas", () => {
     });
 });
 
-// =============================================================================
 // History Schema Tests
-// =============================================================================
 
 describe("History Input Schemas", () => {
     const search_historyInput = z.object({
@@ -170,9 +166,7 @@ describe("History Input Schemas", () => {
     });
 });
 
-// =============================================================================
 // Scripting Schema Tests
-// =============================================================================
 
 describe("Scripting Input Schemas", () => {
     const run_scriptInput = z.object({

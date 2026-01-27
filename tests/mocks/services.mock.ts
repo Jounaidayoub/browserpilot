@@ -13,9 +13,7 @@ import type {
     IServices,
 } from "@/services/interfaces";
 
-// =============================================================================
 // Mock Event Helper
-// =============================================================================
 
 function createMockEvent<T extends (...args: unknown[]) => void>() {
     const listeners: T[] = [];
@@ -35,9 +33,7 @@ function createMockEvent<T extends (...args: unknown[]) => void>() {
     };
 }
 
-// =============================================================================
 // Mock Tabs Service
-// =============================================================================
 
 export function createMockTabsService(
     overrides: Partial<ITabsService> = {}
@@ -53,9 +49,7 @@ export function createMockTabsService(
     };
 }
 
-// =============================================================================
 // Mock Tab Groups Service
-// =============================================================================
 
 export function createMockTabGroupsService(
     overrides: Partial<ITabGroupsService> = {}
@@ -67,9 +61,7 @@ export function createMockTabGroupsService(
     };
 }
 
-// =============================================================================
 // Mock Scripting Service
-// =============================================================================
 
 export function createMockScriptingService(
     overrides: Partial<IScriptingService> = {}
@@ -80,9 +72,7 @@ export function createMockScriptingService(
     };
 }
 
-// =============================================================================
 // Mock Messaging Service
-// =============================================================================
 
 export function createMockMessagingService(
     overrides: Partial<IMessagingService> = {}
@@ -95,9 +85,7 @@ export function createMockMessagingService(
     };
 }
 
-// =============================================================================
 // Mock History Service
-// =============================================================================
 
 export function createMockHistoryService(
     overrides: Partial<IHistoryService> = {}
@@ -108,9 +96,7 @@ export function createMockHistoryService(
     };
 }
 
-// =============================================================================
 // Full Mock Services Container
-// =============================================================================
 
 export function createMockServices(
     overrides: Partial<IServices> = {}
@@ -125,9 +111,7 @@ export function createMockServices(
     };
 }
 
-// =============================================================================
 // Test Data Factories
-// =============================================================================
 
 export const testData = {
     tab: (overrides: Partial<chrome.tabs.Tab> = {}): chrome.tabs.Tab => ({

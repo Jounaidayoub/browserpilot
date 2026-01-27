@@ -7,9 +7,7 @@ import { describe, it, expect } from "vitest";
 import { ZodError, z } from "zod";
 import { formatZodIssues, toTimestamp } from "@/tools/utils";
 
-// =============================================================================
 // formatZodIssues Tests
-// =============================================================================
 
 describe("formatZodIssues", () => {
     it("formats a single issue without path", () => {
@@ -70,9 +68,7 @@ describe("formatZodIssues", () => {
     });
 });
 
-// =============================================================================
 // toTimestamp Tests
-// =============================================================================
 
 describe("toTimestamp", () => {
     it("returns undefined for undefined input", () => {

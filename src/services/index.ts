@@ -33,9 +33,7 @@ export {
     chromeHistoryService,
 } from "./chrome-services";
 
-// =============================================================================
 // Default Service Container (Chrome implementations)
-// =============================================================================
 
 export const services: IServices = {
     tabs: chromeTabsService,
@@ -45,9 +43,7 @@ export const services: IServices = {
     history: chromeHistoryService,
 };
 
-// =============================================================================
 // Service Injection Helper
-// =============================================================================
 
 /**
  * Creates a custom service container with overrides

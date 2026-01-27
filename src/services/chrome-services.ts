@@ -11,9 +11,6 @@ import type {
   IHistoryService,
 } from "./interfaces";
 
-// =============================================================================
-// Chrome Tabs Service
-// =============================================================================
 
 export const chromeTabsService: ITabsService = {
   query: (queryInfo) => chrome.tabs.query(queryInfo),
@@ -35,9 +32,6 @@ export const chromeTabsService: ITabsService = {
   },
 };
 
-// =============================================================================
-// Chrome Tab Groups Service
-// =============================================================================
 
 export const chromeTabGroupsService: ITabGroupsService = {
   query: (queryInfo) => chrome.tabGroups.query(queryInfo ?? {}),
@@ -45,17 +39,11 @@ export const chromeTabGroupsService: ITabGroupsService = {
     chrome.tabGroups.update(groupId, updateProperties),
 };
 
-// =============================================================================
-// Chrome Scripting Service
-// =============================================================================
 
 export const chromeScriptingService: IScriptingService = {
   executeScript: (injection) => chrome.scripting.executeScript(injection),
 };
 
-// =============================================================================
-// Chrome Messaging Service
-// =============================================================================
 
 export const chromeMessagingService: IMessagingService = {
   sendMessage: (message) => chrome.runtime.sendMessage(message),
@@ -67,9 +55,6 @@ export const chromeMessagingService: IMessagingService = {
   },
 };
 
-// =============================================================================
-// Chrome History Service
-// =============================================================================
 
 export const chromeHistoryService: IHistoryService = {
   search: (query) => chrome.history.search(query),
