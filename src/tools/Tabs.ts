@@ -78,12 +78,12 @@ export const group_tabs_by_ids = defineTool(groupTabsByIdsDef, async ({ groups }
   return "Grouped tabs into " + groups.length + " groups.";
 });
 
-export const open_new_tab = defineTool(openNewTabDef, async ({ url, Withcontent }, services) => {
+export const open_new_tab = defineTool(openNewTabDef, async ({ url, withContent }, services) => {
   const newTab = await createTabAndWait({ url }, services);
 
   let content = null;
   try {
-    if (Withcontent) {
+    if (withContent) {
       content = await fetchTabContent(newTab.id!, services);
     }
   } catch (error) {
@@ -91,7 +91,7 @@ export const open_new_tab = defineTool(openNewTabDef, async ({ url, Withcontent 
   }
 
   const tabId = newTab.id ?? "unknown";
-  const contentSuffix = Withcontent ? `, with content : ${content?.markdown}` : "";
+  const contentSuffix = withContent ? `, with content : ${content?.markdown}` : "";
 
   return `Opened new tab with id ${tabId} for url: ${url}${contentSuffix}`;
 });

@@ -1,9 +1,5 @@
 import { defineTool } from "./defineTool";
-import {
-  getTabContentDef,
-  getPageContentDef,
-  getPageDomSnapshotDef,
-} from "./definitions/page.def";
+import { getTabContentDef } from "./definitions/page.def";
 import Inspector from "@/sidepanel/Inspector";
 import { services, type IServices } from "@/services";
 import { convertHtmlToMarkdown } from "dom-to-semantic-markdown";
@@ -60,37 +56,6 @@ export const get_tab_content = defineTool(getTabContentDef, async ({ tabId }, se
   });
 });
 
-export const get_page_content = defineTool(getPageContentDef, async ({ tabId }, services) => {
-  const response = await services.messaging.sendMessage({
-    action: "get_page_dom_snapshot",
-    tabId,
-  });
-
-  const resp = response as { success?: boolean; error?: string; _snap?: unknown };
-  if (!resp?.success) {
-    throw new Error(resp?.error || "Failed to get page content");
-  }
-
-  const snapshot = resp._snap;
-  return typeof snapshot === "string" ? snapshot : JSON.stringify(snapshot);
-});
-
-export const get_page_dom_snapshot = defineTool(getPageDomSnapshotDef, async ({ tabId, options }, services) => {
-  const response = await services.messaging.sendMessage({
-    action: "get_page_dom_snapshot",
-    toolName: "get_page_dom_snapshot",
-    tabId,
-    input: options,
-  });
-
-  const resp = response as { success?: boolean; error?: string; snapshot?: unknown };
-  if (!resp?.success) {
-    throw new Error(resp?.error || "Failed to get snapshot");
-  }
-
-  const snapshot = resp.snapshot;
-  return typeof snapshot === "string" ? snapshot : JSON.stringify(snapshot);
-});
 
 export const injectInspector = async (svc: IServices = services): Promise<string> => {
   return new Promise(async (resolve, reject) => {

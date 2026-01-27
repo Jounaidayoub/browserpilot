@@ -161,7 +161,6 @@ const ChatBotDemo = () => {
               {status === "submitted" && <Loader />}
             </ConversationContent>
           </Conversation>
-
           <ChatPromptInput
             input={input}
             setInput={setInput}

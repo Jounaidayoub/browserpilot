@@ -11,6 +11,6 @@ export const searchHistorySchema = z.object({
 
 export const searchHistoryDef: ToolDefinition<typeof searchHistorySchema> = {
     name: "search_history",
-    description: "Search the browser history within an optional time range and result limit.",
+    description: "Search browser history by keyword. Optionally filter by time range (startTime/endTime as ISO strings or timestamps) and limit results with maxResults.",
     inputSchema: searchHistorySchema,
 };
