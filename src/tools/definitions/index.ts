@@ -3,13 +3,11 @@
 
 export * from "./tabs.def";
 export * from "./page.def";
-export * from "./scripting.def";
 export * from "./history.def";
 export * from "./time.def";
 
 import { getGroupsDef, getTabsDef, closeTabsDef, groupTabsByIdsDef, openNewTabDef } from "./tabs.def";
-import { getTabContentDef, getPageContentDef, getPageDomSnapshotDef } from "./page.def";
-import { runScriptDef } from "./scripting.def";
+import { getTabContentDef } from "./page.def";
 import { searchHistoryDef } from "./history.def";
 import { getCurrentTimeDef } from "./time.def";
 
@@ -23,9 +21,6 @@ export const toolDefinitions: ToolDefinition[] = [
     groupTabsByIdsDef,
     openNewTabDef,
     getTabContentDef,
-    getPageContentDef,
-    getPageDomSnapshotDef,
-    runScriptDef,
     searchHistoryDef,
     getCurrentTimeDef,
 ] as ToolDefinition[];

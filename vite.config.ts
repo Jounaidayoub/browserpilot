@@ -12,7 +12,6 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": `${path.resolve(__dirname, "src")}`,
-      "playwright_lib": `${path.resolve(__dirname, "./node_modules/playwright/lib")}`,
     },
   },
   plugins: [
@@ -22,9 +21,7 @@ export default defineConfig({
     tailwindcss(),
     
   ],
-  optimizeDeps: {
-    exclude: ["playwright-crx"],
-  },
+  optimizeDeps: {},
   build: {
     // commonjsOptions: { include: ["pixelmatch"] },
     minify: false,
