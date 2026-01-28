@@ -3,6 +3,7 @@ import { convertToModelMessages, streamText, type UIMessage } from "ai";
 import { defaultProvider } from "../config/providers.ts";
 import { systemPrompt, type BrowserContext } from "../lib/prompts.ts";
 import { tools } from "../tools/definitions.ts";
+import { AppContext } from "../app.ts";
 
 /**
  * Chat request body schema
@@ -15,7 +16,7 @@ interface ChatRequestBody {
     currentcontext?: BrowserContext;
 }
 
-const chatRoutes = new Hono();
+const chatRoutes = new Hono<AppContext>();
 
 
 /**
@@ -24,8 +25,8 @@ const chatRoutes = new Hono();
  */
 chatRoutes.post("/", async (c) => {
 
-
     
+
     const body = await c.req.json<ChatRequestBody>();
     const { messages, model, currentcontext } = body;
 
