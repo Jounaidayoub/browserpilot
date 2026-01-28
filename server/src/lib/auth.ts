@@ -1,5 +1,5 @@
 import { betterAuth } from "better-auth";
-import Database from "better-sqlite3";
+import { getDb } from "./db.ts";
 
 export const auth = betterAuth({
   basePath: "auth",
@@ -7,5 +7,5 @@ export const auth = betterAuth({
     enabled: true,
   },
   trustedOrigins: ["chrome-extension://onlephlmhdpaaafgbicaieamdaadabln"],
-  database: new Database("./sqlite.db"),
+  database: getDb(),
 });
