@@ -55,7 +55,7 @@ const ChatBotDemo = () => {
     setMessages,
   } = useChat({
     transport: new DefaultChatTransport({
-      api: "http://localhost:8080/",
+      api: "http://localhost:8080/api/chat",
     }),
     sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
     async onToolCall({ toolCall }) {
