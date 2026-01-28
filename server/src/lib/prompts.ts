@@ -29,7 +29,7 @@ ${context.activetabContent}`;
 }
 
 
-
+//TODO: enhance the system prompt , read this https://www.anthropic.com/engineering/effective-context-engineering-for-ai-agents 
 export function systemPrompt(context?: BrowserContext): string {
 
     return `
@@ -70,6 +70,7 @@ export function systemPrompt(context?: BrowserContext): string {
           
       
       use the available tools to interact with the browser and get more information if needed.
-      >Note:by default taks/questiosn are rleated to the current active tab. unless the user specify otherwise.
+      >Note:by default taks/questiosn are rleated to the current active tab (use the \`get_tab_content\` tool to get the content of the active tab to serve the user with it). unless the user specify otherwise.
+      if the user gave you a taks without context initialy use the \`get_tab_content\` tool to get the content , do not get the active tab content initialy if the task/question does not need more context 
       </currentcontext>`;
 }
