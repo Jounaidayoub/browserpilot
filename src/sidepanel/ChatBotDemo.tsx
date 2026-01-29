@@ -17,19 +17,79 @@ import { ChatMessage } from "@/components/ChatMessage";
 import { ChatPromptInput } from "@/components/ChatPromptInput";
 import { Loader } from "@/components/ai-elements/loader";
 import { currentcontext } from "@/tools/utils";
+import { useAuth } from "@/lib/auth-context";
+import { useProviderStatus } from "@/hooks/useProviderStatus";
 
 const models = [
-  { name: "GPT-4.1", value: "gpt-4.1-2025-04-14" },
-  { name: "Grok Code Fast 1", value: "grok-code-fast-1" },
-  { name: "GPT-4o", value: "gpt-4o-2024-11-20" },
-  { name: "GPT-5 mini", value: "gpt-5-mini" },
+  { name: "GPT-4.1", value: "gpt-4.1-2025-04-14", provider: "default" },
+  { name: "Grok Code Fast 1", value: "grok-code-fast-1", provider: "default" },
+  { name: "GPT-4o", value: "gpt-4o-2024-11-20", provider: "default" },
+  { name: "GPT-5 mini", value: "gpt-5-mini", provider: "default" },
+];
+
+const openRouterModels = [
+  {
+    value: "nvidia/nemotron-3-nano-30b-a3b:free",
+    name: "NemoTron 3 Nano 30B A3B (free)",
+    provider: "openrouter",
+  },
+  {
+    name: "OpenAI: gpt-oss-120b (free)",
+    value: "openai/gpt-oss-120b:free",
+    provider: "openrouter",
+  },
+  {
+    value: "tngtech/deepseek-r1t2-chimera:free",
+    name: "DeepSeek R1T2 Chimera (free)",
+    provider: "openrouter",
+  },
+  {
+    name: "Claude 3.5 Sonnet",
+    value: "anthropic/claude-3.5-sonnet",
+    provider: "openrouter",
+  },
+  {
+    name: "DeepSeek R1",
+    value: "deepseek/deepseek-r1",
+    provider: "openrouter",
+  },
+  {
+    name: "Llama 3 70B",
+    value: "meta-llama/llama-3-70b-instruct",
+    provider: "openrouter",
+  },
+
+  {
+    name: "z-ai/glm-4.5-air:free",
+    value: "z-ai/glm-4.5-air:free",
+    provider: "openrouter",
+  },
 ];
 
 const ChatBotDemo = () => {
+  const { isAuthenticated, triggerAuthDialog } = useAuth();
+  const { isconnected } = useProviderStatus();
   const [input, setInput] = useState("");
   const [model, setModel] = useState<string>("gpt-4o-2024-11-20");
+  const [providerId, setProviderId] = useState<"default" | "openrouter">(
+    "default",
+  );
   const [webSearch, setWebSearch] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+
+  // Combine models based on connection status
+  const availableModels = isconnected
+    ? [...models, ...openRouterModels]
+    : models;
+
+  // Update providerId when model changes
+  const handleModelChange = (newModel: string) => {
+    setModel(newModel);
+    const selectedModel = availableModels.find((m) => m.value === newModel);
+    if (selectedModel) {
+      setProviderId(selectedModel.provider as "default" | "openrouter");
+    }
+  };
 
   const {
     currentChatId,
@@ -53,8 +113,12 @@ const ChatBotDemo = () => {
     setMessages,
   } = useChat({
     transport: new DefaultChatTransport({
-      api: "http://localhost:8080/",
+      api: "http://localhost:8080/api/chat",
     }),
+    ///fix a critical bug , the sendAutomaticallyWhen doesnot send the body , so we nened to send it from here
+    //note the values useed here will be stale on the creation of the DefaultChatTransport instance ,
+    //  useRef take a look at https://github.com/vercel/ai/issues/11423 and https://ai-sdk.dev/docs/ai-sdk-ui/chatbot#dynamic-hook-level-configuration
+
     sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
     async onToolCall({ toolCall }) {
       if (toolCall.dynamic) {
@@ -70,6 +134,12 @@ const ChatBotDemo = () => {
     const hasAttachments = Boolean(message.files?.length);
 
     if (!(hasText || hasAttachments)) {
+      return;
+    }
+
+    // Show auth dialog if user is not authenticated
+    if (!isAuthenticated) {
+      triggerAuthDialog();
       return;
     }
 
@@ -89,10 +159,11 @@ const ChatBotDemo = () => {
       {
         body: {
           model: model,
+          providerId: providerId,
           webSearch: webSearch,
           currentcontext: currentcontextData,
         },
-      }
+      },
     );
     setInput("");
   };
@@ -170,8 +241,8 @@ const ChatBotDemo = () => {
             webSearch={webSearch}
             setWebSearch={setWebSearch}
             model={model}
-            setModel={setModel}
-            models={models}
+            setModel={handleModelChange}
+            models={availableModels}
           />
         </div>
       </div>

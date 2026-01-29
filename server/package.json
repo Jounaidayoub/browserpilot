@@ -1,6 +1,7 @@
 {
   "name": "browser-assistant-server",
   "type": "module",
+  "module": "",
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "build": "tsc",
@@ -11,14 +12,19 @@
     "@ai-sdk/openai": "3.0.0-beta.25",
     "@ai-sdk/openai-compatible": "^1.0.26",
     "@hono/node-server": "^1.19.5",
+    "@libsql/client": "^0.17.0",
     "ai": "6.0.0-beta.42",
     "better-auth": "^1.4.7",
+    "better-sqlite3": "^12.6.2",
+    "browser-assistant-extension": "workspace:*",
     "dotenv": "^17.2.3",
-    "hono": "^4.9.10",
-    "browser-assistant-extension": "workspace:*"
+    "drizzle-orm": "^0.45.1",
+    "hono": "^4.9.10"
   },
   "devDependencies": {
+    "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^20.11.17",
+    "drizzle-kit": "^0.31.8",
     "tsx": "^4.7.1",
     "typescript": "^5.8.3"
   }

@@ -120,16 +120,16 @@
   --spacing: 0.25rem;
   --shadow-2xs: 0px 6px 12px -3px hsl(0 0% 0% / 0.04);
   --shadow-xs: 0px 6px 12px -3px hsl(0 0% 0% / 0.04);
-  --shadow-sm: 0px 6px 12px -3px hsl(0 0% 0% / 0.09),
-    0px 1px 2px -4px hsl(0 0% 0% / 0.09);
-  --shadow: 0px 6px 12px -3px hsl(0 0% 0% / 0.09),
-    0px 1px 2px -4px hsl(0 0% 0% / 0.09);
-  --shadow-md: 0px 6px 12px -3px hsl(0 0% 0% / 0.09),
-    0px 2px 4px -4px hsl(0 0% 0% / 0.09);
-  --shadow-lg: 0px 6px 12px -3px hsl(0 0% 0% / 0.09),
-    0px 4px 6px -4px hsl(0 0% 0% / 0.09);
-  --shadow-xl: 0px 6px 12px -3px hsl(0 0% 0% / 0.09),
-    0px 8px 10px -4px hsl(0 0% 0% / 0.09);
+  --shadow-sm:
+    0px 6px 12px -3px hsl(0 0% 0% / 0.09), 0px 1px 2px -4px hsl(0 0% 0% / 0.09);
+  --shadow:
+    0px 6px 12px -3px hsl(0 0% 0% / 0.09), 0px 1px 2px -4px hsl(0 0% 0% / 0.09);
+  --shadow-md:
+    0px 6px 12px -3px hsl(0 0% 0% / 0.09), 0px 2px 4px -4px hsl(0 0% 0% / 0.09);
+  --shadow-lg:
+    0px 6px 12px -3px hsl(0 0% 0% / 0.09), 0px 4px 6px -4px hsl(0 0% 0% / 0.09);
+  --shadow-xl:
+    0px 6px 12px -3px hsl(0 0% 0% / 0.09), 0px 8px 10px -4px hsl(0 0% 0% / 0.09);
   --shadow-2xl: 0px 6px 12px -3px hsl(0 0% 0% / 0.22);
   --tracking-normal: 0em;
 }
@@ -181,17 +181,18 @@
   --spacing: 0.25rem;
   --shadow-2xs: 0px 6px 12px -3px hsl(0 0% 0% / 0.04);
   --shadow-xs: 0px 6px 12px -3px hsl(0 0% 0% / 0.04);
-  --shadow-sm: 0px 6px 12px -3px hsl(0 0% 0% / 0.09),
-    0px 1px 2px -4px hsl(0 0% 0% / 0.09);
-  --shadow: 0px 6px 12px -3px hsl(0 0% 0% / 0.09),
-    0px 1px 2px -4px hsl(0 0% 0% / 0.09);
-  --shadow-md: 0px 6px 12px -3px hsl(0 0% 0% / 0.09),
-    0px 2px 4px -4px hsl(0 0% 0% / 0.09);
-  --shadow-lg: 0px 6px 12px -3px hsl(0 0% 0% / 0.09),
-    0px 4px 6px -4px hsl(0 0% 0% / 0.09);
-  --shadow-xl: 0px 6px 12px -3px hsl(0 0% 0% / 0.09),
-    0px 8px 10px -4px hsl(0 0% 0% / 0.09);
+  --shadow-sm:
+    0px 6px 12px -3px hsl(0 0% 0% / 0.09), 0px 1px 2px -4px hsl(0 0% 0% / 0.09);
+  --shadow:
+    0px 6px 12px -3px hsl(0 0% 0% / 0.09), 0px 1px 2px -4px hsl(0 0% 0% / 0.09);
+  --shadow-md:
+    0px 6px 12px -3px hsl(0 0% 0% / 0.09), 0px 2px 4px -4px hsl(0 0% 0% / 0.09);
+  --shadow-lg:
+    0px 6px 12px -3px hsl(0 0% 0% / 0.09), 0px 4px 6px -4px hsl(0 0% 0% / 0.09);
+  --shadow-xl:
+    0px 6px 12px -3px hsl(0 0% 0% / 0.09), 0px 8px 10px -4px hsl(0 0% 0% / 0.09);
   --shadow-2xl: 0px 6px 12px -3px hsl(0 0% 0% / 0.22);
+  --tracking-normal: 0em;
 }
 /* Blue Theme */
 .theme-blue {
@@ -356,7 +357,7 @@ body {
   letter-spacing: var(--tracking-wide, 1px);
   padding: 0 var(--spacing, 12px);
   text-align: center;
-  text-transform: uppercase;
+  /* text-transform: uppercase; */
   font-weight: normal;
   border-radius: var(--radius);
   outline: none;
