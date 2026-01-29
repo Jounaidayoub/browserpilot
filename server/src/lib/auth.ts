@@ -1,5 +1,6 @@
 import { betterAuth } from "better-auth";
-import Database from "better-sqlite3";
+import { drizzleAdapter } from "better-auth/adapters/drizzle";
+import { db } from "../db/index.ts";
 
 export const auth = betterAuth({
   basePath: "auth",
@@ -7,5 +8,7 @@ export const auth = betterAuth({
     enabled: true,
   },
   trustedOrigins: ["chrome-extension://onlephlmhdpaaafgbicaieamdaadabln"],
-  database: new Database("./sqlite.db"),
+  database: drizzleAdapter(db, {
+    provider: "sqlite",
+  }),
 });

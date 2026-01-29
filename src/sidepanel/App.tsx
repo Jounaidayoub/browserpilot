@@ -5,6 +5,7 @@ import ChatBotDemo from "./ChatBotDemo";
 import { AuthProvider, useAuth } from "@/lib/auth-context";
 import { AuthDialog } from "@/components/auth-dialog";
 import { Loader2 } from "lucide-react";
+import { Toaster } from "@/components/ui/sonner";
 
 function AppContent() {
   const { isPending, error } = useAuth();
@@ -32,6 +33,7 @@ function AppContent() {
       </div>
       <ChatBotDemo />
       <AuthDialog />
+      <Toaster />
     </>
   );
 }
