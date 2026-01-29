@@ -44,7 +44,7 @@ export const closeTabsDef: ToolDefinition<typeof closeTabsSchema> = {
 
 export const groupTabsByIdsDef: ToolDefinition<typeof groupTabsByIdsSchema> = {
     name: "group_tabs_by_ids",
-    description: "Organize tabs into named groups. Provide tab IDs, a short descriptive title, and optional color for each group. Use this to categorize tabs by topic or project.",
+    description: "Organize tabs into named groups. Provide tab IDs, a short descriptive title, and optional color for each group. Use this to categorize tabs by topic or project. \n Note: given the limited window space, keep group titles concise and short use abbreviations where possible., also don't create too many groups to not overwhelm the tab bar.",
     inputSchema: groupTabsByIdsSchema,
 };
 
