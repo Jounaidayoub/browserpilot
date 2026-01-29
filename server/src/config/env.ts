@@ -17,7 +17,7 @@ export const env = {
     PORT: parseInt(process.env.PORT || "8080", 10),
 
     // API Keys
-    GOOGLE_API_KEY: getRequiredEnv("GOOGLE_API_KEY"),
+    // GOOGLE_API_KEY: getRequiredEnv("GOOGLE_API_KEY"),
 
     // AI Provider
     AI_BASE_URL: process.env.AI_BASE_URL || "http://localhost:4141/v1",

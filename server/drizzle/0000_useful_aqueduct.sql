@@ -1,6 +1,5 @@
 -- Current sql file was generated after introspecting the database
 -- If you want to run this migration please uncomment this code before executing migrations
-/*
 CREATE TABLE `user` (
 	`id` text PRIMARY KEY NOT NULL,
 	`name` text NOT NULL,
@@ -70,5 +69,3 @@ CREATE TABLE `oauth_flows` (
 	`createdAt` integer NOT NULL,
 	`expiresAt` integer NOT NULL
 );
-
-*/
