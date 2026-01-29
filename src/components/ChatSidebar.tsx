@@ -3,9 +3,10 @@ import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ChatSession } from "@/lib/storage";
 import { cn } from "@/lib/utils";
-import { signOut, useSession } from "@/lib/auth-client";
+import { signOut } from "@/lib/auth-client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuth } from "@/lib/auth-context";
+import { ProvidersDialog } from "@/components/ProvidersDialog";
 
 interface ChatSidebarProps {
   isOpen: boolean;
@@ -162,6 +163,7 @@ export const ChatSidebar = ({
                 <LogOut className="h-4 w-4 text-muted-foreground hover:text-destructive transition-colors" />
               </Button>
             </div>
+            <ProvidersDialog />
           </div>
         )}
       </div>
