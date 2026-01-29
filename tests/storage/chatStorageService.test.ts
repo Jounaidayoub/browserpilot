@@ -93,7 +93,7 @@ describe("ChatStorageService", () => {
     });
 
     it("sorts chats by most recent update", async () => {
-        adapter.chats = [
+        const seedChats: ChatSession[] = [
             {
                 id: "chat-1",
                 title: "Old",
@@ -109,6 +109,8 @@ describe("ChatStorageService", () => {
                 updatedAt: 20,
             },
         ];
+        await service.saveChat(seedChats[0]);
+        await service.saveChat(seedChats[1]);
         const chats = await service.getAllChats();
         expect(chats[0].id).toBe("chat-2");
         expect(chats[1].id).toBe("chat-1");
