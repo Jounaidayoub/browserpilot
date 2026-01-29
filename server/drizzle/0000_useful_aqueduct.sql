@@ -52,14 +52,23 @@ CREATE TABLE `verification` (
 );
 --> statement-breakpoint
 CREATE INDEX `verification_identifier_idx` ON `verification` (`identifier`);--> statement-breakpoint
-CREATE TABLE `user_api_key` (
+CREATE TABLE `user_provider_keys` (
 	`id` text PRIMARY KEY,
 	`userId` text NOT NULL,
 	`provider` text NOT NULL,
-	`key` text NOT NULL,
-	`createdAt` numeric DEFAULT (CURRENT_TIMESTAMP),
-	`updatedAt` numeric DEFAULT (CURRENT_TIMESTAMP),
-	FOREIGN KEY (`userId`) REFERENCES `user`(`id`) ON UPDATE no action ON DELETE cascade
+	`apiKey` text NOT NULL,
+	`createdAt` integer NOT NULL,
+	`updatedAt` integer NOT NULL
+);
+--> statement-breakpoint
+CREATE TABLE `oauth_flows` (
+	`state` text PRIMARY KEY,
+	`userId` text NOT NULL,
+	`provider` text NOT NULL,
+	`status` text NOT NULL,
+	`error` text,
+	`createdAt` integer NOT NULL,
+	`expiresAt` integer NOT NULL
 );
 
 */

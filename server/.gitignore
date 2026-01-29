@@ -15,6 +15,11 @@ node_modules/
 .env
 .env.production
 
+# database
+*.db
+*.db-shm
+*.db-wal
+
 # logs
 logs/
 *.log

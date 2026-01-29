@@ -1,5 +1,5 @@
 import { relations } from "drizzle-orm/relations";
-import { user, session, account, userApiKey } from "./schema";
+import { user, session, account, userProviderKeys, oauthFlows } from "./schema";
 
 export const sessionRelations = relations(session, ({one}) => ({
 	user: one(user, {
@@ -11,7 +11,8 @@ export const sessionRelations = relations(session, ({one}) => ({
 export const userRelations = relations(user, ({many}) => ({
 	sessions: many(session),
 	accounts: many(account),
-	userApiKeys: many(userApiKey),
+	userProviderKeys: many(userProviderKeys),
+	oauthFlows: many(oauthFlows),
 }));
 
 export const accountRelations = relations(account, ({one}) => ({
@@ -21,9 +22,16 @@ export const accountRelations = relations(account, ({one}) => ({
 	}),
 }));
 
-export const userApiKeyRelations = relations(userApiKey, ({one}) => ({
+export const userProviderKeysRelations = relations(userProviderKeys, ({one}) => ({
 	user: one(user, {
-		fields: [userApiKey.userId],
+		fields: [userProviderKeys.userId],
+		references: [user.id]
+	}),
+}));
+
+export const oauthFlowsRelations = relations(oauthFlows, ({one}) => ({
+	user: one(user, {
+		fields: [oauthFlows.userId],
 		references: [user.id]
 	}),
 }));

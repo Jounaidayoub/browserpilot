@@ -1,68 +1,27 @@
 import { randomUUID } from "node:crypto";
-import type { Database as DatabaseType } from "better-sqlite3";
-import { getDb } from "./db.ts";
+import { db } from "../db/index.ts";
+import { userProviderKeys, oauthFlows } from "../db/schema.ts";
+import { eq, and, desc, type InferSelectModel, type InferInsertModel } from "drizzle-orm";
 
 export type ProviderId = "default" | "openrouter";
 export type OAuthFlowStatus = "pending" | "completed" | "error";
 
-export interface OAuthFlowRow {
-    state: string;
-    userId: string;
-    provider: ProviderId;
-    status: OAuthFlowStatus;
-    error: string | null;
-    createdAt: number;
-    expiresAt: number;
-}
+// Infer types from Drizzle schema
+export type OAuthFlow = InferSelectModel<typeof oauthFlows>;
+export type InsertOAuthFlow = InferInsertModel<typeof oauthFlows>;
 
-export interface UserProviderKeyRow {
-    id: string;
-    userId: string;
-    provider: ProviderId;
-    apiKey: string;
-    createdAt: number;
-    updatedAt: number;
-}
+export type UserProviderKey = InferSelectModel<typeof userProviderKeys>;
+export type InsertUserProviderKey = InferInsertModel<typeof userProviderKeys>;
 
 const FLOW_TTL_MS = 10 * 60 * 1000;
 
-function ensureTables(db: DatabaseType): void {
-    db.exec(`
-        CREATE TABLE IF NOT EXISTS user_provider_keys (
-            id TEXT PRIMARY KEY,
-            userId TEXT NOT NULL,
-            provider TEXT NOT NULL,
-            apiKey TEXT NOT NULL,
-            createdAt INTEGER NOT NULL,
-            updatedAt INTEGER NOT NULL,
-            UNIQUE (userId, provider)
-        );
-        CREATE TABLE IF NOT EXISTS oauth_flows (
-            state TEXT PRIMARY KEY,
-            userId TEXT NOT NULL,
-            provider TEXT NOT NULL,
-            status TEXT NOT NULL,
-            error TEXT NULL,
-            createdAt INTEGER NOT NULL,
-            expiresAt INTEGER NOT NULL
-        );
-    `);
-}
-
-function dbNow(): number {
+export function dbNow(): number {
     return Date.now();
 }
 
-function getDbWithSchema(): DatabaseType {
-    const db = getDb();
-    ensureTables(db);
-    return db;
-}
-
-export function createOAuthFlow(userId: string, provider: ProviderId): OAuthFlowRow {
-    const db = getDbWithSchema();
+export async function createOAuthFlow(userId: string, provider: ProviderId): Promise<OAuthFlow> {
     const now = dbNow();
-    const flow: OAuthFlowRow = {
+    const flow: InsertOAuthFlow = {
         state: randomUUID(),
         userId,
         provider,
@@ -72,77 +31,102 @@ export function createOAuthFlow(userId: string, provider: ProviderId): OAuthFlow
         expiresAt: now + FLOW_TTL_MS,
     };
 
-    const stmt = db.prepare(
-        `INSERT INTO oauth_flows (state, userId, provider, status, error, createdAt, expiresAt)
-         VALUES (@state, @userId, @provider, @status, @error, @createdAt, @expiresAt)`
-    );
-    stmt.run(flow);
+    await db.insert(oauthFlows).values(flow);
 
-    return flow;
+    // Fetch and return the actual row from the database
+    const inserted = await db
+        .select()
+        .from(oauthFlows)
+        .where(eq(oauthFlows.state, flow.state))
+        .get();
+
+    if (!inserted) {
+        throw new Error("Failed to create OAuth flow");
+    }
+
+    return inserted;
 }
 
-export function getOAuthFlow(state: string): OAuthFlowRow | null {
-    const db = getDbWithSchema();
-    const stmt = db.prepare(
-        `SELECT state, userId, provider, status, error, createdAt, expiresAt
-         FROM oauth_flows WHERE state = ?`
-    );
-    const row = stmt.get(state) as OAuthFlowRow | undefined;
+export async function getOAuthFlow(state: string): Promise<OAuthFlow | null> {
+    const row = await db
+        .select()
+        .from(oauthFlows)
+        .where(eq(oauthFlows.state, state))
+        .get();
+    
     return row ?? null;
 }
 
-export function updateOAuthFlowStatus(
+export async function updateOAuthFlowStatus(
     state: string,
     status: OAuthFlowStatus,
     error: string | null
-): void {
-    const db = getDbWithSchema();
-    const stmt = db.prepare(
-        `UPDATE oauth_flows SET status = ?, error = ? WHERE state = ?`
-    );
-    stmt.run(status, error, state);
+): Promise<void> {
+    await db.update(oauthFlows)
+        .set({ status, error })
+        .where(eq(oauthFlows.state, state));
 }
 
-export function upsertUserProviderKey(
+export async function upsertUserProviderKey(
     userId: string,
     provider: ProviderId,
     apiKey: string
-): void {
-    const db = getDbWithSchema();
+): Promise<void> {
     const now = dbNow();
     const id = randomUUID();
-    const stmt = db.prepare(
-        `INSERT INTO user_provider_keys (id, userId, provider, apiKey, createdAt, updatedAt)
-         VALUES (?, ?, ?, ?, ?, ?)
-         ON CONFLICT(userId, provider)
-         DO UPDATE SET apiKey = excluded.apiKey, updatedAt = excluded.updatedAt`
-    );
-    stmt.run(id, userId, provider, apiKey, now, now);
+    
+    await db.insert(userProviderKeys)
+        .values({
+            id,
+            userId,
+            provider,
+            apiKey,
+            createdAt: now,
+            updatedAt: now,
+        })
+        .onConflictDoUpdate({
+            target: [userProviderKeys.userId, userProviderKeys.provider],
+            set: {
+                apiKey,
+                updatedAt: now,
+            },
+        });
 }
 
-export function getUserProviderKey(
+export async function getUserProviderKey(
     userId: string,
     provider: ProviderId
-): UserProviderKeyRow | null {
-    const db = getDbWithSchema();
-    const stmt = db.prepare(
-        `SELECT id, userId, provider, apiKey, createdAt, updatedAt
-         FROM user_provider_keys WHERE userId = ? AND provider = ?`
-    );
-    const row = stmt.get(userId, provider) as UserProviderKeyRow | undefined;
+): Promise<UserProviderKey | null> {
+    const row = await db
+        .select()
+        .from(userProviderKeys)
+        .where(
+            and(
+                eq(userProviderKeys.userId, userId),
+                eq(userProviderKeys.provider, provider)
+            )
+        )
+        .get();
+    
     return row ?? null;
 }
 
-export function getLatestOAuthFlowForUser(
+export async function getLatestOAuthFlowForUser(
     userId: string,
     provider: ProviderId
-): OAuthFlowRow | null {
-    const db = getDbWithSchema();
-    const stmt = db.prepare(
-        `SELECT state, userId, provider, status, error, createdAt, expiresAt
-         FROM oauth_flows WHERE userId = ? AND provider = ?
-         ORDER BY createdAt DESC LIMIT 1`
-    );
-    const row = stmt.get(userId, provider) as OAuthFlowRow | undefined;
+): Promise<OAuthFlow | null> {
+    const row = await db
+        .select()
+        .from(oauthFlows)
+        .where(
+            and(
+                eq(oauthFlows.userId, userId),
+                eq(oauthFlows.provider, provider)
+            )
+        )
+        .orderBy(desc(oauthFlows.createdAt))
+        .limit(1)
+        .get();
+    
     return row ?? null;
 }

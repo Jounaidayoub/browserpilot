@@ -37,7 +37,7 @@ chatRoutes.post("/", async (c) => {
   let modelProvider = defaultProvider(model);
   if (providerId === "openrouter") {
     const user = c.get("user");
-    const keyRow = getUserProviderKey(user.id, "openrouter");
+    const keyRow = await getUserProviderKey(user.id, "openrouter");
     if (!keyRow) {
       return c.json({ error: "OpenRouter not connected" }, 400);
     }

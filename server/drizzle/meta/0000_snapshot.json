@@ -334,8 +334,8 @@
       "uniqueConstraints": {},
       "checkConstraints": {}
     },
-    "user_api_key": {
-      "name": "user_api_key",
+    "user_provider_keys": {
+      "name": "user_provider_keys",
       "columns": {
         "id": {
           "autoincrement": false,
@@ -358,47 +358,90 @@
           "primaryKey": false,
           "notNull": true
         },
-        "key": {
+        "apiKey": {
           "autoincrement": false,
-          "name": "key",
+          "name": "apiKey",
           "type": "text",
           "primaryKey": false,
           "notNull": true
         },
         "createdAt": {
-          "default": "(CURRENT_TIMESTAMP)",
           "autoincrement": false,
           "name": "createdAt",
-          "type": "numeric",
+          "type": "integer",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
         "updatedAt": {
-          "default": "(CURRENT_TIMESTAMP)",
           "autoincrement": false,
           "name": "updatedAt",
-          "type": "numeric",
+          "type": "integer",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         }
       },
       "compositePrimaryKeys": {},
       "indexes": {},
-      "foreignKeys": {
-        "user_api_key_userId_user_id_fk": {
-          "name": "user_api_key_userId_user_id_fk",
-          "tableFrom": "user_api_key",
-          "tableTo": "user",
-          "columnsFrom": [
-            "userId"
-          ],
-          "columnsTo": [
-            "id"
-          ],
-          "onDelete": "cascade",
-          "onUpdate": "no action"
+      "foreignKeys": {},
+      "uniqueConstraints": {},
+      "checkConstraints": {}
+    },
+    "oauth_flows": {
+      "name": "oauth_flows",
+      "columns": {
+        "state": {
+          "autoincrement": false,
+          "name": "state",
+          "type": "text",
+          "primaryKey": true,
+          "notNull": false
+        },
+        "userId": {
+          "autoincrement": false,
+          "name": "userId",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "provider": {
+          "autoincrement": false,
+          "name": "provider",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "status": {
+          "autoincrement": false,
+          "name": "status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "error": {
+          "autoincrement": false,
+          "name": "error",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "createdAt": {
+          "autoincrement": false,
+          "name": "createdAt",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "expiresAt": {
+          "autoincrement": false,
+          "name": "expiresAt",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true
         }
       },
+      "compositePrimaryKeys": {},
+      "indexes": {},
+      "foreignKeys": {},
       "uniqueConstraints": {},
       "checkConstraints": {}
     }

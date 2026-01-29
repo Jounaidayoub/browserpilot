@@ -1,4 +1,4 @@
-import { sqliteTable, AnySQLiteColumn, text, integer, numeric, index, foreignKey } from "drizzle-orm/sqlite-core"
+import { sqliteTable, AnySQLiteColumn, text, integer, numeric, index, foreignKey, unique } from "drizzle-orm/sqlite-core"
   import { sql } from "drizzle-orm"
 
 export const user = sqliteTable("user", {
@@ -56,12 +56,29 @@ export const verification = sqliteTable("verification", {
 	index("verification_identifier_idx").on(table.identifier),
 ]);
 
-export const userApiKey = sqliteTable("user_api_key", {
+export const userProviderKeys = sqliteTable("user_provider_keys", {
 	id: text().primaryKey(),
-	userId: text().notNull().references(() => user.id, { onDelete: "cascade" } ),
+	userId: text().notNull().references(() => user.id, { onDelete: "cascade" }),
 	provider: text().notNull(),
-	key: text().notNull(),
-	createdAt: numeric().default(sql`(CURRENT_TIMESTAMP)`),
-	updatedAt: numeric().default(sql`(CURRENT_TIMESTAMP)`),
-});
+	apiKey: text().notNull(),
+	createdAt: integer().notNull(),
+	updatedAt: integer().notNull(),
+},
+(table) => [
+	index("user_provider_keys_userId_provider_idx").on(table.userId, table.provider),
+	unique("user_provider_keys_userId_provider_unique").on(table.userId, table.provider),
+]);
+
+export const oauthFlows = sqliteTable("oauth_flows", {
+	state: text().primaryKey(),
+	userId: text().notNull().references(() => user.id, { onDelete: "cascade" }),
+	provider: text().notNull(),
+	status: text().notNull(),
+	error: text(),
+	createdAt: integer().notNull(),
+	expiresAt: integer().notNull(),
+},
+(table) => [
+	index("oauth_flows_userId_provider_idx").on(table.userId, table.provider),
+]);
 

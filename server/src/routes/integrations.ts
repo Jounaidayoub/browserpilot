@@ -8,6 +8,7 @@ import {
     getUserProviderKey,
     updateOAuthFlowStatus,
     upsertUserProviderKey,
+    dbNow,
 } from "../lib/integrations.ts";
 
 interface OpenRouterKeyResponse {
@@ -19,7 +20,7 @@ const integrationsRoutes = new Hono<AppContext>();
 
 integrationsRoutes.get("/openrouter/start", async (c) => {
     const user = c.get("user");
-    const flow = createOAuthFlow(user.id, "openrouter");
+    const flow = await createOAuthFlow(user.id, "openrouter");
     const callbackUrl = `${env.BETTER_AUTH_URL}/api/integrations/openrouter/callback?state=${flow.state}`;
     const redirectUrl = `https://openrouter.ai/auth?callback_url=${encodeURIComponent(callbackUrl)}`;
 
@@ -39,7 +40,7 @@ integrationsRoutes.get("/openrouter/callback", async (c) => {
         return c.text("Missing code", 400);
     }
 
-    const flow = getOAuthFlow(state);
+    const flow = await getOAuthFlow(state);
     if (!flow || flow.userId !== user.id || flow.provider !== "openrouter") {
         return c.text("Invalid flow", 400);
     }
@@ -48,8 +49,8 @@ integrationsRoutes.get("/openrouter/callback", async (c) => {
         return c.text("Flow already completed", 400);
     }
 
-    if (flow.expiresAt < Date.now()) {
-        updateOAuthFlowStatus(flow.state, "error", "Flow expired");
+    if (flow.expiresAt < dbNow()) {
+        await updateOAuthFlowStatus(flow.state, "error", "Flow expired");
         return c.text("Flow expired, restart", 400);
     }
 
@@ -64,33 +65,34 @@ integrationsRoutes.get("/openrouter/callback", async (c) => {
 
         if (!response.ok) {
             const errorText = await response.text();
-            updateOAuthFlowStatus(flow.state, "error", errorText.slice(0, 500));
+            await updateOAuthFlowStatus(flow.state, "error", errorText.slice(0, 500));
             return c.text("OpenRouter exchange failed", 400);
         }
 
         const data = (await response.json()) as OpenRouterKeyResponse;
         if (!data.key) {
-            updateOAuthFlowStatus(flow.state, "error", data.error ?? "Missing key");
+            await updateOAuthFlowStatus(flow.state, "error", data.error ?? "Missing key");
             return c.text("OpenRouter exchange failed", 400);
         }
 
-        upsertUserProviderKey(user.id, "openrouter", data.key);
-        updateOAuthFlowStatus(flow.state, "completed", null);
+        await upsertUserProviderKey(user.id, "openrouter", data.key);
+        await updateOAuthFlowStatus(flow.state, "completed", null);
 
         return c.html(
             "<html><body><p>OpenRouter connected. You can close this tab.</p></body></html>"
         );
     } catch (error) {
         const message = error instanceof Error ? error.message : "Unknown error";
-        updateOAuthFlowStatus(flow.state, "error", message);
+        await updateOAuthFlowStatus(flow.state, "error", message);
         return c.text("OpenRouter exchange failed", 400);
     }
 });
 
 integrationsRoutes.get("/openrouter/status", async (c) => {
     const user = c.get("user");
-    const keyRow = getUserProviderKey(user.id, "openrouter");
-    const latestFlow = getLatestOAuthFlowForUser(user.id, "openrouter");
+    const keyRow = await getUserProviderKey(user.id, "openrouter");
+    
+    const latestFlow = await getLatestOAuthFlowForUser(user.id, "openrouter");
 
     return c.json({
         connected: Boolean(keyRow),
