@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { systemPrompt } from "@/server/lib/prompts";
+import { systemPrompt } from "../../server/src/lib/prompts";
 
 describe("systemPrompt", () => {
     it("returns default message when context is missing", () => {
