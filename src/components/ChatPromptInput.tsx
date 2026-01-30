@@ -65,7 +65,7 @@ export const ChatPromptInput = ({
   };
 
   return (
-    <PromptInput onSubmit={handleSubmit} className="" globalDrop multiple>
+    <PromptInput onSubmit={handleSubmit} className="bg-secondary shadow-2xl rounded-2xl border-2 border-primary/20" globalDrop multiple>
       <PromptInputBody>
         <PromptInputAttachments>
           {(attachment) => <PromptInputAttachment data={attachment} />}

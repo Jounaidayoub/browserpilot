@@ -83,7 +83,7 @@
   --primary-dark80: color-mix(in oklch, var(--primary), black 60%);
 
   --primary-foreground: oklch(1 0 0);
-  --secondary: oklch(97.297% 0.0132 28.442);
+  --secondary: color-mix(in oklch, var(--primary), white 70%);
   --secondary-foreground: oklch(0.5587 0.1294 32.7364);
   --muted: oklch(0.9656 0.0176 39.4009);
   --muted-foreground: oklch(0.5534 0.0116 58.0708);
