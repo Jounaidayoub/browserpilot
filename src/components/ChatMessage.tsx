@@ -1,28 +1,58 @@
-import { Fragment, memo } from "react";
-import { ToolUIPart, UIMessage, UITool } from "ai";
+import { Action, Actions } from "@/components/ai-elements/actions";
 import { Message, MessageContent } from "@/components/ai-elements/message";
-import { Response } from "@/components/ai-elements/response";
-import {
-  Source,
-  Sources,
-  SourcesContent,
-  SourcesTrigger,
-} from "@/components/ai-elements/sources";
 import {
   Reasoning,
   ReasoningContent,
   ReasoningTrigger,
 } from "@/components/ai-elements/reasoning";
-import { Actions, Action } from "@/components/ai-elements/actions";
-import { RefreshCcwIcon, CopyIcon, Wrench } from "lucide-react";
-import { ShimmeringText } from "@/components/ui/shimmering-text";
+import { Response } from "@/components/ai-elements/response";
 import {
   Tool,
   ToolContent,
   ToolHeader,
-  ToolOutput,
   ToolInput,
+  ToolOutput,
 } from "@/components/ai-elements/tool";
+import { ShimmeringText } from "@/components/ui/shimmering-text";
+import { UIMessage, type ToolUIPart } from "ai";
+import {
+  Clock,
+  CopyIcon,
+  FileText,
+  Globe,
+  History,
+  Layers,
+  LayoutGrid,
+  PlusSquare,
+  RefreshCcwIcon,
+  Sparkles,
+  Wrench,
+  XCircle,
+} from "lucide-react";
+import { Fragment, memo } from "react";
+
+const getToolIcon = (toolName: string) => {
+  switch (toolName) {
+    case "get_groups":
+      return LayoutGrid;
+    case "get_tabs":
+      return Globe;
+    case "close_tabs":
+      return XCircle;
+    case "group_tabs_by_ids":
+      return Layers;
+    case "open_new_tab":
+      return PlusSquare;
+    case "get_tab_content":
+      return FileText;
+    case "search_history":
+      return History;
+    case "get_current_time":
+      return Clock;
+    default:
+      return Sparkles;
+  }
+};
 
 interface ChatMessageProps {
   message: UIMessage;
@@ -69,30 +99,31 @@ export const ChatMessage = memo(
                 </Fragment>
               );
 
-            case part.type.startsWith("tool-") ? part.type : null:
-              // console.log("we got a toolcall (rendering !!)", part.type);
+            case part.type.startsWith("tool-") ? part.type : null: {
+              const toolName = (part.type as string).split("-")[1];
+              const Icon = getToolIcon(toolName);
+              const formattedName = toolName
+                .replace(/_/g, " ")
+                .replace(/^\w/, (c) => c.toUpperCase());
+              const isProcessing = (part as ToolUIPart).state !== "output-available";
+
               return (
-                <>
-                  <div className="flex flex-row items-center gap-2">
-                  <Wrench className="size-4.5 opacity-60 translate-y-[2px]" />
-                  <ShimmeringText
-                    key={`${message.id}-${i}`}
-                    text={`${(part.type as string)
-                      .split("-")[1]
-                      .replace(/_/g, " ")
-                      .replace(/^\w/, (c) => c.toUpperCase())} `}
-                    className="text-base font-bold"
-                    repeat={
-                      (part as ToolUIPart).state == "output-available"
-                        ? false
-                        : true
-                    }
-                  />
-                </div>
+                <div key={`${message.id}-${i}`} className="my-2">
+                  <div className="flex flex-row items-center gap-3">
+                    <div className="flex items-center justify-center size-8 rounded-lg bg-muted/50">
+                      <Icon className="size-4 opacity-70" />
+                    </div>
+                    <ShimmeringText
+                      text={formattedName}
+                      className="text-sm font-medium text-foreground/80"
+                      repeat={isProcessing}
+                    />
+                  </div>
+                  
                   {/* TODO : this needs better types handleling , `as` everywhere */}
                   {/* this an alernameive toolcall rendeirng method , for debguuge but mostly i want use hte simple one above
                 with shimmmer text effect */}
-                  <Tool defaultOpen={false}>
+                  {/* <Tool defaultOpen={false}>
                   <ToolHeader
                     type={`tool-${(part.type as string).split("-")[1]}`}
                     state={(part as ToolUIPart).state}
@@ -110,9 +141,10 @@ export const ChatMessage = memo(
                       errorText={(part as ToolUIPart).errorText}
                     />
                   </ToolContent>
-                </Tool>
-                </>
+                </Tool> */}
+                </div>
               );
+            }
 
             case "reasoning":
               return (
