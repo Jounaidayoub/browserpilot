@@ -1,6 +1,6 @@
-//This the tool executer , this is the file the responsivle for evaluating the tool calls comming from the llm
-//it gets the right tool from a Map of tools
-//it parse the input and excutee the tool and send back the result to the llm 
+// This is the tool executor file responsible for evaluating tool calls from the LLM.
+// It gets the right tool from a map of tools.
+// It parses the input, executes the tool, and sends back the result to the LLM.
 import { ZodError } from "zod";
 import { ToolStore } from "@/tools";
 import { formatZodIssues, type AddToolResultFn } from "@/tools/utils";
