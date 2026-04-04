@@ -1,33 +1,27 @@
 import { X, Trash2, Plus, MessageSquare, LogOut, User } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { ChatSession } from "@/lib/storage";
 import { cn } from "@/lib/utils";
 import { signOut } from "@/lib/auth-client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useAuth } from "@/lib/auth-context";
 import { ProvidersDialog } from "@/components/ProvidersDialog";
+import { useChatAgent } from "@/features/chat/context/ChatAgentContext";
+import React from "react";
 
-interface ChatSidebarProps {
-  isOpen: boolean;
-  onClose: () => void;
-  chats: ChatSession[];
-  currentChatId: string | null;
-  onSelectChat: (chatId: string) => void;
-  onNewChat: () => void;
-  onDeleteChat: (chatId: string) => void;
-}
-
-export const ChatSidebar = ({
-  isOpen,
-  onClose,
-  chats,
-  currentChatId,
-  onSelectChat,
-  onNewChat,
-  onDeleteChat,
-}: ChatSidebarProps) => {
+export const ChatSidebar = React.memo(() => {
   const { session } = useAuth();
+  const { 
+    isSidebarOpen: isOpen, 
+    setIsSidebarOpen, 
+    chatSessions: chats, 
+    currentChatId, 
+    selectChat: onSelectChat, 
+    newChat: onNewChat, 
+    deleteChat: onDeleteChat 
+  } = useChatAgent();
+
+  const onClose = () => setIsSidebarOpen(false);
 
   const handleSignOut = async () => {
     await signOut();
@@ -50,13 +44,13 @@ export const ChatSidebar = ({
   return (
     <>
       {/* Backdrop overlay */}
-      {isOpen && (
+      {isOpen ? (
         <div
           className="fixed inset-0 bg-black/50 z-40 transition-opacity"
           onClick={onClose}
           aria-hidden="true"
         />
-      )}
+      ) : null}
 
       {/* Sidebar */}
       <div
@@ -133,7 +127,7 @@ export const ChatSidebar = ({
 
         {/* User Profile Section */}
         {/* why not isAuthenticated? , just to please dear typescript */}
-        {session && (
+        {session ? (
           <div className="p-4 border-t bg-muted/20">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-3 overflow-hidden">
@@ -165,8 +159,8 @@ export const ChatSidebar = ({
             </div>
             <ProvidersDialog />
           </div>
-        )}
+        ) : null}
       </div>
     </>
   );
-};
+});

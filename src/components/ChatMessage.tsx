@@ -145,6 +145,53 @@ export const ChatMessage = memo(
                 </div>
               );
             }
+            
+            case "dynamic-tool": {
+              const toolName = part.toolName;
+              const Icon = getToolIcon(toolName);
+              const formattedName = toolName
+                .replace(/_/g, " ")
+                .replace(/^\w/, (c) => c.toUpperCase());
+              const isProcessing = part.state !== "output-available";
+
+              return (
+                <div key={`${message.id}-${i}`} className="my-2">
+                  <div className="flex flex-row items-center gap-3">
+                    <div className="flex items-center justify-center size-8 rounded-lg bg-muted/50">
+                      <Icon className="size-4 opacity-70" />
+                    </div>
+                    <ShimmeringText
+                      text={formattedName}
+                      className="text-sm font-medium text-foreground/80"
+                      repeat={isProcessing}
+                    />
+                  </div>
+                  
+                  {/* TODO : this needs better types handleling , `as` everywhere */}
+                  {/* this an alernameive toolcall rendeirng method , for debguuge but mostly i want use hte simple one above
+                with shimmmer text effect */}
+                  {/* <Tool defaultOpen={false}>
+                  <ToolHeader
+                    type={`tool-${(part.type as string).split("-")[1]}`}
+                    state={(part as ToolUIPart).state}
+                  />
+                  <ToolContent>
+                    <ToolInput input={(part as ToolUIPart).input} />
+                    <ToolOutput
+                      output={
+                        <>
+                          <Response>
+                            {(part as ToolUIPart).output as string}
+                          </Response>
+                        </>
+                      }
+                      errorText={(part as ToolUIPart).errorText}
+                    />
+                  </ToolContent>
+                </Tool> */}
+                </div>
+              );
+            }
 
             case "reasoning":
               return (

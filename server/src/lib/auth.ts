@@ -7,7 +7,7 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
   },
-  trustedOrigins: ["chrome-extension://onlephlmhdpaaafgbicaieamdaadabln"],
+  trustedOrigins: ["chrome-extension://jlgmohohkncehnolhjmhipkiljihbnbf"],
   database: drizzleAdapter(db, {
     provider: "sqlite",
   }),

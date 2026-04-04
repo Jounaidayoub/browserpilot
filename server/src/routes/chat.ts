@@ -1,11 +1,12 @@
 import { Hono } from "hono";
-import { convertToModelMessages, streamText, type UIMessage } from "ai";
-import { defaultProvider, getOpenRouterProvider } from "../config/providers.ts";
-import { env } from "../config/env.ts";
+import { convertToModelMessages, streamText, type UIMessage, wrapLanguageModel } from "ai";
+import { getAIModel, getOpenRouterProvider } from "../config/providers.ts";
 import { systemPrompt, type BrowserContext } from "../lib/prompts.ts";
 import { tools } from "../tools/definitions.ts";
 import { AppContext } from "../app.ts";
 import { getUserProviderKey, type ProviderId } from "../lib/integrations.ts";
+import { getMCPTools } from "../lib/mcp-client.ts";
+import { devToolsMiddleware } from "@ai-sdk/devtools";
 
 /**
  * Chat request body schema
@@ -32,30 +33,38 @@ chatRoutes.post("/", async (c) => {
   console.log("[Chat] Received request for model:", model);
   console.log("[Chat] Provider:", providerId);
   console.log("[Chat] Messages count:", messages.length);
-//   console.log("[Chat] Context:", JSON.stringify(currentcontext, null, 2));
+  //   console.log("[Chat] Context:", JSON.stringify(currentcontext, null, 2));
 
-  let modelProvider = defaultProvider(model);
-  if (providerId === "openrouter") {
-    const user = c.get("user");
-    const keyRow = await getUserProviderKey(user.id, "openrouter");
-    if (!keyRow) {
-      return c.json({ error: "OpenRouter not connected" }, 400);
+  let modelInstance;
+  try {
+    modelInstance = getAIModel(providerId, model);
+  } catch (err: any) {
+    if (providerId === "openrouter") {
+      // fallback to user specific key if env is not provided
+      const user = c.get("user");
+      const keyRow = await getUserProviderKey(user.id, "openrouter");
+      if (!keyRow) {
+        return c.json({ error: "OpenRouter not connected and no ENV key present" }, 400);
+      }
+      modelInstance = getOpenRouterProvider(keyRow.apiKey)(model);
+    } else {
+      return c.json({ error: err.message }, 400);
     }
-
-    const provider = getOpenRouterProvider(keyRow.apiKey);
-    modelProvider = provider(model);
   }
 
+  const mcpTools = await getMCPTools();
   const result = streamText({
-    model: modelProvider,
+    model: wrapLanguageModel({
+      model: modelInstance,
+      middleware: devToolsMiddleware(),
+    }),
     system: systemPrompt(currentcontext),
-    messages: convertToModelMessages(messages),
-    tools,
+    messages: await convertToModelMessages(messages),
+    tools: { ...mcpTools, ...tools },
     onFinish: ({ usage }) => {
       console.log("[Chat] Token usage:", usage);
     },
   });
-
   return result.toUIMessageStreamResponse({ sendReasoning: true });
 });
 
