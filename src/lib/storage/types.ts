@@ -20,6 +20,7 @@ export interface ChatSession {
   createdAt: number;
   updatedAt: number;
   model?: string;
+  providerId?: string;
 }
 
 export interface StorageAdapter {

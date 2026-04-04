@@ -31,8 +31,8 @@ export function useChatSessions() {
     []
   );
 
-  const createNewChat = async (initialMessage: string, model: string) => {
-    const newChat = await chatStorage.createChat(initialMessage, model);
+  const createNewChat = async (initialMessage: string, model: string, providerId: string) => {
+    const newChat = await chatStorage.createChat(initialMessage, model, providerId);
     setCurrentChatId(newChat.id);
     currentChatIdRef.current = newChat.id;
     const chats = await chatStorage.getAllChats();
@@ -40,14 +40,31 @@ export function useChatSessions() {
     return newChat;
   };
 
-  const selectChat = async (chatId: string, setMessages: (messages: UIMessage[]) => void, setModel: (model: string) => void) => {
+  const selectChat = async (
+    chatId: string,
+    setMessages: (messages: UIMessage[]) => void,
+    setModel: (option: any) => void,
+    availableModels: any[]
+  ) => {
     setIsLoadingChat(true);
     const chat = await chatStorage.getChat(chatId);
     if (chat) {
       setCurrentChatId(chat.id);
       currentChatIdRef.current = chat.id;
       setMessages(chat.messages as UIMessage[]);
-      setModel(chat.model || "openai/gpt-4o"); // Default model
+
+      // Find the matching model option or fallback
+      const found = availableModels.find(
+        (m) => m.value === chat.model && m.provider === chat.providerId
+      );
+
+      if (found) {
+        setModel(found);
+      } else if (chat.model) {
+        // Fallback for older sessions or partial matches
+        const fallback = availableModels.find((m) => m.value === chat.model) || availableModels[0];
+        setModel(fallback);
+      }
     }
     setIsLoadingChat(false);
   };

@@ -39,7 +39,8 @@ export class ChatStorageService {
    */
   async createChat(
     firstMessage?: string,
-    model?: string
+    model?: string,
+    providerId?: string
   ): Promise<ChatSession> {
     const chat: ChatSession = {
       id: this.generateChatId(),
@@ -48,6 +49,7 @@ export class ChatStorageService {
       createdAt: Date.now(),
       updatedAt: Date.now(),
       model,
+      providerId,
     };
 
     await this.adapter.saveChat(chat);

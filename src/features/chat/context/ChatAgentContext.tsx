@@ -24,9 +24,8 @@ import { type ChatSession } from "@/lib/storage";
 import {
   type ModelOption,
   type ProviderId,
-  DEFAULT_MODEL_VALUE,
+  DEFAULT_MODEL_OPTION,
   getAvailableModels,
-  resolveProvider,
   MODELS_API_URL,
   SUPPORTED_PROVIDERS,
 } from "@/features/chat/config/models";
@@ -50,8 +49,8 @@ export interface ChatAgentAPI {
   deleteChat: (id: string) => void;
 
   // Model & provider config
-  model: string;
-  setModel: (model: string) => void;
+  model: ModelOption;
+  setModel: (option: ModelOption) => void;
   availableModels: ModelOption[];
 
   // Input state (shared so prompt input and other UI stay in sync)
@@ -69,8 +68,8 @@ const ChatAgentContext = createContext<ChatAgentAPI | null>(null);
 
 export interface ChatAgentProviderProps {
   children: ReactNode;
-  /** Override the default model value */
-  defaultModel?: string;
+  /** Override the default model option */
+  defaultModel?: ModelOption;
   /** Override the API endpoint */
   apiUrl?: string;
 }
@@ -78,14 +77,14 @@ export interface ChatAgentProviderProps {
 
 export function ChatAgentProvider({
   children,
-  defaultModel = DEFAULT_MODEL_VALUE,
+  defaultModel = DEFAULT_MODEL_OPTION,
   apiUrl = "http://localhost:8080/api/chat",
 }: ChatAgentProviderProps) {
   const { isAuthenticated, triggerAuthDialog } = useAuth();
   const { isconnected } = useProviderStatus();
 
   const [input, setInput] = useState("");
-  const [model, setModelRaw] = useState(defaultModel);
+  const [model, setModel] = useState<ModelOption>(defaultModel);
   const [webSearch, setWebSearch] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [dynamicModels, setDynamicModels] = useState<ModelOption[]>([]);
@@ -126,17 +125,6 @@ export function ChatAgentProvider({
     return dynamicModels.length > 0 ? dynamicModels : baseModels;
   }, [dynamicModels, isconnected]);
 
-  const providerId = useMemo(
-    () => resolveProvider(model, availableModels),
-    [model, availableModels],
-  );
-
-  const setModel = useCallback(
-    (newModel: string) => {
-      setModelRaw(newModel);
-    },
-    [],
-  );
 
   const {
     currentChatId,
@@ -184,7 +172,7 @@ export function ChatAgentProvider({
 
       // Create a new session if needed
       if (!currentChatId) {
-        await createNewChat(message.text || "Sent with attachments", model);
+        await createNewChat(message.text || "Sent with attachments", model.value, model.provider);
       }
 
       // Fetch browser context before sending
@@ -197,8 +185,8 @@ export function ChatAgentProvider({
         },
         {
           body: {
-            model,
-            providerId,
+            model: model.value,
+            providerId: model.provider,
             webSearch,
             currentcontext: currentcontextData,
           },
@@ -212,7 +200,6 @@ export function ChatAgentProvider({
       currentChatId,
       createNewChat,
       model,
-      providerId,
       webSearch,
       sendMessage,
     ],
@@ -226,10 +213,10 @@ export function ChatAgentProvider({
 
   const selectChat = useCallback(
     async (chatId: string) => {
-      await selectChatRaw(chatId, setMessages, setModelRaw);
+      await selectChatRaw(chatId, setMessages, setModel, availableModels);
       setIsSidebarOpen(false);
     },
-    [selectChatRaw, setMessages],
+    [selectChatRaw, setMessages, availableModels],
   );
 
   const deleteChat = useCallback(

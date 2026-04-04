@@ -59,7 +59,7 @@ export const ChatPromptInput = React.memo(() => {
     }
   };
 
-  const currentModelOption = models.find(m => m.value === model) || models[0] || { provider: "generic", name: "Unknown", value: "unknown" };
+  const currentModelOption = model;
 
   const groupedModels = useMemo(() => {
     const groups: Record<string, ModelOption[]> = {};
@@ -116,9 +116,9 @@ export const ChatPromptInput = React.memo(() => {
                   <ModelSelectorGroup key={provider} heading={provider.replace("-", " ")} className="capitalize">
                     {providerModels.map((opt) => (
                       <ModelSelectorItem 
-                         key={opt.value} 
+                         key={`${opt.provider}:${opt.value}`} 
                          value={opt.value} 
-                         onSelect={(val) => { setModel(val); setOpenSelector(false); }}
+                         onSelect={() => { setModel(opt); setOpenSelector(false); }}
                       >
                          <ModelSelectorLogo provider={opt.provider} className="size-4 mr-2" />
                          <ModelSelectorName>{opt.name}</ModelSelectorName>

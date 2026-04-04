@@ -34,7 +34,7 @@ export const DEFAULT_MODELS: ModelOption[] = [
   { name: "Gemini 1.5 Flash", value: "gemini-1.5-flash", provider: "google" },
 
   // Generic / Custom Endpoints
-  { name: "gpt-4.1", value: "gpt-4.1", provider: "generic" },
+  // { name: "gpt-4.1", value: "gpt-4.1", provider: "generic" },
 ];
 
 
@@ -43,7 +43,9 @@ export const OPENROUTER_MODELS: ModelOption[] = [
   { name: "Llama 3 70B", value: "meta-llama/llama-3-70b-instruct", provider: "openrouter" },
 ];
 
-export const DEFAULT_MODEL_VALUE = "gpt-4o-2024-11-20";
+export const DEFAULT_MODEL_OPTION: ModelOption = DEFAULT_MODELS[0];
+export const DEFAULT_MODEL_ID = DEFAULT_MODEL_OPTION.value;
+export const DEFAULT_PROVIDER_ID = DEFAULT_MODEL_OPTION.provider;
 
 
 export function getAvailableModels(
@@ -55,12 +57,12 @@ export function getAvailableModels(
 }
 
 /**
- * Resolves the provider id for a given model value.
- * Falls back to "generic" if the model is not found.
+ * Finds a ModelOption from a list by its value and provider.
  */
-export function resolveProvider(
-  modelValue: string,
+export function findModel(
+  value: string,
+  provider: ProviderId,
   models: ModelOption[],
-): ProviderId {
-  return models.find((m) => m.value === modelValue)?.provider ?? "generic";
+): ModelOption | undefined {
+  return models.find((m) => m.value === value && m.provider === provider);
 }
