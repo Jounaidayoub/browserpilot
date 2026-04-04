@@ -19,10 +19,13 @@ export const env = {
     // AI Provider Keys (Optional to start, will fail if used without being set)
     OPENAI_API_KEY: process.env.OPENAI_API_KEY,
     ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY,
-    GOOGLE_API_KEY: process.env.GOOGLE_API_KEY,
+    GOOGLE_API_KEY: process.env.GOOGLE_GENERATIVE_AI_API_KEY,
     OPENROUTER_API_KEY: process.env.OPENROUTER_API_KEY,
+    GITHUB_COPILOT_API_KEY: process.env.GITHUB_COPILOT_API_KEY,
+
 
     // Base generic Endpoint override
+    GITHUB_COPILOT_BASE_URL: process.env.GITHUB_COPILOT_BASE_URL,
     AI_BASE_URL: process.env.AI_BASE_URL || "http://localhost:4141/v1",
 
     // Auth

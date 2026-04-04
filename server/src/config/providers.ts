@@ -13,6 +13,10 @@ export const defaultProvider = createOpenAICompatible({
   name: "generic",
 });
 
+
+
+
+
 export const getOpenRouterProvider = (api: string | undefined) =>
   createOpenAICompatible({
     baseURL: "https://openrouter.ai/api/v1",
@@ -43,7 +47,14 @@ export function getAIModel(providerId: string, modelName: string) {
       if (!env.OPENROUTER_API_KEY) throw new Error("OPENROUTER_API_KEY is not configured.");
       return getOpenRouterProvider(env.OPENROUTER_API_KEY)(modelName);
     }
-
+    case "github-copilot": {
+      if (!env.GITHUB_COPILOT_API_KEY || !env.GITHUB_COPILOT_BASE_URL) throw new Error("GITHUB_COPILOT_API_KEY or GITHUB_COPILOT_BASE_URL is not configured.");
+      return createOpenAICompatible({
+        baseURL: env.GITHUB_COPILOT_BASE_URL!,
+        name: "github-copilot",
+        apiKey: env.GITHUB_COPILOT_API_KEY,
+      })(modelName);
+    }
     case "generic":
     default:
       return defaultProvider(modelName);
