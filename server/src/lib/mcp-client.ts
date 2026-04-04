@@ -3,7 +3,7 @@ import { Experimental_StdioMCPTransport } from "@ai-sdk/mcp/mcp-stdio";
 
 const MCP_SERVER_CONFIG = {
   command: "npx",
-  args: ["-y", "chrome-devtools-mcp@latest", "--auto-connect"] as string[],
+  args: ["-y", "chrome-devtools-mcp@latest", "--auto-connect", "--no-usage-statistics", "--no-performance-crux"] as string[],
 };
 
 let cachedClient: Awaited<ReturnType<typeof createMCPClient>> | null = null;
