@@ -1,4 +1,5 @@
 import { ZodError } from "zod";
+import type { ChatAddToolOutputFunction, UIMessage } from "ai";
 import { services as defaultServices, type IServices } from "@/services";
 
 export const formatZodIssues = (error: ZodError) =>
@@ -24,11 +25,7 @@ export const findActiveTabId = async (svc: IServices) => {
   return tabs?.[0]?.id;
 };
 
-export type AddToolResultFn = <TOOL extends string>(
-  args:
-    | { state?: "output-available"; tool: TOOL; toolCallId: string; output: unknown; errorText?: undefined }
-    | { state: "output-error"; tool: TOOL; toolCallId: string; output?: undefined; errorText: string }
-) => Promise<void>;
+export type AddToolResultFn = ChatAddToolOutputFunction<UIMessage>;
 
 // Inline tab fetching to avoid circular dependency with Tabs.ts
 const fetchTabsMetaInternal = async (svc: IServices) => {

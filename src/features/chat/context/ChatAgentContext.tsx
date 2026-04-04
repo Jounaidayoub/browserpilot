@@ -14,6 +14,7 @@ import {
   type UIMessage,
   type ChatStatus,
   type FileUIPart,
+  type ChatAddToolOutputFunction,
 } from "ai";
 import { evaluateToolCall } from "@/sidepanel/evaluator";
 import { useChatSessions } from "@/hooks/useChatSessions";
@@ -74,6 +75,15 @@ export interface ChatAgentProviderProps {
   apiUrl?: string;
 }
 
+type ModelsApiResponse = Partial<
+  Record<
+    ProviderId,
+    {
+      models?: Record<string, { id: string; name: string }>;
+    }
+  >
+>;
+
 
 export function ChatAgentProvider({
   children,
@@ -93,17 +103,17 @@ export function ChatAgentProvider({
     async function fetchModels() {
       try {
         const response = await fetch(MODELS_API_URL);
-        const data = await response.json();
+        const data = (await response.json()) as ModelsApiResponse;
         const transformed: ModelOption[] = [];
 
         for (const providerKey of SUPPORTED_PROVIDERS) {
           const providerData = data[providerKey];
           if (providerData && providerData.models) {
-            Object.values(providerData.models).forEach((modelInfo: any) => {
+            Object.values(providerData.models).forEach((modelInfo) => {
               transformed.push({
                 name: modelInfo.name,
                 value: modelInfo.id,
-                provider: providerKey as ProviderId,
+                provider: providerKey,
               });
             });
           }
@@ -142,7 +152,7 @@ export function ChatAgentProvider({
     sendMessage,
     status,
     regenerate,
-    addToolResult,
+    addToolOutput,
     stop,
     error,
     setMessages,
@@ -151,11 +161,10 @@ export function ChatAgentProvider({
     sendAutomaticallyWhen: lastAssistantMessageIsCompleteWithToolCalls,
     async onToolCall({ toolCall }) {
       if (toolCall.dynamic) return;
-      // TODO: find the write types , (there us a hard coded type in utils.ts for the addToolResult callback) , the ai sdk probaly changed this function 
-      // check ai sdk v6 docums addtoolresult for the right type  
-      evaluateToolCall(toolCall, (async (args: any) => {
-        addToolResult(args);
-      }) as any);
+      await evaluateToolCall(
+        toolCall,
+        addToolOutput as ChatAddToolOutputFunction<UIMessage>,
+      );
     },
     onFinish: saveMessagesToStorage,
   });

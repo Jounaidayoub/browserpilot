@@ -15,7 +15,6 @@ const ChatView = () => {
     messages,
     status,
     error,
-    regenerate,
     currentChatId,
     chatSessions,
     setIsSidebarOpen,
@@ -54,7 +53,6 @@ const ChatView = () => {
                     message={message}
                     isMostRecentMessage={isMostRecentMessage}
                     status={status}
-                    regenerate={regenerate}
                     error={error}
                   />
                 );

@@ -1,4 +1,3 @@
-import { Action, Actions } from "@/components/ai-elements/actions";
 import { Message, MessageContent } from "@/components/ai-elements/message";
 import {
   Reasoning,
@@ -6,27 +5,17 @@ import {
   ReasoningTrigger,
 } from "@/components/ai-elements/reasoning";
 import { Response } from "@/components/ai-elements/response";
-import {
-  Tool,
-  ToolContent,
-  ToolHeader,
-  ToolInput,
-  ToolOutput,
-} from "@/components/ai-elements/tool";
 import { ShimmeringText } from "@/components/ui/shimmering-text";
 import { UIMessage, type ToolUIPart } from "ai";
 import {
   Clock,
-  CopyIcon,
   FileText,
   Globe,
   History,
   Layers,
   LayoutGrid,
   PlusSquare,
-  RefreshCcwIcon,
   Sparkles,
-  Wrench,
   XCircle,
 } from "lucide-react";
 import { Fragment, memo } from "react";
@@ -59,7 +48,6 @@ interface ChatMessageProps {
   // messages: UIMessage[];
   isMostRecentMessage: boolean;
   status: string;
-  regenerate: () => void;
   error: Error | undefined;
 }
 
@@ -68,7 +56,6 @@ export const ChatMessage = memo(
     message,
     isMostRecentMessage,
     status,
-    regenerate,
     error,
   }: ChatMessageProps) => {
     return (
@@ -83,19 +70,6 @@ export const ChatMessage = memo(
                       <Response>{part.text}</Response>
                     </MessageContent>
                   </Message>
-                  {/* {message.role === "assistant" && i === messages.length - 1 && (
-                  <Actions className="mt-2">
-                    <Action onClick={() => regenerate()} label="Retry">
-                      <RefreshCcwIcon className="size-3" />
-                    </Action>
-                    <Action
-                      onClick={() => navigator.clipboard.writeText(part.text)}
-                      label="Copy"
-                    >
-                      <CopyIcon className="size-3" />
-                    </Action>
-                  </Actions>
-                )} */}
                 </Fragment>
               );
 

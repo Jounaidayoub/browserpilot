@@ -1,13 +1,18 @@
 //This the tool executer , this is the file the responsivle for evaluating the tool calls comming from the llm
 //it gets the right tool from a Map of tools
 //it parse the input and excutee the tool and send back the result to the llm 
-import type { UIMessage, InferUIMessageToolCall } from "ai";
 import { ZodError } from "zod";
 import { ToolStore } from "@/tools";
 import { formatZodIssues, type AddToolResultFn } from "@/tools/utils";
 
+type EvaluatableToolCall = {
+  toolName: string;
+  toolCallId: string;
+  input: unknown;
+};
+
 export const evaluateToolCall = async (
-  toolCall: InferUIMessageToolCall<UIMessage>,
+  toolCall: EvaluatableToolCall,
   addToolResult: AddToolResultFn
 ) => {
 
