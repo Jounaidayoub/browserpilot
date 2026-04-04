@@ -8,7 +8,6 @@ import {
   PromptInputAttachments,
   PromptInputBody,
   PromptInputButton,
-  type PromptInputMessage,
   PromptInputModelSelect,
   PromptInputModelSelectContent,
   PromptInputModelSelectItem,
@@ -19,37 +18,23 @@ import {
   PromptInputToolbar,
   PromptInputTools,
 } from "@/components/ai-elements/prompt-input";
-import { GlobeIcon, Inspect } from "lucide-react";
-import { useRef } from "react";
+import { Inspect } from "lucide-react";
+import React, { useRef } from "react";
 import useInspector from "@/hooks/useInspector";
-import { ChatStatus } from "ai";
-import {  Button} from "@/components/ui/button";
+import { useChatAgent } from "@/features/chat/context/ChatAgentContext";
 
-interface ChatPromptInputProps {
-  input: string;
-  setInput: (input: string) => void;
-  handleSubmit: (message: PromptInputMessage) => void;
-  status: ChatStatus;
-  stop: () => void;
-  webSearch: boolean;
-  setWebSearch: (webSearch: boolean) => void;
-  model: string;
-  setModel: (model: string) => void;
-  models: { name: string; value: string }[];
-}
+export const ChatPromptInput = React.memo(() => {
+  const {
+    input,
+    setInput,
+    submit: handleSubmit,
+    status,
+    stop,
+    model,
+    setModel,
+    availableModels: models,
+  } = useChatAgent();
 
-export const ChatPromptInput = ({
-  input,
-  setInput,
-  handleSubmit,
-  status,
-  stop,
-  webSearch,
-  setWebSearch,
-  model,
-  setModel,
-  models,
-}: ChatPromptInputProps) => {
   const promptInput = useRef<HTMLTextAreaElement>(null);
   const { isInspecting, inspect } = useInspector();
 
@@ -124,4 +109,4 @@ export const ChatPromptInput = ({
       </PromptInputToolbar>
     </PromptInput>
   );
-};
+});

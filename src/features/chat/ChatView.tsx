@@ -22,36 +22,15 @@ const ChatView = () => {
     messages,
     status,
     error,
-    submit,
-    stop,
     regenerate,
     currentChatId,
     chatSessions,
-    newChat,
-    selectChat,
-    deleteChat,
-    model,
-    setModel,
-    availableModels,
-    input,
-    setInput,
-    webSearch,
-    setWebSearch,
-    isSidebarOpen,
     setIsSidebarOpen,
   } = useChatAgent();
 
   return (
     <>
-      <ChatSidebar
-        isOpen={isSidebarOpen}
-        onClose={() => setIsSidebarOpen(false)}
-        chats={chatSessions}
-        currentChatId={currentChatId}
-        onSelectChat={selectChat}
-        onNewChat={newChat}
-        onDeleteChat={deleteChat}
-      />
+      <ChatSidebar />
       <div className="max-w-4xl mx-auto relative size-full h-screen">
         <div className="flex flex-col p-3 overflow-hidden h-full">
           <div className="flex items-center justify-between mb-2">
@@ -62,12 +41,12 @@ const ChatView = () => {
             >
               <Menu className="h-5 w-5" />
             </Button>
-            {currentChatId && (
+            {currentChatId ? (
               <div className="text-sm text-muted-foreground">
                 {chatSessions.find((c) => c.id === currentChatId)?.title ||
                   "Current Chat"}
               </div>
-            )}
+            ) : null}
             <div className="w-10" />
           </div>
           <Conversation className="h-full ">
@@ -87,21 +66,10 @@ const ChatView = () => {
                   />
                 );
               })}
-              {status === "submitted" && <Loader />}
+              {status === "submitted" ? <Loader /> : null}
             </ConversationContent>
           </Conversation>
-          <ChatPromptInput
-            input={input}
-            setInput={setInput}
-            handleSubmit={submit}
-            status={status}
-            stop={stop}
-            webSearch={webSearch}
-            setWebSearch={setWebSearch}
-            model={model}
-            setModel={setModel}
-            models={availableModels}
-          />
+          <ChatPromptInput />
         </div>
       </div>
     </>
