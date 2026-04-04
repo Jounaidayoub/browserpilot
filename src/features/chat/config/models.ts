@@ -1,5 +1,4 @@
-
-export type ProviderId = "openai" | "anthropic" | "google" | "openrouter" | "generic";
+export type ProviderId = "openai" | "anthropic" | "google" | "openrouter" | "github-copilot" | "generic";
 
 export interface ModelOption {
   /** Display name shown in the UI */
@@ -9,6 +8,16 @@ export interface ModelOption {
   /** Which provider serves this model */
   provider: ProviderId;
 }
+
+export const MODELS_API_URL = "https://models.dev/api.json";
+
+export const SUPPORTED_PROVIDERS: ProviderId[] = [
+  "openai",
+  "anthropic",
+  "google",
+  "github-copilot",
+  "openrouter",
+];
 
 
 export const DEFAULT_MODELS: ModelOption[] = [

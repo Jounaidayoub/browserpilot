@@ -27,9 +27,10 @@ import {
 } from "@/components/ai-elements/model-selector";
 import { Button } from "@/components/ui/button";
 import { Inspect } from "lucide-react";
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useMemo } from "react";
 import useInspector from "@/hooks/useInspector";
 import { useChatAgent } from "@/features/chat/context/ChatAgentContext";
+import { type ModelOption } from "@/features/chat/config/models";
 
 export const ChatPromptInput = React.memo(() => {
   const {
@@ -59,6 +60,15 @@ export const ChatPromptInput = React.memo(() => {
   };
 
   const currentModelOption = models.find(m => m.value === model) || models[0] || { provider: "generic", name: "Unknown", value: "unknown" };
+
+  const groupedModels = useMemo(() => {
+    const groups: Record<string, ModelOption[]> = {};
+    models.forEach((m) => {
+      if (!groups[m.provider]) groups[m.provider] = [];
+      groups[m.provider].push(m);
+    });
+    return groups;
+  }, [models]);
 
   return (
     <PromptInput onSubmit={handleSubmit} className="bg-secondary shadow-2xl rounded-2xl border-2 border-primary/20" globalDrop multiple>
@@ -93,7 +103,7 @@ export const ChatPromptInput = React.memo(() => {
           
           <ModelSelector open={openSelector} onOpenChange={setOpenSelector}>
             <ModelSelectorTrigger asChild>
-              <Button variant="ghost" size="sm" className="h-8 gap-2 px-2 text-muted-foreground hover:text-foreground">
+              <Button variant="ghost" size="sm" className="h-8 gap-2 px-2 text-muted-foreground hover:text-foreground capitalize">
                  <ModelSelectorLogo provider={currentModelOption.provider} />
                  {currentModelOption.name}
               </Button>
@@ -102,18 +112,20 @@ export const ChatPromptInput = React.memo(() => {
               <ModelSelectorInput placeholder="Search models..." />
               <ModelSelectorList>
                 <ModelSelectorEmpty>No models found.</ModelSelectorEmpty>
-                <ModelSelectorGroup heading="Available Models">
-                  {models.map((opt) => (
-                    <ModelSelectorItem 
-                       key={opt.value} 
-                       value={opt.value} 
-                       onSelect={(val) => { setModel(val); setOpenSelector(false); }}
-                    >
-                       <ModelSelectorLogo provider={opt.provider} className="mr-2" />
-                       <ModelSelectorName>{opt.name}</ModelSelectorName>
-                    </ModelSelectorItem>
-                  ))}
-                </ModelSelectorGroup>
+                {Object.entries(groupedModels).map(([provider, providerModels]) => (
+                  <ModelSelectorGroup key={provider} heading={provider.replace("-", " ")} className="capitalize">
+                    {providerModels.map((opt) => (
+                      <ModelSelectorItem 
+                         key={opt.value} 
+                         value={opt.value} 
+                         onSelect={(val) => { setModel(val); setOpenSelector(false); }}
+                      >
+                         <ModelSelectorLogo provider={opt.provider} className="size-4 mr-2" />
+                         <ModelSelectorName>{opt.name}</ModelSelectorName>
+                      </ModelSelectorItem>
+                    ))}
+                  </ModelSelectorGroup>
+                ))}
               </ModelSelectorList>
             </ModelSelectorContent>
           </ModelSelector>

@@ -4,6 +4,7 @@ import {
   useState,
   useCallback,
   useMemo,
+  useEffect,
   type ReactNode,
 } from "react";
 import { useChat } from "@ai-sdk/react";
@@ -22,9 +23,12 @@ import { currentcontext } from "@/tools/utils";
 import { type ChatSession } from "@/lib/storage";
 import {
   type ModelOption,
+  type ProviderId,
   DEFAULT_MODEL_VALUE,
   getAvailableModels,
   resolveProvider,
+  MODELS_API_URL,
+  SUPPORTED_PROVIDERS,
 } from "@/features/chat/config/models";
 
 export interface ChatAgentAPI {
@@ -84,11 +88,43 @@ export function ChatAgentProvider({
   const [model, setModelRaw] = useState(defaultModel);
   const [webSearch, setWebSearch] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  const [dynamicModels, setDynamicModels] = useState<ModelOption[]>([]);
 
-  const availableModels = useMemo(
-    () => getAvailableModels(isconnected),
-    [isconnected],
-  );
+  useEffect(() => {
+    async function fetchModels() {
+      try {
+        const response = await fetch(MODELS_API_URL);
+        const data = await response.json();
+        const transformed: ModelOption[] = [];
+
+        for (const providerKey of SUPPORTED_PROVIDERS) {
+          const providerData = data[providerKey];
+          if (providerData && providerData.models) {
+            Object.values(providerData.models).forEach((modelInfo: any) => {
+              transformed.push({
+                name: modelInfo.name,
+                value: modelInfo.id,
+                provider: providerKey as ProviderId,
+              });
+            });
+          }
+        }
+
+        if (transformed.length > 0) {
+          setDynamicModels(transformed);
+        }
+      } catch (error) {
+        console.error("Failed to fetch models from models.dev:", error);
+      }
+    }
+    fetchModels();
+  }, []);
+
+  const availableModels = useMemo(() => {
+    const baseModels = getAvailableModels(isconnected);
+    // If we have dynamic models, we use them, otherwise fallback to defaults
+    return dynamicModels.length > 0 ? dynamicModels : baseModels;
+  }, [dynamicModels, isconnected]);
 
   const providerId = useMemo(
     () => resolveProvider(model, availableModels),
