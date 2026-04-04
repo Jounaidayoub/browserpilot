@@ -1,17 +1,3 @@
-/**
- * ChatAgentContext — the "Brain" of the chat application.
- *
- * This provider owns all chat-related state and logic:
- *  - AI SDK orchestration (useChat, streaming, tool calls)
- *  - Session persistence (IndexedDB via useChatSessions)
- *  - Model / provider selection
- *  - Browser context fetching before each message
- *  - Auth gating
- *
- * UI components consume this via the `useChatAgent()` hook and never
- * need to know about the internals.
- */
-
 import {
   createContext,
   useContext,
@@ -41,10 +27,7 @@ import {
   resolveProvider,
 } from "@/features/chat/config/models";
 
-// ─── Public API surface ──────────────────────────────────────────
-
 export interface ChatAgentAPI {
-  // Messages & streaming
   messages: UIMessage[];
   status: ChatStatus;
   error: Error | undefined;
@@ -78,11 +61,7 @@ export interface ChatAgentAPI {
   setIsSidebarOpen: (open: boolean) => void;
 }
 
-// ─── Context ─────────────────────────────────────────────────────
-
 const ChatAgentContext = createContext<ChatAgentAPI | null>(null);
-
-// ─── Provider props ──────────────────────────────────────────────
 
 export interface ChatAgentProviderProps {
   children: ReactNode;
@@ -92,7 +71,6 @@ export interface ChatAgentProviderProps {
   apiUrl?: string;
 }
 
-// ─── Provider implementation ─────────────────────────────────────
 
 export function ChatAgentProvider({
   children,
@@ -102,19 +80,16 @@ export function ChatAgentProvider({
   const { isAuthenticated, triggerAuthDialog } = useAuth();
   const { isconnected } = useProviderStatus();
 
-  // ── UI state ────────────────────────────────────────────────────
   const [input, setInput] = useState("");
   const [model, setModelRaw] = useState(defaultModel);
   const [webSearch, setWebSearch] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
-  // ── Derived model list ──────────────────────────────────────────
   const availableModels = useMemo(
     () => getAvailableModels(isconnected),
     [isconnected],
   );
 
-  // Keep provider id in sync with the selected model
   const providerId = useMemo(
     () => resolveProvider(model, availableModels),
     [model, availableModels],
@@ -127,7 +102,6 @@ export function ChatAgentProvider({
     [],
   );
 
-  // ── Session management (IndexedDB) ─────────────────────────────
   const {
     currentChatId,
     chatSessions,
@@ -139,7 +113,6 @@ export function ChatAgentProvider({
     clearCurrentChat,
   } = useChatSessions();
 
-  // ── AI SDK ─────────────────────────────────────────────────────
   const {
     messages,
     sendMessage,
@@ -161,7 +134,6 @@ export function ChatAgentProvider({
     onFinish: saveMessagesToStorage,
   });
 
-  // ── Submit orchestration ───────────────────────────────────────
   const submit = useCallback(
     async (message: { text?: string; files?: FileUIPart[] }) => {
       const hasText = Boolean(message.text);
@@ -210,7 +182,6 @@ export function ChatAgentProvider({
     ],
   );
 
-  // ── Session CRUD wrappers ──────────────────────────────────────
   const newChat = useCallback(() => {
     clearCurrentChat(setMessages);
     setInput("");
@@ -232,7 +203,6 @@ export function ChatAgentProvider({
     [deleteChatRaw, newChat],
   );
 
-  // ── Assemble the public API ────────────────────────────────────
   const api = useMemo<ChatAgentAPI>(
     () => ({
       messages,
@@ -284,7 +254,6 @@ export function ChatAgentProvider({
   );
 }
 
-// ─── Consumer hook ───────────────────────────────────────────────
 
 export function useChatAgent(): ChatAgentAPI {
   const ctx = useContext(ChatAgentContext);

@@ -16,10 +16,13 @@ export const env = {
     // Server
     PORT: parseInt(process.env.PORT || "8080", 10),
 
-    // API Keys
-    // GOOGLE_API_KEY: getRequiredEnv("GOOGLE_API_KEY"),
+    // AI Provider Keys (Optional to start, will fail if used without being set)
+    OPENAI_API_KEY: process.env.OPENAI_API_KEY,
+    ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY,
+    GOOGLE_API_KEY: process.env.GOOGLE_API_KEY,
+    OPENROUTER_API_KEY: process.env.OPENROUTER_API_KEY,
 
-    // AI Provider
+    // Base generic Endpoint override
     AI_BASE_URL: process.env.AI_BASE_URL || "http://localhost:4141/v1",
 
     // Auth

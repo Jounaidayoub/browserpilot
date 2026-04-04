@@ -1,10 +1,3 @@
-/**
- * ChatView — the pure layout component for the chat UI.
- *
- * All state and logic comes from useChatAgent(). This component
- * only handles rendering and wiring props to child UI components.
- */
-
 import { useChatAgent } from "@/features/chat/context/ChatAgentContext";
 import {
   Conversation,

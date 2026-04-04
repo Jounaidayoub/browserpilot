@@ -8,18 +8,26 @@ import {
   PromptInputAttachments,
   PromptInputBody,
   PromptInputButton,
-  PromptInputModelSelect,
-  PromptInputModelSelectContent,
-  PromptInputModelSelectItem,
-  PromptInputModelSelectTrigger,
-  PromptInputModelSelectValue,
   PromptInputSubmit,
   PromptInputTextarea,
   PromptInputToolbar,
   PromptInputTools,
 } from "@/components/ai-elements/prompt-input";
+import {
+  ModelSelector,
+  ModelSelectorTrigger,
+  ModelSelectorContent,
+  ModelSelectorInput,
+  ModelSelectorList,
+  ModelSelectorEmpty,
+  ModelSelectorGroup,
+  ModelSelectorItem,
+  ModelSelectorLogo,
+  ModelSelectorName,
+} from "@/components/ai-elements/model-selector";
+import { Button } from "@/components/ui/button";
 import { Inspect } from "lucide-react";
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import useInspector from "@/hooks/useInspector";
 import { useChatAgent } from "@/features/chat/context/ChatAgentContext";
 
@@ -37,6 +45,7 @@ export const ChatPromptInput = React.memo(() => {
 
   const promptInput = useRef<HTMLTextAreaElement>(null);
   const { isInspecting, inspect } = useInspector();
+  const [openSelector, setOpenSelector] = useState(false);
 
   const handleInspect = async () => {
     const elementHTML = await inspect();
@@ -48,6 +57,8 @@ export const ChatPromptInput = React.memo(() => {
       promptInput.current.focus();
     }
   };
+
+  const currentModelOption = models.find(m => m.value === model) || models[0] || { provider: "generic", name: "Unknown", value: "unknown" };
 
   return (
     <PromptInput onSubmit={handleSubmit} className="bg-secondary shadow-2xl rounded-2xl border-2 border-primary/20" globalDrop multiple>
@@ -79,26 +90,34 @@ export const ChatPromptInput = React.memo(() => {
           >
             <Inspect className=" size-4" />
           </PromptInputButton>
-          <PromptInputModelSelect
-            onValueChange={(value) => {
-              setModel(value);
-            }}
-            value={model}
-          >
-            <PromptInputModelSelectTrigger>
-              <PromptInputModelSelectValue />
-            </PromptInputModelSelectTrigger>
-            <PromptInputModelSelectContent>
-              {models.map((model) => (
-                <PromptInputModelSelectItem
-                  key={model.value}
-                  value={model.value}
-                >
-                  {model.name}
-                </PromptInputModelSelectItem>
-              ))}
-            </PromptInputModelSelectContent>
-          </PromptInputModelSelect>
+          
+          <ModelSelector open={openSelector} onOpenChange={setOpenSelector}>
+            <ModelSelectorTrigger asChild>
+              <Button variant="ghost" size="sm" className="h-8 gap-2 px-2 text-muted-foreground hover:text-foreground">
+                 <ModelSelectorLogo provider={currentModelOption.provider} />
+                 {currentModelOption.name}
+              </Button>
+            </ModelSelectorTrigger>
+            <ModelSelectorContent title="Select a Model">
+              <ModelSelectorInput placeholder="Search models..." />
+              <ModelSelectorList>
+                <ModelSelectorEmpty>No models found.</ModelSelectorEmpty>
+                <ModelSelectorGroup heading="Available Models">
+                  {models.map((opt) => (
+                    <ModelSelectorItem 
+                       key={opt.value} 
+                       value={opt.value} 
+                       onSelect={(val) => { setModel(val); setOpenSelector(false); }}
+                    >
+                       <ModelSelectorLogo provider={opt.provider} className="mr-2" />
+                       <ModelSelectorName>{opt.name}</ModelSelectorName>
+                    </ModelSelectorItem>
+                  ))}
+                </ModelSelectorGroup>
+              </ModelSelectorList>
+            </ModelSelectorContent>
+          </ModelSelector>
+          
         </PromptInputTools>
         <PromptInputSubmit
           className="btn-primary"

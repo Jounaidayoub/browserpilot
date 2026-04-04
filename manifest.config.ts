@@ -22,6 +22,7 @@ export default defineManifest({
     "open-tab-next-to-current": {
       "suggested_key": {
         "windows": "Alt+T",
+        "linux": "Alt+T",
       },
       "description": "Open a new tab next to the current tab."
     },

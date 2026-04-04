@@ -1,9 +1,5 @@
-/**
- * Model configuration for the chat agent.
- *
- * Centralizes all available model definitions and provides
- * a helper to resolve the full list based on provider connectivity.
- */
+
+export type ProviderId = "openai" | "anthropic" | "google" | "openrouter" | "generic";
 
 export interface ModelOption {
   /** Display name shown in the UI */
@@ -11,64 +7,36 @@ export interface ModelOption {
   /** Model identifier sent to the server */
   value: string;
   /** Which provider serves this model */
-  provider: "default" | "openrouter";
+  provider: ProviderId;
 }
 
-// ─── Built-in models (always available) ──────────────────────────
 
 export const DEFAULT_MODELS: ModelOption[] = [
-  { name: "GPT-4.1", value: "gpt-4.1-2025-04-14", provider: "default" },
-  { name: "Grok Code Fast 1", value: "grok-code-fast-1", provider: "default" },
-  { name: "GPT-4o", value: "gpt-4o-2024-11-20", provider: "default" },
-  { name: "GPT-5 mini", value: "gpt-5-mini", provider: "default" },
+  // OpenAI
+  { name: "GPT-4o", value: "gpt-4o-2024-11-20", provider: "openai" },
+  { name: "GPT-5 Mini", value: "gpt-5-mini", provider: "openai" },
+
+  // Anthropic
+  { name: "Claude 3.5 Sonnet", value: "claude-3-5-sonnet-latest", provider: "anthropic" },
+  { name: "Claude 3.5 Haiku", value: "claude-3-5-haiku-latest", provider: "anthropic" },
+
+  // Google
+  { name: "Gemini 1.5 Pro", value: "gemini-1.5-pro", provider: "google" },
+  { name: "Gemini 1.5 Flash", value: "gemini-1.5-flash", provider: "google" },
+
+  // Generic / Custom Endpoints
+  { name: "gpt-4.1", value: "gpt-4.1", provider: "generic" },
 ];
 
-// ─── OpenRouter models (available when connected) ────────────────
 
 export const OPENROUTER_MODELS: ModelOption[] = [
-  {
-    name: "NemoTron 3 Nano 30B A3B (free)",
-    value: "nvidia/nemotron-3-nano-30b-a3b:free",
-    provider: "openrouter",
-  },
-  {
-    name: "OpenAI: gpt-oss-120b (free)",
-    value: "openai/gpt-oss-120b:free",
-    provider: "openrouter",
-  },
-  {
-    name: "DeepSeek R1T2 Chimera (free)",
-    value: "tngtech/deepseek-r1t2-chimera:free",
-    provider: "openrouter",
-  },
-  {
-    name: "Claude 3.5 Sonnet",
-    value: "anthropic/claude-3.5-sonnet",
-    provider: "openrouter",
-  },
-  {
-    name: "DeepSeek R1",
-    value: "deepseek/deepseek-r1",
-    provider: "openrouter",
-  },
-  {
-    name: "Llama 3 70B",
-    value: "meta-llama/llama-3-70b-instruct",
-    provider: "openrouter",
-  },
-  {
-    name: "GLM 4.5 Air (free)",
-    value: "z-ai/glm-4.5-air:free",
-    provider: "openrouter",
-  },
+  { name: "DeepSeek R1", value: "deepseek/deepseek-r1", provider: "openrouter" },
+  { name: "Llama 3 70B", value: "meta-llama/llama-3-70b-instruct", provider: "openrouter" },
 ];
 
 export const DEFAULT_MODEL_VALUE = "gpt-4o-2024-11-20";
 
-/**
- * Returns the full list of models available to the user.
- * When OpenRouter is connected, its models are appended.
- */
+
 export function getAvailableModels(
   isOpenRouterConnected: boolean,
 ): ModelOption[] {
@@ -79,11 +47,11 @@ export function getAvailableModels(
 
 /**
  * Resolves the provider id for a given model value.
- * Falls back to "default" if the model is not found.
+ * Falls back to "generic" if the model is not found.
  */
 export function resolveProvider(
   modelValue: string,
   models: ModelOption[],
-): "default" | "openrouter" {
-  return models.find((m) => m.value === modelValue)?.provider ?? "default";
+): ProviderId {
+  return models.find((m) => m.value === modelValue)?.provider ?? "generic";
 }
