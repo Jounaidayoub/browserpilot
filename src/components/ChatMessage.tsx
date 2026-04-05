@@ -16,16 +16,31 @@ import {
 import { ShimmeringText } from "@/components/ui/shimmering-text";
 import { UIMessage, type ToolUIPart } from "ai";
 import {
+  Camera,
   Clock,
+  Code2,
   CopyIcon,
+  CornerDownRight,
+  ExternalLink,
   FileText,
+  FileUp,
   Globe,
   History,
+  Keyboard,
   Layers,
   LayoutGrid,
+  List,
+  Maximize2,
+  MousePointer2,
+  Navigation,
   PlusSquare,
   RefreshCcwIcon,
+  Search,
   Sparkles,
+  Terminal,
+  TimerIcon,
+  Type,
+  UnfoldVertical,
   Wrench,
   XCircle,
 } from "lucide-react";
@@ -38,17 +53,50 @@ const getToolIcon = (toolName: string) => {
     case "get_tabs":
       return Globe;
     case "close_tabs":
+    case "close_page":
       return XCircle;
     case "group_tabs_by_ids":
       return Layers;
     case "open_new_tab":
+    case "new_page":
       return PlusSquare;
     case "get_tab_content":
+    case "take_snapshot":
       return FileText;
     case "search_history":
       return History;
     case "get_current_time":
       return Clock;
+    case "click":
+      return MousePointer2;
+    case "hover":
+      return Navigation;
+    case "type_text":
+      return Type;
+    case "press_key":
+      return Keyboard;
+    case "fill":
+    case "fill_form":
+      return CornerDownRight;
+    case "navigate_page":
+      return ExternalLink;
+    case "list_pages":
+      return List;
+    case "select_page":
+      return Maximize2;
+    case "wait_for":
+      return TimerIcon;
+    case "take_screenshot":
+      return Camera;
+    case "upload_file":
+      return FileUp;
+    case "evaluate_script":
+      return Code2;
+    case "list_console_messages":
+    case "get_console_message":
+      return Terminal;
+    case "drag":
+      return UnfoldVertical;
     default:
       return Sparkles;
   }
@@ -108,7 +156,7 @@ export const ChatMessage = memo(
               const isProcessing = (part as ToolUIPart).state !== "output-available";
 
               return (
-                <div key={`${message.id}-${i}`} className="my-2">
+                <div key={`${message.id}-${i}`} className="">
                   <div className="flex flex-row items-center gap-3">
                     <div className="flex items-center justify-center size-8 rounded-lg bg-muted/50">
                       <Icon className="size-4 opacity-70" />
@@ -155,7 +203,7 @@ export const ChatMessage = memo(
               const isProcessing = part.state !== "output-available";
 
               return (
-                <div key={`${message.id}-${i}`} className="my-2">
+                <div key={`${message.id}-${i}`} className="">
                   <div className="flex flex-row items-center gap-3">
                     <div className="flex items-center justify-center size-8 rounded-lg bg-muted/50">
                       <Icon className="size-4 opacity-70" />
