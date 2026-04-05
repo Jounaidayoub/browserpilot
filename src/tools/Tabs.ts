@@ -6,7 +6,7 @@ import {
   groupTabsByIdsDef,
   openNewTabDef,
 } from "./definitions/tabs.def";
-import { fetchTabContent } from "./Page";
+// import { fetchTabContent } from "./Page";
 import type { IServices } from "@/services";
 
 import {  } from "./definitions";
@@ -78,20 +78,20 @@ export const group_tabs_by_ids = defineTool(groupTabsByIdsDef, async ({ groups }
   return "Grouped tabs into " + groups.length + " groups.";
 });
 
-export const open_new_tab = defineTool(openNewTabDef, async ({ url, withContent }, services) => {
+export const open_new_tab = defineTool(openNewTabDef, async ({ url }, services) => {
   const newTab = await createTabAndWait({ url }, services);
 
-  let content = null;
-  try {
-    if (withContent) {
-      content = await fetchTabContent(newTab.id!, services);
-    }
-  } catch (error) {
-    console.error("Error fetching content for new tab:", error);
-  }
+  // let content = null;
+  // try {
+  //   if (withContent) {
+  //     content = await fetchTabContent(newTab.id!, services);
+  //   }
+  // } catch (error) {
+  //   console.error("Error fetching content for new tab:", error);
+  // }
 
   const tabId = newTab.id ?? "unknown";
-  const contentSuffix = withContent ? `, with content : ${content?.markdown}` : "";
+  // const contentSuffix = withContent ? `, with content : ${content?.markdown}` : "";
 
-  return `Opened new tab with id ${tabId} for url: ${url}${contentSuffix}`;
+  return `Opened new tab with id ${tabId} for url: ${url}`;
 });

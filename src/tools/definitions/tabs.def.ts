@@ -21,7 +21,7 @@ export const groupTabsByIdsSchema = z.object({
 
 export const openNewTabSchema = z.object({
     url: z.string().min(1, "URL is required"),
-    withContent: z.boolean().optional(),
+    // withContent: z.boolean().optional(),
 });
 
 export const getGroupsDef: ToolDefinition<typeof emptyInput> = {
@@ -50,6 +50,6 @@ export const groupTabsByIdsDef: ToolDefinition<typeof groupTabsByIdsSchema> = {
 
 export const openNewTabDef: ToolDefinition<typeof openNewTabSchema> = {
     name: "open_new_tab",
-    description: "Open a new tab with the specified URL. Set withContent=true to also retrieve the page content (for reading/summarizing). Only enable withContent when page content is needed for the task.",
+    description: "Open a new tab with the specified URL.",
     inputSchema: openNewTabSchema,
 };
