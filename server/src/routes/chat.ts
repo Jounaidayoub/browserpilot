@@ -3,8 +3,7 @@ import { convertToModelMessages, streamText, type UIMessage, wrapLanguageModel }
 import { getAIModel, getOpenRouterProvider } from "../config/providers.ts";
 import { systemPrompt, type BrowserContext } from "../lib/prompts.ts";
 import { tools } from "../tools/definitions.ts";
-import { AppContext } from "../app.ts";
-import { getUserProviderKey, type ProviderId } from "../lib/integrations.ts";
+import { getProviderKey, type ProviderId } from "../lib/integrations.ts";
 import { getMCPTools } from "../lib/mcp-client.ts";
 import { devToolsMiddleware } from "@ai-sdk/devtools";
 
@@ -20,7 +19,7 @@ interface ChatRequestBody {
   currentcontext?: BrowserContext;
 }
 
-const chatRoutes = new Hono<AppContext>();
+const chatRoutes = new Hono();
 
 /**
  * POST / - Main chat endpoint
@@ -34,15 +33,13 @@ chatRoutes.post("/", async (c) => {
   console.log("[Chat] Provider:", providerId);
   console.log("[Chat] Messages count:", messages.length);
   //   console.log("[Chat] Context:", JSON.stringify(currentcontext, null, 2));
-
-  let modelInstance;
+let modelInstance;
   try {
     modelInstance = getAIModel(providerId, model);
   } catch (err: any) {
     if (providerId === "openrouter") {
-      // fallback to user specific key if env is not provided
-      const user = c.get("user");
-      const keyRow = await getUserProviderKey(user.id, "openrouter");
+      // fallback to stored key if env is not provided
+      const keyRow = await getProviderKey("openrouter");
       if (!keyRow) {
         return c.json({ error: "OpenRouter not connected and no ENV key present" }, 400);
       }
@@ -66,6 +63,6 @@ chatRoutes.post("/", async (c) => {
     },
   });
   return result.toUIMessageStreamResponse({ sendReasoning: true });
-});
+}); 
 
 export { chatRoutes };

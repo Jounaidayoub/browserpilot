@@ -28,9 +28,8 @@ export const env = {
     GITHUB_COPILOT_BASE_URL: process.env.GITHUB_COPILOT_BASE_URL,
     AI_BASE_URL: process.env.AI_BASE_URL || "http://localhost:4141/v1",
 
-    // Auth
-    BETTER_AUTH_SECRET: getRequiredEnv("BETTER_AUTH_SECRET"),
-    BETTER_AUTH_URL: process.env.BETTER_AUTH_URL || "http://localhost:8080",
+    // Server URL for OAuth callbacks
+    SERVER_URL: process.env.SERVER_URL || "http://localhost:8080",
 
     // Database
     DB_FILE_NAME: getRequiredEnv("DB_FILE_NAME"),

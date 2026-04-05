@@ -7,7 +7,14 @@ const MCP_SERVER_CONFIG = {
 };
 
 let cachedClient: Awaited<ReturnType<typeof createMCPClient>> | null = null;
-
+export async function initMCP() {
+  if (!cachedClient) {
+    console.log("[MCP] Initializing client...");
+    const transport = new Experimental_StdioMCPTransport(MCP_SERVER_CONFIG);
+    cachedClient = await createMCPClient({ transport });
+    console.log("[MCP] Client initialized");
+  }
+};
 export async function getMCPTools() {
   if (!cachedClient) {
     console.log("[MCP] Creating new client...");

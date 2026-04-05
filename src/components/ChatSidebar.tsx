@@ -1,16 +1,13 @@
-import { X, Trash2, Plus, MessageSquare, LogOut, User } from "lucide-react";
+import { X, Trash2, Plus, MessageSquare } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
-import { signOut } from "@/lib/auth-client";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { useAuth } from "@/lib/auth-context";
 import { ProvidersDialog } from "@/components/ProvidersDialog";
 import { useChatAgent } from "@/features/chat/context/ChatAgentContext";
 import React from "react";
 
 export const ChatSidebar = React.memo(() => {
-  const { session } = useAuth();
   const { 
     isSidebarOpen: isOpen, 
     setIsSidebarOpen, 
@@ -22,11 +19,6 @@ export const ChatSidebar = React.memo(() => {
   } = useChatAgent();
 
   const onClose = () => setIsSidebarOpen(false);
-
-  const handleSignOut = async () => {
-    await signOut();
-    // No need to redirect manually, App.tsx will handle the state change
-  };
 
   const formatDate = (timestamp: number) => {
     const date = new Date(timestamp);
@@ -125,41 +117,10 @@ export const ChatSidebar = React.memo(() => {
           </div>
         </ScrollArea>
 
-        {/* User Profile Section */}
-        {/* why not isAuthenticated? , just to please dear typescript */}
-        {session ? (
-          <div className="p-4 border-t bg-muted/20">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-3 overflow-hidden">
-                <Avatar className="h-9 w-9">
-                  <AvatarImage src={session.user.image || undefined} />
-                  <AvatarFallback className="bg-primary/10">
-                    {session.user.name?.charAt(0).toUpperCase() || (
-                      <User className="h-4 w-4" />
-                    )}
-                  </AvatarFallback>
-                </Avatar>
-                <div className="flex flex-col min-w-0">
-                  <span className="text-sm font-medium truncate">
-                    {session.user.name}
-                  </span>
-                  <span className="text-xs text-muted-foreground truncate">
-                    {session.user.email}
-                  </span>
-                </div>
-              </div>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={handleSignOut}
-                title="Sign Out"
-              >
-                <LogOut className="h-4 w-4 text-muted-foreground hover:text-destructive transition-colors" />
-              </Button>
-            </div>
-            <ProvidersDialog />
-          </div>
-        ) : null}
+        <div className="p-4 border-t bg-muted/20">
+    
+          <ProvidersDialog />
+        </div>
       </div>
     </>
   );
