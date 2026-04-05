@@ -15,6 +15,26 @@ export async function initMCP() {
     console.log("[MCP] Client initialized");
   }
 };
+const ALLOWED_TOOLS = [
+  "navigate_page",
+  "new_page",
+  "close_page",
+  "select_page",
+  "list_pages",
+  "click",
+  "fill",
+  "type_text",
+  "hover",
+  "press_key",
+  "drag",
+  "fill_form",
+  "upload_file",
+  "evaluate_script",
+  "wait_for",
+  "handle_dialog",
+  "take_snapshot",
+];
+
 export async function getMCPTools() {
   if (!cachedClient) {
     console.log("[MCP] Creating new client...");
@@ -23,7 +43,15 @@ export async function getMCPTools() {
     console.log("[MCP] Client created");
   }
 
-  return cachedClient.tools();
+  const allTools = await cachedClient.tools();
+  const filteredTools: Record<string, any> = {};
+  for (const toolName of ALLOWED_TOOLS) {
+    if (allTools[toolName]) {
+      filteredTools[toolName] = allTools[toolName];
+    }
+  }
+  // console.log("[MCP] Available filtered tools:", Object.keys(filteredTools));
+  return filteredTools;
 }
 
 export async function closeMCPClient(): Promise<void> {
