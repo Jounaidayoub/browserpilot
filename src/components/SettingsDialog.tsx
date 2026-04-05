@@ -1,5 +1,3 @@
-"use client";
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import {
@@ -8,111 +6,80 @@ import {
     DialogDescription,
     DialogHeader,
     DialogTitle,
-    DialogTrigger,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { Settings, ExternalLink, Loader2, CheckCircle, AlertCircle } from "lucide-react";
+import { ExternalLink, Loader2, CheckCircle, AlertCircle, Globe } from "lucide-react";
 import { toast } from "sonner";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { useSettings } from "@/contexts/SettingsContext";
+import { useProviderConnection } from "@/hooks/useProviderConnection";
+import { DEFAULT_SERVER_URL } from "@/lib/serverConfig";
 
-interface IntegrationStatus {
-    connected: boolean;
-    status?: "pending" | "completed" | "error";
-    error?: string;
-}
-
-export function ProvidersDialog() {
-    const [open, setOpen] = useState(false);
-    const [status, setStatus] = useState<IntegrationStatus>({ connected: false });
-    const [isPolling, setIsPolling] = useState(false);
-    const [isLoading, setIsLoading] = useState(false);
-
-    const fetchStatus = async () => {
-        try {
-            const res = await fetch("http://localhost:8080/api/integrations/openrouter/status", {
-                // Ensure cookies are sent (important for auth)
-                credentials: "include",
-            });
-            if (res.ok) {
-                const data = await res.json();
-                setStatus(data);
-                return data;
-            }
-        } catch (error) {
-            console.error("Failed to fetch integration status:", error);
-        }
-        return null;
-    };
+export function SettingsDialog({ 
+    open, 
+    onOpenChange 
+}: { 
+    open: boolean; 
+    onOpenChange: (open: boolean) => void;
+}) {
+    const { serverUrl, isConnected, setServerUrl } = useSettings();
+    const { status, isPolling, isLoading, connect } = useProviderConnection(serverUrl, isConnected);
+    const [localUrl, setLocalUrl] = useState(serverUrl);
 
     useEffect(() => {
-        if (open) {
-            setIsLoading(true);
-            fetchStatus().finally(() => setIsLoading(false));
+        if (!open) {
+            setLocalUrl(serverUrl);
         }
-    }, [open]);
+    }, [open, serverUrl]);
 
-    useEffect(() => {
-        let intervalId: NodeJS.Timeout;
-
-        if (isPolling) {
-            const startTime = Date.now();
-            // Poll every 1s
-            intervalId = setInterval(async () => {
-                const data = await fetchStatus();
-                // Stop if connected
-                if (data?.connected) {
-                    setIsPolling(false);
-                    toast.success("OpenRouter connected successfully");
-                }
-                // Stop after 60s timeout
-                if (Date.now() - startTime > 60000) {
-                    setIsPolling(false);
-                    if (!data?.connected) {
-                        toast.error("Connection timed out. Please try again.");
-                    }
-                }
-            }, 1000);
+    const handleSave = () => {
+        const nextUrl = (localUrl || serverUrl).trim();
+        if (!nextUrl) {
+            toast.error("Server URL cannot be empty");
+            return;
         }
-
-        return () => clearInterval(intervalId);
-    }, [isPolling]);
-
-    const handleConnect = async () => {
-        try {
-            // Open auth tab
-            const url = "http://localhost:8080/api/integrations/openrouter/start";
-            
-            // Use chrome.tabs if available (in extension context)
-            if (typeof chrome !== "undefined" && chrome.tabs) {
-                chrome.tabs.create({ url });
-            } else {
-                window.open(url, "_blank");
-            }
-
-            // Start polling
-            setIsPolling(true);
-            toast.info("Follow the instructions in the new tab to connect OpenRouter");
-        } catch (error) {
-            console.error("Failed to start connection flow:", error);
-            toast.error("Failed to start connection");
-        }
+        setServerUrl(nextUrl);
+        localStorage.setItem("serverUrl", nextUrl);
+        toast.success("Server URL saved");
     };
 
     return (
-        <Dialog open={open} onOpenChange={setOpen}>
-            <DialogTrigger asChild>
-                <Button variant="ghost" className="w-full justify-start mt-2">
-                    <Settings className="h-4 w-4 mr-2" />
-                    Providers
-                </Button>
-            </DialogTrigger>
+        <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-[500px]">
                 <DialogHeader>
-                    <DialogTitle>AI Providers</DialogTitle>
+                    <DialogTitle>Settings</DialogTitle>
                     <DialogDescription>
-                        Connect external AI providers to access their models.
+                        Configure your server connection and AI providers.
                     </DialogDescription>
                 </DialogHeader>
-                <div className="space-y-3 py-4">
+                <div className="space-y-4 py-4">
+                    {/* Server URL Configuration */}
+                    <div className="space-y-2">
+                        <Label htmlFor="server-url" className="flex items-center gap-2">
+                            <Globe className="h-4 w-4" />
+                            Server URL
+                        </Label>
+                        <div className="flex gap-2">
+                            <Input
+                                id="server-url"
+                                value={localUrl || serverUrl}
+                                onChange={(e) => setLocalUrl(e.target.value)}
+                                placeholder={DEFAULT_SERVER_URL}
+                                className="flex-1"
+                            />
+                            <Button variant="secondary" size="sm" onClick={handleSave}>
+                                Save
+                            </Button>
+                        </div>
+                        <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                            <span className={`w-2 h-2 rounded-full ${isConnected ? "bg-green-500" : "bg-red-500"}`} />
+                            <span>{isConnected ? "Server connected" : "Server unreachable"}</span>
+                        </div>
+                    </div>
+
+                    <div className="border-t" />
+
                     {/* OpenRouter Provider */}
                     <div className="flex items-center justify-between gap-4 p-3 rounded-lg border">
                         <div className="flex items-center gap-3 min-w-0 flex-1">
@@ -135,8 +102,9 @@ export function ProvidersDialog() {
                         <Button
                             variant={status.connected ? "outline" : "default"}
                             size="sm"
-                            onClick={handleConnect}
-                            disabled={isPolling || isLoading}
+                            className="min-w-[100px]"
+                            onClick={connect}
+                            disabled={isPolling || isLoading || !isConnected}
                         >
                             {isPolling ? (
                                 <Loader2 className="h-4 w-4 animate-spin" />

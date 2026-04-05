@@ -1,7 +1,7 @@
 {
   "version": "6",
   "dialect": "sqlite",
-  "id": "1a16a9bd-d839-46f1-b99b-5f26ed25d824",
+  "id": "5bf29198-e006-4290-bee4-dc1553b92838",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "tables": {
     "oauth_flows": {
@@ -64,8 +64,8 @@
       "uniqueConstraints": {},
       "checkConstraints": {}
     },
-    "user_provider_keys": {
-      "name": "user_provider_keys",
+    "provider_keys": {
+      "name": "provider_keys",
       "columns": {
         "id": {
           "name": "id",
@@ -104,15 +104,15 @@
         }
       },
       "indexes": {
-        "user_provider_keys_provider_idx": {
-          "name": "user_provider_keys_provider_idx",
+        "provider_keys_provider_idx": {
+          "name": "provider_keys_provider_idx",
           "columns": [
             "provider"
           ],
           "isUnique": false
         },
-        "user_provider_keys_provider_unique": {
-          "name": "user_provider_keys_provider_unique",
+        "provider_keys_provider_unique": {
+          "name": "provider_keys_provider_unique",
           "columns": [
             "provider"
           ],

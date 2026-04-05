@@ -28,6 +28,7 @@ import {
   MODELS_API_URL,
   SUPPORTED_PROVIDERS,
 } from "@/features/chat/config/models";
+import { DEFAULT_SERVER_URL } from "@/lib/serverConfig";
 
 export interface ChatAgentAPI {
   messages: UIMessage[];
@@ -75,11 +76,11 @@ export interface ChatAgentProviderProps {
 export function ChatAgentProvider({
   children,
   defaultModel = DEFAULT_MODEL_OPTION,
-  apiUrl = "http://localhost:8080/api/chat",
+  apiUrl = `${DEFAULT_SERVER_URL}/api/chat`,
 }: ChatAgentProviderProps) {
 
   // console.log("ChatAgentProvider render ");
-  const { isconnected } = useProviderStatus();
+  const { isProviderConnected } = useProviderStatus();
 
   const [model, setModel] = useState<ModelOption>(defaultModel);
   const [webSearch, setWebSearch] = useState(false);
@@ -118,10 +119,10 @@ export function ChatAgentProvider({
   }, []);
 
   const availableModels = useMemo(() => {
-    const baseModels = getAvailableModels(isconnected);
+    const baseModels = getAvailableModels(isProviderConnected);
     // If we have dynamic models, we use them, otherwise fallback to defaults
     return dynamicModels.length > 0 ? dynamicModels : baseModels;
-  }, [dynamicModels, isconnected]);
+  }, [dynamicModels, isProviderConnected]);
 
 
   const {

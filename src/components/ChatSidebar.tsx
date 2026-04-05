@@ -1,11 +1,10 @@
-import { X, Trash2, Plus, MessageSquare } from "lucide-react";
+import { X, Trash2, Plus, MessageSquare, Settings } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { cn } from "@/lib/utils";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { ProvidersDialog } from "@/components/ProvidersDialog";
+import { SettingsDialog } from "@/components/SettingsDialog";
 import { useChatAgent } from "@/features/chat/context/ChatAgentContext";
-import React from "react";
+import React, { useState } from "react";
 
 export const ChatSidebar = React.memo(() => {
   const { 
@@ -17,6 +16,8 @@ export const ChatSidebar = React.memo(() => {
     newChat: onNewChat, 
     deleteChat: onDeleteChat 
   } = useChatAgent();
+
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   const onClose = () => setIsSidebarOpen(false);
 
@@ -118,8 +119,11 @@ export const ChatSidebar = React.memo(() => {
         </ScrollArea>
 
         <div className="p-4 border-t bg-muted/20">
-    
-          <ProvidersDialog />
+          <Button variant="ghost" className="w-full justify-start" onClick={() => setSettingsOpen(true)}>
+            <Settings className="h-4 w-4 mr-2" />
+            Settings
+          </Button>
+          <SettingsDialog open={settingsOpen} onOpenChange={setSettingsOpen} />
         </div>
       </div>
     </>

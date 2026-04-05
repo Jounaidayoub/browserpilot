@@ -19,7 +19,7 @@ export const toolDefinitions: ToolDefinition[] = [
     getTabsDef,
     closeTabsDef,
     groupTabsByIdsDef,
-    openNewTabDef,
+    // openNewTabDef,
     getTabContentDef,
     searchHistoryDef,
     getCurrentTimeDef,

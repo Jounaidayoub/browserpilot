@@ -1,20 +1,15 @@
-import { useState, useEffect } from "react";
+import { useSettings } from "@/contexts/SettingsContext";
+import { useProviderConnection } from "./useProviderConnection";
 
+/**
+ * @deprecated Use useSettings and useProviderConnection instead
+ */
 export function useProviderStatus() {
-  const [isconnected, setIsConnected] = useState(false);
+  const { serverUrl, isConnected } = useSettings();
+  const { status } = useProviderConnection(serverUrl, isConnected);
 
-  useEffect(() => {
-    fetch("http://localhost:8080/api/integrations/openrouter/status", {
-      credentials: "include",
-    })
-      .then((res) => res.json())
-      .then((data) => {
-        if (data.connected) {
-            setIsConnected(true);
-        }
-      })
-      .catch((err) => console.error("Failed to check provider status", err));
-  }, []);
-
-  return { isconnected };
+  return { 
+    isServerConnected: isConnected, 
+    isProviderConnected: status.connected 
+  };
 }
