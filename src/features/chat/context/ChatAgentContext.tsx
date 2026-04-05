@@ -53,9 +53,7 @@ export interface ChatAgentAPI {
   setModel: (option: ModelOption) => void;
   availableModels: ModelOption[];
 
-  // Input state (shared so prompt input and other UI stay in sync)
-  input: string;
-  setInput: (value: string) => void;
+
   webSearch: boolean;
   setWebSearch: (value: boolean) => void;
 
@@ -80,16 +78,18 @@ export function ChatAgentProvider({
   defaultModel = DEFAULT_MODEL_OPTION,
   apiUrl = "http://localhost:8080/api/chat",
 }: ChatAgentProviderProps) {
+
+  console.log("ChatAgentProvider render ");
   const { isAuthenticated, triggerAuthDialog } = useAuth();
   const { isconnected } = useProviderStatus();
 
-  const [input, setInput] = useState("");
   const [model, setModel] = useState<ModelOption>(defaultModel);
   const [webSearch, setWebSearch] = useState(false);
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [dynamicModels, setDynamicModels] = useState<ModelOption[]>([]);
 
   useEffect(() => {
+    console.log("Fetching models from API...");
     async function fetchModels() {
       try {
         const response = await fetch(MODELS_API_URL);
@@ -192,7 +192,6 @@ export function ChatAgentProvider({
           },
         },
       );
-      setInput("");
     },
     [
       isAuthenticated,
@@ -207,7 +206,6 @@ export function ChatAgentProvider({
 
   const newChat = useCallback(() => {
     clearCurrentChat(setMessages);
-    setInput("");
     setIsSidebarOpen(false);
   }, [clearCurrentChat, setMessages]);
 
@@ -243,8 +241,6 @@ export function ChatAgentProvider({
       model,
       setModel,
       availableModels,
-      input,
-      setInput,
       webSearch,
       setWebSearch,
       isSidebarOpen,
@@ -266,7 +262,6 @@ export function ChatAgentProvider({
       model,
       setModel,
       availableModels,
-      input,
       webSearch,
       isSidebarOpen,
     ],

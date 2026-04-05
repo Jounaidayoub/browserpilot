@@ -27,37 +27,45 @@ import {
 } from "@/components/ai-elements/model-selector";
 import { Button } from "@/components/ui/button";
 import { Inspect } from "lucide-react";
-import React, { useRef, useState, useMemo } from "react";
+import React, { useRef, useState, useMemo, useEffect } from "react";
 import useInspector from "@/hooks/useInspector";
 import { useChatAgent } from "@/features/chat/context/ChatAgentContext";
 import { type ModelOption } from "@/features/chat/config/models";
 
 export const ChatPromptInput = React.memo(() => {
   const {
-    input,
-    setInput,
     submit: handleSubmit,
     status,
     stop,
     model,
     setModel,
     availableModels: models,
+    currentChatId,
   } = useChatAgent();
 
+  console.log("ChatPromptInput render ");
+
+  const [input, setInput] = useState("");
+  
+  // Clear input when chat changes
+  useEffect(() => {
+    setInput("");
+  }, [currentChatId]);
+
   const promptInput = useRef<HTMLTextAreaElement>(null);
-  const { isInspecting, inspect } = useInspector();
+  // const { isInspecting, inspect } = useInspector();
   const [openSelector, setOpenSelector] = useState(false);
 
-  const handleInspect = async () => {
-    const elementHTML = await inspect();
-    const inspectPrompt = `\n\nInspected element:\n\n ${elementHTML}`;
-    const newInput = input + inspectPrompt;
-    setInput(newInput);
+  // const handleInspect = async () => {
+  //   const elementHTML =  inspect();
+  //   const inspectPrompt = `\n\nInspected element:\n\n ${elementHTML}`;
+  //   const newInput = input + inspectPrompt;
+  //   setInput(newInput);
 
-    if (promptInput.current) {
-      promptInput.current.focus();
-    }
-  };
+  //   if (promptInput.current) {
+  //     promptInput.current.focus();
+  //   }
+  // };
 
   const currentModelOption = model;
 
@@ -71,7 +79,15 @@ export const ChatPromptInput = React.memo(() => {
   }, [models]);
 
   return (
-    <PromptInput onSubmit={handleSubmit} className="bg-secondary shadow-2xl rounded-2xl border-2 border-primary/20" globalDrop multiple>
+    <PromptInput 
+      onSubmit={(msg) => {
+        handleSubmit(msg);
+        setInput("");
+      }} 
+      className="bg-secondary shadow-2xl rounded-2xl border-2 border-primary/20" 
+      globalDrop 
+      multiple
+    >
       <PromptInputBody>
         <PromptInputAttachments>
           {(attachment) => <PromptInputAttachment data={attachment} />}
@@ -93,14 +109,14 @@ export const ChatPromptInput = React.memo(() => {
               <PromptInputActionAddAttachments />
             </PromptInputActionMenuContent>
           </PromptInputActionMenu>
-          <PromptInputButton
+          {/* <PromptInputButton
             onClick={handleInspect}
             disabled={isInspecting}
             size={"icon-sm"}
           >
             <Inspect className=" size-4" />
           </PromptInputButton>
-          
+           */}
           <ModelSelector open={openSelector} onOpenChange={setOpenSelector}>
             <ModelSelectorTrigger asChild>
               <Button variant="ghost" size="sm" className="h-8 gap-2 px-2 text-muted-foreground hover:text-foreground capitalize">
