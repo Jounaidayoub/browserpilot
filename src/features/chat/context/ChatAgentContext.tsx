@@ -153,9 +153,7 @@ export function ChatAgentProvider({
       if (toolCall.dynamic) return;
       // TODO: find the write types , (there us a hard coded type in utils.ts for the addToolResult callback) , the ai sdk probaly changed this function 
       // check ai sdk v6 docums addtoolresult for the right type  
-      evaluateToolCall(toolCall, (async (args: any) => {
-        addToolResult(args);
-      }) as any);
+      evaluateToolCall(toolCall, addToolResult);
     },
     onFinish: saveMessagesToStorage,
   });

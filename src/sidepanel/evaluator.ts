@@ -1,14 +1,14 @@
 //This the tool executer , this is the file the responsivle for evaluating the tool calls comming from the llm
 //it gets the right tool from a Map of tools
 //it parse the input and excutee the tool and send back the result to the llm 
-import type { UIMessage, InferUIMessageToolCall } from "ai";
+import type { UIMessage, InferUIMessageToolCall, ChatAddToolOutputFunction } from "ai";
 import { ZodError } from "zod";
 import { ToolStore } from "@/tools";
-import { formatZodIssues, type AddToolResultFn } from "@/tools/utils";
+import { formatZodIssues } from "@/tools/utils";
 
 export const evaluateToolCall = async (
   toolCall: InferUIMessageToolCall<UIMessage>,
-  addToolResult: AddToolResultFn
+  addToolResult: ChatAddToolOutputFunction<UIMessage>
 ) => {
 
   const tool = ToolStore.get(toolCall.toolName);
@@ -35,8 +35,8 @@ export const evaluateToolCall = async (
       error instanceof ZodError
         ? formatZodIssues(error)
         : error instanceof Error
-        ? error.message
-        : String(error);
+          ? error.message
+          : String(error);
 
     console.error(`Tool ${tool.name} failed:`, error);
 
