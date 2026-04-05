@@ -13,7 +13,6 @@ import {
 import { Badge } from "@/components/ui/badge";
 import { Settings, ExternalLink, Loader2, CheckCircle, AlertCircle } from "lucide-react";
 import { toast } from "sonner";
-import { useAuth } from "@/lib/auth-context";
 
 interface IntegrationStatus {
     connected: boolean;
@@ -22,7 +21,6 @@ interface IntegrationStatus {
 }
 
 export function ProvidersDialog() {
-    const { session } = useAuth();
     const [open, setOpen] = useState(false);
     const [status, setStatus] = useState<IntegrationStatus>({ connected: false });
     const [isPolling, setIsPolling] = useState(false);
@@ -46,11 +44,11 @@ export function ProvidersDialog() {
     };
 
     useEffect(() => {
-        if (open && session) {
+        if (open) {
             setIsLoading(true);
             fetchStatus().finally(() => setIsLoading(false));
         }
-    }, [open, session]);
+    }, [open]);
 
     useEffect(() => {
         let intervalId: NodeJS.Timeout;

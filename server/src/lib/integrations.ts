@@ -1,6 +1,6 @@
 import { randomUUID } from "node:crypto";
 import { db } from "../db/index.ts";
-import { userProviderKeys, oauthFlows } from "../db/schema.ts";
+import { providerKeys, oauthFlows } from "../db/schema.ts";
 import { eq, and, desc, type InferSelectModel, type InferInsertModel } from "drizzle-orm";
 
 export type ProviderId = "default" | "openrouter";
@@ -10,8 +10,8 @@ export type OAuthFlowStatus = "pending" | "completed" | "error";
 export type OAuthFlow = InferSelectModel<typeof oauthFlows>;
 export type InsertOAuthFlow = InferInsertModel<typeof oauthFlows>;
 
-export type UserProviderKey = InferSelectModel<typeof userProviderKeys>;
-export type InsertUserProviderKey = InferInsertModel<typeof userProviderKeys>;
+export type ProviderKey = InferSelectModel<typeof providerKeys>;
+export type InsertProviderKey = InferInsertModel<typeof providerKeys>;
 
 const FLOW_TTL_MS = 10 * 60 * 1000;
 
@@ -19,11 +19,10 @@ export function dbNow(): number {
     return Date.now();
 }
 
-export async function createOAuthFlow(userId: string, provider: ProviderId): Promise<OAuthFlow> {
+export async function createOAuthFlow(provider: ProviderId): Promise<OAuthFlow> {
     const now = dbNow();
     const flow: InsertOAuthFlow = {
         state: randomUUID(),
-        userId,
         provider,
         status: "pending",
         error: null,
@@ -67,25 +66,23 @@ export async function updateOAuthFlowStatus(
         .where(eq(oauthFlows.state, state));
 }
 
-export async function upsertUserProviderKey(
-    userId: string,
+export async function upsertProviderKey(
     provider: ProviderId,
     apiKey: string
 ): Promise<void> {
     const now = dbNow();
     const id = randomUUID();
     
-    await db.insert(userProviderKeys)
+    await db.insert(providerKeys)
         .values({
             id,
-            userId,
             provider,
             apiKey,
             createdAt: now,
             updatedAt: now,
         })
         .onConflictDoUpdate({
-            target: [userProviderKeys.userId, userProviderKeys.provider],
+            target: [providerKeys.provider],
             set: {
                 apiKey,
                 updatedAt: now,
@@ -93,36 +90,28 @@ export async function upsertUserProviderKey(
         });
 }
 
-export async function getUserProviderKey(
-    userId: string,
+export async function getProviderKey(
     provider: ProviderId
-): Promise<UserProviderKey | null> {
+): Promise<ProviderKey | null> {
     const row = await db
         .select()
-        .from(userProviderKeys)
+        .from(providerKeys)
         .where(
-            and(
-                eq(userProviderKeys.userId, userId),
-                eq(userProviderKeys.provider, provider)
-            )
+            eq(providerKeys.provider, provider)
         )
         .get();
     
     return row ?? null;
 }
 
-export async function getLatestOAuthFlowForUser(
-    userId: string,
+export async function getLatestOAuthFlow(
     provider: ProviderId
 ): Promise<OAuthFlow | null> {
     const row = await db
         .select()
         .from(oauthFlows)
         .where(
-            and(
-                eq(oauthFlows.userId, userId),
-                eq(oauthFlows.provider, provider)
-            )
+            eq(oauthFlows.provider, provider)
         )
         .orderBy(desc(oauthFlows.createdAt))
         .limit(1)

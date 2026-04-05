@@ -1,13 +1,12 @@
 import { Hono } from "hono";
-import type { AppContext } from "../middleware/index.ts";
 import { env } from "../config/env.ts";
 import {
     createOAuthFlow,
-    getLatestOAuthFlowForUser,
+    getLatestOAuthFlow,
     getOAuthFlow,
-    getUserProviderKey,
+    getProviderKey,
     updateOAuthFlowStatus,
-    upsertUserProviderKey,
+    upsertProviderKey,
     dbNow,
 } from "../lib/integrations.ts";
 
@@ -16,19 +15,17 @@ interface OpenRouterKeyResponse {
     error?: string;
 }
 
-const integrationsRoutes = new Hono<AppContext>();
+const integrationsRoutes = new Hono();
 
 integrationsRoutes.get("/openrouter/start", async (c) => {
-    const user = c.get("user");
-    const flow = await createOAuthFlow(user.id, "openrouter");
-    const callbackUrl = `${env.BETTER_AUTH_URL}/api/integrations/openrouter/callback?state=${flow.state}`;
+    const flow = await createOAuthFlow("openrouter");
+    const callbackUrl = `${env.SERVER_URL}/api/integrations/openrouter/callback?state=${flow.state}`;
     const redirectUrl = `https://openrouter.ai/auth?callback_url=${encodeURIComponent(callbackUrl)}`;
 
     return c.redirect(redirectUrl, 302);
 });
 
 integrationsRoutes.get("/openrouter/callback", async (c) => {
-    const user = c.get("user");
     const state = c.req.query("state");
     const code = c.req.query("code");
 
@@ -41,7 +38,7 @@ integrationsRoutes.get("/openrouter/callback", async (c) => {
     }
 
     const flow = await getOAuthFlow(state);
-    if (!flow || flow.userId !== user.id || flow.provider !== "openrouter") {
+    if (!flow || flow.provider !== "openrouter") {
         return c.text("Invalid flow", 400);
     }
 
@@ -75,7 +72,7 @@ integrationsRoutes.get("/openrouter/callback", async (c) => {
             return c.text("OpenRouter exchange failed", 400);
         }
 
-        await upsertUserProviderKey(user.id, "openrouter", data.key);
+        await upsertProviderKey("openrouter", data.key);
         await updateOAuthFlowStatus(flow.state, "completed", null);
 
         return c.html(
@@ -89,10 +86,9 @@ integrationsRoutes.get("/openrouter/callback", async (c) => {
 });
 
 integrationsRoutes.get("/openrouter/status", async (c) => {
-    const user = c.get("user");
-    const keyRow = await getUserProviderKey(user.id, "openrouter");
+    const keyRow = await getProviderKey("openrouter");
     
-    const latestFlow = await getLatestOAuthFlowForUser(user.id, "openrouter");
+    const latestFlow = await getLatestOAuthFlow("openrouter");
 
     return c.json({
         connected: Boolean(keyRow),

@@ -18,7 +18,6 @@ import {
 import { evaluateToolCall } from "@/sidepanel/evaluator";
 import { useChatSessions } from "@/hooks/useChatSessions";
 import { useProviderStatus } from "@/hooks/useProviderStatus";
-import { useAuth } from "@/lib/auth-context";
 import { currentcontext } from "@/tools/utils";
 import { type ChatSession } from "@/lib/storage";
 import {
@@ -80,7 +79,6 @@ export function ChatAgentProvider({
 }: ChatAgentProviderProps) {
 
   // console.log("ChatAgentProvider render ");
-  const { isAuthenticated, triggerAuthDialog } = useAuth();
   const { isconnected } = useProviderStatus();
 
   const [model, setModel] = useState<ModelOption>(defaultModel);
@@ -164,12 +162,6 @@ export function ChatAgentProvider({
       const hasAttachments = Boolean(message.files?.length);
       if (!(hasText || hasAttachments)) return;
 
-      // Auth gate
-      if (!isAuthenticated) {
-        triggerAuthDialog();
-        return;
-      }
-
       // Create a new session if needed
       if (!currentChatId) {
         await createNewChat(message.text || "Sent with attachments", model.value, model.provider);
@@ -194,8 +186,7 @@ export function ChatAgentProvider({
       );
     },
     [
-      isAuthenticated,
-      triggerAuthDialog,
+
       currentChatId,
       createNewChat,
       model,
