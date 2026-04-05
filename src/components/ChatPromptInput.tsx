@@ -43,7 +43,7 @@ export const ChatPromptInput = React.memo(() => {
     currentChatId,
   } = useChatAgent();
 
-  console.log("ChatPromptInput render ");
+  // console.log("ChatPromptInput render ");
 
   const [input, setInput] = useState("");
   

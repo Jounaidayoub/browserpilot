@@ -79,7 +79,7 @@ export function ChatAgentProvider({
   apiUrl = "http://localhost:8080/api/chat",
 }: ChatAgentProviderProps) {
 
-  console.log("ChatAgentProvider render ");
+  // console.log("ChatAgentProvider render ");
   const { isAuthenticated, triggerAuthDialog } = useAuth();
   const { isconnected } = useProviderStatus();
 

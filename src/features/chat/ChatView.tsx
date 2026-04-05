@@ -20,7 +20,7 @@ const ChatView = () => {
     chatSessions,
     setIsSidebarOpen,
   } = useChatAgent();
-  console.log("ChatView render ");
+  // console.log("ChatView render ");
   return (
     <>
       <ChatSidebar />
