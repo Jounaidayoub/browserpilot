@@ -156,11 +156,11 @@ export const ChatMessage = memo(
               const isProcessing = (part as ToolUIPart).state !== "output-available";
 
               return (
-                <div key={`${message.id}-${i}`} className="">
+                <div key={`${message.id}-${i}`} className="py-3">
                   <div className="flex flex-row items-center gap-3">
-                    <div className="flex items-center justify-center size-8 rounded-lg bg-muted/50">
+                    {/* <div className=""> */}
                       <Icon className="size-4 opacity-70" />
-                    </div>
+                    {/* </div> */}
                     <ShimmeringText
                       text={formattedName}
                       className="text-sm font-medium text-foreground/80"
