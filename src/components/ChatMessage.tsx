@@ -262,7 +262,7 @@ export const ChatMessage = memo(
           }
         })}
         {error && (
-          <Message from="assistant">
+          <Message from="assistant" className="my-2">
             <MessageContent>
               <Response className="text-red-500">
                 {error.message ||

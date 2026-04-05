@@ -1,52 +1,63 @@
-# React + Vite + CRXJS
+# BrowserPilot
 
-This template helps you quickly start developing Chrome extensions with React, TypeScript and Vite. It includes the CRXJS Vite plugin for seamless Chrome extension development.
-
-## Features
-
-- React with TypeScript
-- TypeScript support
-- Vite build tool
-- CRXJS Vite plugin integration
-- Chrome extension manifest configuration
+an agent that lives in your browser sidepanel to handle and automate browsing tasks , it can navigate , summrize,fill forms , work on repeptive/tedious tasks , organizing tabs , just tell it what to do ...
 
 ## Quick Start
 
-1. Install dependencies:
+### 1. Install Extension
+
+**From Release (Recommended)**
+1. Download the latest release from [GitHub Releases](https://github.com/your-repo/releases)
+2. Extract the ZIP file
+3. Open Chrome → `chrome://extensions/`
+4. Enable **Developer mode** → **Load unpacked**
+5. Select the extracted `dist` folder
+
+**Build from Source**
+```bash
+pnpm install
+pnpm run build
+```
+Then load `dist/` folder as above.
+
+### 2. Setup Server
 
 ```bash
-npm install
+cd server
+cp .env.example .env
+# Edit .env with your API keys (see config options below)
+
+pnpm install
+pnpm run migrate
+pnpm run dev
 ```
 
-2. Start development server:
+Server runs at `http://localhost:8080`
 
-```bash
-npm run dev
-```
+### 3. Open Sidepanel
 
-3. Open Chrome and navigate to `chrome://extensions/`, enable "Developer mode", and load the unpacked extension from the `dist` directory.
+Press `Ctrl+Shift+K` (or `Cmd+Shift+K` on Mac) or click the extension icon → "Open side panel"
 
-4. Build for production:
+---
 
-```bash
-npm run build
-```
+## Configuration
 
-## Project Structure
+Create `server/.env`:
 
-- `src/popup/` - Extension popup UI
-- `src/content/` - Content scripts
-- `manifest.config.ts` - Chrome extension manifest configuration
+| Variable | Description |
+|----------|-------------|
+| `PORT` | Server port (default: 8080) |
+| `OPENAI_API_KEY` | OpenAI key |
+| `ANTHROPIC_API_KEY` | Anthropic key |
+| `GOOGLE_GENERATIVE_AI_API_KEY` | Google AI key |
+| `DB_FILE_NAME` | SQLite database path |
 
-## Documentation
+---
 
-- [React Documentation](https://reactjs.org/)
-- [Vite Documentation](https://vitejs.dev/)
-- [CRXJS Documentation](https://crxjs.dev/vite-plugin)
+## Features & Examples
 
-## Chrome Extension Development Notes
-
-- Use `manifest.config.ts` to configure your extension
-- The CRXJS plugin automatically handles manifest generation
-- Content scripts should be placed in `src/content/`
-- Popup UI should be placed in `src/popup/`
+See [docs/FEATURES.md](./docs/FEATURES.md) for:
+- Available tools (tabs, groups, history, page content)
+- Usage examples
+- Screenshots
+- Architecture deep-dive
