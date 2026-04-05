@@ -60,7 +60,9 @@ chatRoutes.post("/", async (c) => {
     }),
     system: systemPrompt(currentcontext),
     messages: await convertToModelMessages(messages),
-    tools: { ...mcpTools, ...tools },
+    tools: {
+       ...mcpTools, 
+        ...tools },
     onFinish: ({ usage }) => {
       console.log("[Chat] Token usage:", usage);
     },

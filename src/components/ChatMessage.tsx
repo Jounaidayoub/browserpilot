@@ -1,5 +1,10 @@
-import { Action, Actions } from "@/components/ai-elements/actions";
 import { Message, MessageContent } from "@/components/ai-elements/message";
+import {
+  ChainOfThought,
+  ChainOfThoughtContent,
+  ChainOfThoughtHeader,
+  ChainOfThoughtStep,
+} from "@/components/ai-elements/chain-of-thought";
 import {
   Reasoning,
   ReasoningContent,
@@ -7,29 +12,25 @@ import {
 } from "@/components/ai-elements/reasoning";
 import { Response } from "@/components/ai-elements/response";
 import {
-  Tool,
-  ToolContent,
-  ToolHeader,
-  ToolInput,
-  ToolOutput,
-} from "@/components/ai-elements/tool";
+  deriveGroupedToolState,
+  formatToolName,
+  getToolNameFromPart,
+  groupMessageParts,
+} from "@/components/chat-message-parts";
 import { ShimmeringText } from "@/components/ui/shimmering-text";
-import { UIMessage, type ToolUIPart } from "ai";
+import { UIMessage } from "ai";
 import {
   Clock,
-  CopyIcon,
   FileText,
   Globe,
   History,
   Layers,
   LayoutGrid,
   PlusSquare,
-  RefreshCcwIcon,
   Sparkles,
-  Wrench,
   XCircle,
 } from "lucide-react";
-import { Fragment, memo } from "react";
+import { memo, useMemo, useState } from "react";
 
 const getToolIcon = (toolName: string) => {
   switch (toolName) {
@@ -68,16 +69,100 @@ export const ChatMessage = memo(
     message,
     isMostRecentMessage,
     status,
-    regenerate,
     error,
   }: ChatMessageProps) => {
+    const [toolGroupOpenState, setToolGroupOpenState] = useState<
+      Record<string, boolean>
+    >({});
+    const isStreamingMostRecent =
+      String(status) === "streaming" && isMostRecentMessage;
+    const segments = useMemo(() => groupMessageParts(message.parts), [message.parts]);
+
+    const getToolGroupOpen = (groupKey: string) =>
+      toolGroupOpenState[groupKey] ?? isStreamingMostRecent;
+
+    const setToolGroupOpen = (groupKey: string, open: boolean) => {
+      setToolGroupOpenState((current) => ({ ...current, [groupKey]: open }));
+    };
+
+    const getEntryStepStatus = (state: string) => {
+      switch (state) {
+        case "output-available":
+          return "complete" as const;
+        case "output-error":
+          return "pending" as const;
+        default:
+          return "active" as const;
+      }
+    };
+
     return (
       <div key={message.id}>
-        {message.parts.map((part, i) => {
+        {segments.map((segment) => {
+          if (segment.type === "grouped-tools") {
+            const groupKey = `${message.id}-tool-group-${segment.startIndex}`;
+            const isOpen = getToolGroupOpen(groupKey);
+            const groupedState = deriveGroupedToolState(segment.entries);
+            const headerStatus =
+              groupedState === "complete"
+                ? "Completed"
+                : groupedState === "error"
+                ? "Error"
+                : "Running";
+
+            return (
+              <ChainOfThought
+                key={groupKey}
+                className="my-2 rounded-md border p-3"
+                open={isOpen}
+                onOpenChange={(open) => setToolGroupOpen(groupKey, open)}
+              >
+                <ChainOfThoughtHeader>
+                  {segment.entries.length} tool call
+                  {segment.entries.length > 1 ? "s" : ""} - {headerStatus}
+                </ChainOfThoughtHeader>
+                <ChainOfThoughtContent className="space-y-2">
+                  {segment.entries.map((entry, entryIndex) => {
+                    const toolName = getToolNameFromPart(entry.part);
+                    const Icon = getToolIcon(toolName);
+                    const formattedName = formatToolName(toolName);
+                    const isProcessing = entry.part.state !== "output-available";
+                    const showStepDivider =
+                      entryIndex > 0 &&
+                      segment.entries[entryIndex - 1].step !== entry.step;
+
+                    return (
+                      <div key={`${message.id}-${entry.index}`} className="space-y-2">
+                        {showStepDivider && (
+                          <div className="border-b pb-1 text-muted-foreground text-xs">
+                            Step {entry.step + 1}
+                          </div>
+                        )}
+                        <ChainOfThoughtStep
+                          icon={Icon}
+                          label={formattedName}
+                          status={getEntryStepStatus(entry.part.state)}
+                        >
+                          <ShimmeringText
+                            text={formattedName}
+                            className="text-sm font-medium text-foreground/80"
+                            repeat={isProcessing}
+                          />
+                        </ChainOfThoughtStep>
+                      </div>
+                    );
+                  })}
+                </ChainOfThoughtContent>
+              </ChainOfThought>
+            );
+          }
+
+          const part = segment.part;
+
           switch (part.type) {
             case "text":
               return (
-                <Fragment key={`${message.id}-${i}`}>
+                <div key={`${message.id}-${segment.index}`}>
                   <Message from={message.role}>
                     <MessageContent variant={"flat"}>
                       <Response>{part.text}</Response>
@@ -96,111 +181,17 @@ export const ChatMessage = memo(
                     </Action>
                   </Actions>
                 )} */}
-                </Fragment>
-              );
-
-            case part.type.startsWith("tool-") ? part.type : null: {
-              const toolName = (part.type as string).split("-")[1];
-              const Icon = getToolIcon(toolName);
-              const formattedName = toolName
-                .replace(/_/g, " ")
-                .replace(/^\w/, (c) => c.toUpperCase());
-              const isProcessing = (part as ToolUIPart).state !== "output-available";
-
-              return (
-                <div key={`${message.id}-${i}`} className="my-2">
-                  <div className="flex flex-row items-center gap-3">
-                    <div className="flex items-center justify-center size-8 rounded-lg bg-muted/50">
-                      <Icon className="size-4 opacity-70" />
-                    </div>
-                    <ShimmeringText
-                      text={formattedName}
-                      className="text-sm font-medium text-foreground/80"
-                      repeat={isProcessing}
-                    />
-                  </div>
-                  
-                  {/* TODO : this needs better types handleling , `as` everywhere */}
-                  {/* this an alernameive toolcall rendeirng method , for debguuge but mostly i want use hte simple one above
-                with shimmmer text effect */}
-                  {/* <Tool defaultOpen={false}>
-                  <ToolHeader
-                    type={`tool-${(part.type as string).split("-")[1]}`}
-                    state={(part as ToolUIPart).state}
-                  />
-                  <ToolContent>
-                    <ToolInput input={(part as ToolUIPart).input} />
-                    <ToolOutput
-                      output={
-                        <>
-                          <Response>
-                            {(part as ToolUIPart).output as string}
-                          </Response>
-                        </>
-                      }
-                      errorText={(part as ToolUIPart).errorText}
-                    />
-                  </ToolContent>
-                </Tool> */}
                 </div>
               );
-            }
-            
-            case "dynamic-tool": {
-              const toolName = part.toolName;
-              const Icon = getToolIcon(toolName);
-              const formattedName = toolName
-                .replace(/_/g, " ")
-                .replace(/^\w/, (c) => c.toUpperCase());
-              const isProcessing = part.state !== "output-available";
-
-              return (
-                <div key={`${message.id}-${i}`} className="my-2">
-                  <div className="flex flex-row items-center gap-3">
-                    <div className="flex items-center justify-center size-8 rounded-lg bg-muted/50">
-                      <Icon className="size-4 opacity-70" />
-                    </div>
-                    <ShimmeringText
-                      text={formattedName}
-                      className="text-sm font-medium text-foreground/80"
-                      repeat={isProcessing}
-                    />
-                  </div>
-                  
-                  {/* TODO : this needs better types handleling , `as` everywhere */}
-                  {/* this an alernameive toolcall rendeirng method , for debguuge but mostly i want use hte simple one above
-                with shimmmer text effect */}
-                  {/* <Tool defaultOpen={false}>
-                  <ToolHeader
-                    type={`tool-${(part.type as string).split("-")[1]}`}
-                    state={(part as ToolUIPart).state}
-                  />
-                  <ToolContent>
-                    <ToolInput input={(part as ToolUIPart).input} />
-                    <ToolOutput
-                      output={
-                        <>
-                          <Response>
-                            {(part as ToolUIPart).output as string}
-                          </Response>
-                        </>
-                      }
-                      errorText={(part as ToolUIPart).errorText}
-                    />
-                  </ToolContent>
-                </Tool> */}
-                </div>
-              );
-            }
 
             case "reasoning":
               return (
                 <Reasoning
-                  key={`${message.id}-${i}`}
+                  key={`${message.id}-${segment.index}`}
                   className="w-full"
                   isStreaming={
                     String(status) === "streaming" &&
-                    i === message.parts.length - 1 &&
+                    segment.index === message.parts.length - 1 &&
                     isMostRecentMessage
                   }
                 >
