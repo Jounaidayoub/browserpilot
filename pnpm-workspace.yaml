@@ -1,6 +1,3 @@
 packages:
   - .
   - server
-
-onlyBuiltDependencies:
-  - better-sqlite3

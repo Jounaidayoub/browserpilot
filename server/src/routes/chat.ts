@@ -1,11 +1,10 @@
 import { Hono } from "hono";
-import { convertToModelMessages, streamText, type UIMessage, wrapLanguageModel } from "ai";
+import { convertToModelMessages, streamText, type UIMessage } from "ai";
 import { getAIModel, getOpenRouterProvider } from "../config/providers.ts";
 import { systemPrompt, type BrowserContext } from "../lib/prompts.ts";
 import { tools } from "../tools/definitions.ts";
-import { getProviderKey, type ProviderId } from "../lib/integrations.ts";
+import { getProviderKey } from "../lib/integrations.ts";
 import { getMCPTools } from "../lib/mcp-client.ts";
-import { devToolsMiddleware } from "@ai-sdk/devtools";
 
 /**
  * Chat request body schema
@@ -13,9 +12,8 @@ import { devToolsMiddleware } from "@ai-sdk/devtools";
 interface ChatRequestBody {
   messages: UIMessage[];
   model: string;
-  providerId?: ProviderId;
+  providerId?: string;
   options?: Record<string, unknown>;
-  webSearch?: boolean;
   currentcontext?: BrowserContext;
 }
 
@@ -32,29 +30,27 @@ chatRoutes.post("/", async (c) => {
   console.log("[Chat] Received request for model:", model);
   console.log("[Chat] Provider:", providerId);
   console.log("[Chat] Messages count:", messages.length);
-  //   console.log("[Chat] Context:", JSON.stringify(currentcontext, null, 2));
+
   let modelInstance;
   try {
     modelInstance = getAIModel(providerId, model);
-  } catch (err: any) {
+  } catch (err: unknown) {
     if (providerId === "openrouter") {
-      // fallback to stored key if env is not provided
-      const keyRow = await getProviderKey("openrouter");
+      // fallback to stored key if not yet loaded in config cache
+      const keyRow = getProviderKey("openrouter");
       if (!keyRow) {
-        return c.json({ error: "OpenRouter not connected and no ENV key present" }, 400);
+        return c.json({ error: "OpenRouter not connected and no key present" }, 400);
       }
       modelInstance = getOpenRouterProvider(keyRow.apiKey)(model);
     } else {
-      return c.json({ error: err.message }, 400);
+      const message = err instanceof Error ? err.message : "Unknown error";
+      return c.json({ error: message }, 400);
     }
   }
 
   const mcpTools = await getMCPTools();
   const result = streamText({
-    // model: wrapLanguageModel({
     model: modelInstance,
-    // middleware: devToolsMiddleware(),
-    // }),
     system: systemPrompt(currentcontext),
     messages: await convertToModelMessages(messages),
     tools: { ...mcpTools, ...tools },

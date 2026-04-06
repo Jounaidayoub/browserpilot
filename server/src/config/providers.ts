@@ -2,8 +2,8 @@ import { createOpenAICompatible } from "@ai-sdk/openai-compatible";
 import { createOpenAI } from "@ai-sdk/openai";
 import { createAnthropic } from "@ai-sdk/anthropic";
 import { createGoogleGenerativeAI } from "@ai-sdk/google";
-import { env } from "./env";
-import { LanguageModel } from "ai";
+import { env } from "./env.ts";
+import { loadConfig } from "./userConfig.ts";
 
 /**
  * Default generic compatible provider
@@ -12,10 +12,6 @@ export const defaultProvider = createOpenAICompatible({
   baseURL: env.AI_BASE_URL,
   name: "generic",
 });
-
-
-
-
 
 export const getOpenRouterProvider = (api: string | undefined) =>
   createOpenAICompatible({
@@ -28,36 +24,46 @@ export const getOpenRouterProvider = (api: string | undefined) =>
  * Factory to get a configured AI SDK Model based on the provider ID
  */
 export function getAIModel(providerId: string, modelName: string) {
+  const config = loadConfig();
+
   switch (providerId) {
-    case "openai":
-      if (!env.OPENAI_API_KEY) throw new Error("OPENAI_API_KEY is not configured on the server.");
-      return createOpenAI({ apiKey: env.OPENAI_API_KEY })(modelName);
+    case "openai": {
+      const apiKey = config.providers.openai?.apiKey;
+      if (!apiKey) throw new Error("OpenAI API key is not configured. Run `npx browser-assistant setup` to add it.");
+      return createOpenAI({ apiKey })(modelName);
+    }
 
-    case "anthropic":
-      if (!env.ANTHROPIC_API_KEY) throw new Error("ANTHROPIC_API_KEY is not configured on the server.");
-      return createAnthropic({ apiKey: env.ANTHROPIC_API_KEY })(modelName);
+    case "anthropic": {
+      const apiKey = config.providers.anthropic?.apiKey;
+      if (!apiKey) throw new Error("Anthropic API key is not configured. Run `npx browser-assistant setup` to add it.");
+      return createAnthropic({ apiKey })(modelName);
+    }
 
-    case "google":
-      if (!env.GOOGLE_API_KEY) throw new Error("GOOGLE_API_KEY is not configured on the server.");
-      return createGoogleGenerativeAI({ apiKey: env.GOOGLE_API_KEY })(modelName);
+    case "google": {
+      const apiKey = config.providers.google?.apiKey;
+      if (!apiKey) throw new Error("Google API key is not configured. Run `npx browser-assistant setup` to add it.");
+      return createGoogleGenerativeAI({ apiKey })(modelName);
+    }
 
     case "openrouter": {
-      // Typically the UI will send OpenRouter requests dynamically or user keys
-      // It falls back to env variable if present
-      if (!env.OPENROUTER_API_KEY) throw new Error("OPENROUTER_API_KEY is not configured.");
-      return getOpenRouterProvider(env.OPENROUTER_API_KEY)(modelName);
+      const apiKey = config.providers.openrouter?.apiKey;
+      if (!apiKey) throw new Error("OpenRouter API key is not configured. Run `npx browser-assistant setup` or connect via the extension.");
+      return getOpenRouterProvider(apiKey)(modelName);
     }
+
     case "github-copilot": {
-      if (!env.GITHUB_COPILOT_API_KEY || !env.GITHUB_COPILOT_BASE_URL) throw new Error("GITHUB_COPILOT_API_KEY or GITHUB_COPILOT_BASE_URL is not configured.");
+      const apiKey = config.providers["github-copilot"]?.apiKey;
+      const baseUrl = config.providers["github-copilot"]?.baseUrl ?? env.GITHUB_COPILOT_BASE_URL;
+      if (!apiKey || !baseUrl) throw new Error("GitHub Copilot API key or base URL is not configured. Run `npx browser-assistant setup` to add it.");
       return createOpenAICompatible({
-        baseURL: env.GITHUB_COPILOT_BASE_URL!,
+        baseURL: baseUrl,
         name: "github-copilot",
-        apiKey: env.GITHUB_COPILOT_API_KEY,
+        apiKey,
       })(modelName);
     }
+
     case "generic":
     default:
       return defaultProvider(modelName);
   }
 }
-
