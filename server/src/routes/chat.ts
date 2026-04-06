@@ -33,7 +33,7 @@ chatRoutes.post("/", async (c) => {
   console.log("[Chat] Provider:", providerId);
   console.log("[Chat] Messages count:", messages.length);
   //   console.log("[Chat] Context:", JSON.stringify(currentcontext, null, 2));
-let modelInstance;
+  let modelInstance;
   try {
     modelInstance = getAIModel(providerId, model);
   } catch (err: any) {
@@ -51,10 +51,10 @@ let modelInstance;
 
   const mcpTools = await getMCPTools();
   const result = streamText({
-    model: wrapLanguageModel({
-      model: modelInstance,
-      middleware: devToolsMiddleware(),
-    }),
+    // model: wrapLanguageModel({
+    model: modelInstance,
+    // middleware: devToolsMiddleware(),
+    // }),
     system: systemPrompt(currentcontext),
     messages: await convertToModelMessages(messages),
     tools: { ...mcpTools, ...tools },
@@ -63,6 +63,6 @@ let modelInstance;
     },
   });
   return result.toUIMessageStreamResponse({ sendReasoning: true });
-}); 
+});
 
 export { chatRoutes };
