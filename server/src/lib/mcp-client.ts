@@ -1,10 +1,18 @@
 import { createMCPClient } from "@ai-sdk/mcp";
 import { Experimental_StdioMCPTransport } from "@ai-sdk/mcp/mcp-stdio";
 
-const MCP_SERVER_CONFIG = {
-  command: "npx",
-  args: ["-y", "chrome-devtools-mcp@latest", "--auto-connect", "--no-usage-statistics", "--no-performance-crux"] as string[],
-};
+const isWindows = process.platfrom === 'win32'
+isWindows && console.log('Windows detected !!')
+const MCP_SERVER_CONFIG = isWindows ?
+  {
+    command: "cmd",
+    args: ["/c", "npx", "-y", "chrome-devtools-mcp@latest", "--auto-connect", "--no-usage-statistics", "--no-performance-crux"] as string[],
+  }
+  :
+  {
+    command: "npx",
+    args: ["-y", "chrome-devtools-mcp@latest", "--auto-connect", "--no-usage-statistics", "--no-performance-crux"] as string[],
+  };
 
 let cachedClient: Awaited<ReturnType<typeof createMCPClient>> | null = null;
 export async function initMCP() {
