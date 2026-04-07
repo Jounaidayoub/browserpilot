@@ -1,11 +1,19 @@
 {
-  "name": "browser-assistant-server",
+  "name": "browser-pilot",
+  "version": "0.1.0",
   "type": "module",
-  "module": "",
+  "main": "./src/index.ts",
+  "bin": {
+    "browser-pilot": "./bin/browser-pilot.js"
+  },
   "scripts": {
     "dev": "tsx watch src/index.ts",
+    "dev:cli": "tsx src/cli.ts",
     "build": "tsc",
-    "start": "node dist/index.js"
+    "start": "tsx src/index.ts",
+    "setup": "tsx src/cli.ts setup",
+    "config:list": "tsx src/cli.ts config:list",
+    "config:path": "tsx src/cli.ts config:path"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.66",
@@ -15,19 +23,15 @@
     "@ai-sdk/openai": "3.0.50",
     "@ai-sdk/openai-compatible": "^2.0.38",
     "@hono/node-server": "^1.19.5",
-    "@libsql/client": "^0.17.0",
     "ai": "6.0.146",
-    "better-sqlite3": "^12.6.2",
     "browser-assistant-extension": "workspace:*",
-    "dotenv": "^17.2.3",
-    "drizzle-orm": "^0.45.2",
-    "hono": "^4.9.10"
+    "commander": "^14.0.1",
+    "hono": "^4.9.10",
+    "inquirer": "^12.10.0",
+    "tsx": "^4.7.1"
   },
   "devDependencies": {
-    "@types/better-sqlite3": "^7.6.13",
     "@types/node": "^20.11.17",
-    "drizzle-kit": "^0.31.10",
-    "tsx": "^4.7.1",
     "typescript": "^5.8.3"
   }
 }
