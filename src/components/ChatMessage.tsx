@@ -1,4 +1,3 @@
-import { Action, Actions } from "@/components/ai-elements/actions";
 import { Message, MessageContent } from "@/components/ai-elements/message";
 import {
   Reasoning,
@@ -6,20 +5,12 @@ import {
   ReasoningTrigger,
 } from "@/components/ai-elements/reasoning";
 import { Response } from "@/components/ai-elements/response";
-import {
-  Tool,
-  ToolContent,
-  ToolHeader,
-  ToolInput,
-  ToolOutput,
-} from "@/components/ai-elements/tool";
 import { ShimmeringText } from "@/components/ui/shimmering-text";
 import { UIMessage, type ToolUIPart } from "ai";
 import {
   Camera,
   Clock,
   Code2,
-  CopyIcon,
   CornerDownRight,
   ExternalLink,
   FileText,
@@ -34,17 +25,19 @@ import {
   MousePointer2,
   Navigation,
   PlusSquare,
-  RefreshCcwIcon,
-  Search,
   Sparkles,
   Terminal,
   TimerIcon,
   Type,
   UnfoldVertical,
-  Wrench,
   XCircle,
 } from "lucide-react";
 import { Fragment, memo } from "react";
+
+const normalizeToolName = (toolName: string) =>
+  toolName
+    .replace(/[\u200B-\u200D\uFEFF]/g, "")
+    .trim();
 
 const getToolIcon = (toolName: string) => {
   switch (toolName) {
@@ -116,7 +109,6 @@ export const ChatMessage = memo(
     message,
     isMostRecentMessage,
     status,
-    regenerate,
     error,
   }: ChatMessageProps) => {
     return (
@@ -148,7 +140,8 @@ export const ChatMessage = memo(
               );
 
             case part.type.startsWith("tool-") ? part.type : null: {
-              const toolName = (part.type as string).split("-")[1];
+              const rawToolName = (part.type as string).split("-")[1] ?? "";
+              const toolName = normalizeToolName(rawToolName);
               const Icon = getToolIcon(toolName);
               const formattedName = toolName
                 .replace(/_/g, " ")
@@ -157,10 +150,8 @@ export const ChatMessage = memo(
 
               return (
                 <div key={`${message.id}-${i}`} className="py-3">
-                  <div className="flex flex-row items-center gap-3">
-                    {/* <div className=""> */}
+                  <div className="flex w-full items-center gap-3">
                       <Icon className="size-4 opacity-70" />
-                    {/* </div> */}
                     <ShimmeringText
                       text={formattedName}
                       className="text-sm font-medium text-foreground/80"
@@ -195,7 +186,7 @@ export const ChatMessage = memo(
             }
             
             case "dynamic-tool": {
-              const toolName = part.toolName;
+              const toolName = normalizeToolName(part.toolName);
               const Icon = getToolIcon(toolName);
               const formattedName = toolName
                 .replace(/_/g, " ")
@@ -203,11 +194,9 @@ export const ChatMessage = memo(
               const isProcessing = part.state !== "output-available";
 
               return (
-                <div key={`${message.id}-${i}`} className="">
-                  <div className="flex flex-row items-center gap-3">
-                    <div className="flex items-center justify-center size-8 rounded-lg bg-muted/50">
-                      <Icon className="size-4 opacity-70" />
-                    </div>
+                <div key={`${message.id}-${i}`} className="py-3">
+                  <div className="flex w-full items-center gap-3">
+                    <Icon className="size-4 opacity-70" />
                     <ShimmeringText
                       text={formattedName}
                       className="text-sm font-medium text-foreground/80"
