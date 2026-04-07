@@ -1,7 +1,7 @@
 import { createMCPClient } from "@ai-sdk/mcp";
 import { Experimental_StdioMCPTransport } from "@ai-sdk/mcp/mcp-stdio";
 
-const isWindows = process.platfrom === 'win32'
+const isWindows = process.platform === 'win32'
 isWindows && console.log('Windows detected !!')
 const MCP_SERVER_CONFIG = isWindows ?
   {
