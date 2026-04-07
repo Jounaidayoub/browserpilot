@@ -12,8 +12,7 @@
     "build": "tsc",
     "start": "tsx src/index.ts",
     "setup": "tsx src/cli.ts setup",
-    "config:list": "tsx src/cli.ts config:list",
-    "config:path": "tsx src/cli.ts config:path"
+    "config:list": "tsx src/cli.ts config list"
   },
   "dependencies": {
     "@ai-sdk/anthropic": "^3.0.66",

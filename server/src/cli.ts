@@ -17,6 +17,11 @@ const KEY_PROMPTS: ProviderPrompt[] = [
   { path: ["providers", "githubCopilot", "apiKey"], label: "GitHub Copilot API key" },
 ];
 
+const PROVIDER_CHOICES = KEY_PROMPTS.map((promptConfig) => ({
+  name: promptConfig.label.replace(" API key", ""),
+  value: promptConfig,
+}));
+
 function mask(value: string | undefined): string {
   if (!value) return "(not set)";
   if (value.length <= 8) return "********";
@@ -51,47 +56,90 @@ async function runSetupWizard(): Promise<void> {
 
   console.log("Browser Pilot setup wizard\n");
 
-  const serverAnswers = await inquirer.prompt([
-    {
-      type: "number",
-      name: "port",
-      message: "Server port",
-      default: config.server.port,
-    },
-    {
-      type: "input",
-      name: "url",
-      message: "Server URL (used for OAuth callback)",
-      default: config.server.url,
-    },
-    {
-      type: "input",
-      name: "genericBaseUrl",
-      message: "Generic model base URL",
-      default: config.providers.generic.baseUrl ?? "http://localhost:4141/v1",
-    },
-  ]);
+  let configureAnotherProvider = true;
 
-  config.server.port = Number(serverAnswers.port) || 8080;
-  config.server.url = serverAnswers.url;
-  config.providers.generic.baseUrl = serverAnswers.genericBaseUrl;
+  while (configureAnotherProvider) {
+    const { selectedProvider }: { selectedProvider: ProviderPrompt } = await inquirer.prompt([
+      {
+        type: "list",
+        name: "selectedProvider",
+        message: "Which provider do you want to configure?",
+        choices: [
+          ...PROVIDER_CHOICES,
+          {
+            name: "Done configuring provider keys",
+            value: null,
+          },
+        ],
+      },
+    ]);
 
-  for (const promptConfig of KEY_PROMPTS) {
-    const currentValue = config[promptConfig.path[0]][promptConfig.path[1]][promptConfig.path[2]];
+    if (!selectedProvider) {
+      break;
+    }
+
+    const currentValue = config[selectedProvider.path[0]][selectedProvider.path[1]][selectedProvider.path[2]];
 
     const { apiKey } = await inquirer.prompt([
       {
         type: "password",
         mask: "*",
         name: "apiKey",
-        message: `${promptConfig.label} (${mask(currentValue)}):`,
+        message: `${selectedProvider.label} (${mask(currentValue)}):`,
         default: currentValue ?? "",
       },
     ]);
 
     if (typeof apiKey === "string") {
-      setNestedValue(config, promptConfig.path, apiKey.trim());
+      setNestedValue(config, selectedProvider.path, apiKey.trim());
     }
+
+    const { shouldContinue } = await inquirer.prompt([
+      {
+        type: "confirm",
+        name: "shouldContinue",
+        message: "Configure another provider?",
+        default: false,
+      },
+    ]);
+
+    configureAnotherProvider = shouldContinue;
+  }
+
+  const { changeServerSettings } = await inquirer.prompt([
+    {
+      type: "confirm",
+      name: "changeServerSettings",
+      message: "Change server settings (port, URL, generic base URL)?",
+      default: false,
+    },
+  ]);
+
+  if (changeServerSettings) {
+    const serverAnswers = await inquirer.prompt([
+      {
+        type: "number",
+        name: "port",
+        message: "Server port",
+        default: config.server.port,
+      },
+      {
+        type: "input",
+        name: "url",
+        message: "Server URL (used for OAuth callback)",
+        default: config.server.url,
+      },
+      {
+        type: "input",
+        name: "genericBaseUrl",
+        message: "Generic model base URL",
+        default: config.providers.generic.baseUrl ?? "http://localhost:4141/v1",
+      },
+    ]);
+
+    config.server.port = Number(serverAnswers.port) || 8080;
+    config.server.url = serverAnswers.url;
+    config.providers.generic.baseUrl = serverAnswers.genericBaseUrl;
   }
 
   writeConfigAtomic(config);
@@ -124,31 +172,6 @@ configCommand
   .description("Show current config values (API keys masked)")
   .action(() => {
     printConfigList();
-  });
-
-configCommand
-  .command("path")
-  .description("Show config file paths")
-  .action(() => {
-    const paths = getConfigPaths();
-    console.log(paths.configFile);
-    console.log(paths.oauthFile);
-  });
-
-program
-  .command("config:list")
-  .description("Alias for `config list`")
-  .action(() => {
-    printConfigList();
-  });
-
-program
-  .command("config:path")
-  .description("Alias for `config path`")
-  .action(() => {
-    const paths = getConfigPaths();
-    console.log(paths.configFile);
-    console.log(paths.oauthFile);
   });
 
 program.parseAsync(process.argv);
