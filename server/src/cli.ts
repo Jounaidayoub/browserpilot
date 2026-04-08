@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 import { Command } from "commander";
 import inquirer from "inquirer";
 import { getConfigPaths, readConfig, writeConfigAtomic, ensureConfigDir } from "./config/file-config";
