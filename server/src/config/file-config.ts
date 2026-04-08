@@ -37,7 +37,7 @@ export interface OAuthStore {
   flows: StoredOAuthFlow[];
 }
 
-const APP_DIR_NAME = "browser-pilot";
+const APP_DIR_NAME = "browserpilot";
 
 const DEFAULT_CONFIG: AppConfig = {
   server: {

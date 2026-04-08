@@ -4,7 +4,7 @@ import { getConfigPaths, readConfig, writeConfigAtomic, ensureConfigDir } from "
 import { startServer } from "./server";
 
 type ProviderPrompt = {
-  path: ["providers", "openai" | "anthropic" | "google" | "openrouter" | "githubCopilot", "apiKey"];
+  path: ["providers", "openai" | "anthropic" | "google" | "openrouter" | "githubCopilot", "apiKey" | "baseUrl"];
   label: string;
 };
 
@@ -46,6 +46,7 @@ function printConfigList(): void {
   console.log(`  Google: ${mask(config.providers.google.apiKey)}`);
   console.log(`  OpenRouter: ${mask(config.providers.openrouter.apiKey)}`);
   console.log(`  GitHub Copilot: ${mask(config.providers.githubCopilot.apiKey)}`);
+  console.log(`  GitHub Copilot Base URL: ${config.providers.githubCopilot.baseUrl ?? "(not set)"}`);
   console.log(`  Generic Base URL: ${config.providers.generic.baseUrl ?? "(default)"}`);
 }
 
@@ -79,18 +80,39 @@ async function runSetupWizard(): Promise<void> {
 
     const currentValue = config[selectedProvider.path[0]][selectedProvider.path[1]][selectedProvider.path[2]];
 
-    const { apiKey } = await inquirer.prompt([
+    if (selectedProvider.path[1] === "githubCopilot" && selectedProvider.path[2] === "apiKey") {
+      const currentBaseUrl = config.providers.githubCopilot.baseUrl;
+
+      const { baseUrl } = await inquirer.prompt([
+        {
+          type: "input",
+          name: "baseUrl",
+          message: `GitHub Copilot Base URL (${currentBaseUrl ?? "not set"}):`,
+          default: currentBaseUrl ?? "",
+        },
+      ]);
+
+      if (typeof baseUrl === "string") {
+        config.providers.githubCopilot.baseUrl = baseUrl.trim();
+      }
+    }
+
+    const isSecretValue = selectedProvider.path[2] === "apiKey";
+    const answerName = selectedProvider.path[2];
+    const answer = await inquirer.prompt([
       {
-        type: "password",
-        mask: "*",
-        name: "apiKey",
-        message: `${selectedProvider.label} (${mask(currentValue)}):`,
+        type: isSecretValue ? "password" : "input",
+        ...(isSecretValue ? { mask: "*" } : {}),
+        name: answerName,
+        message: `${selectedProvider.label} (${isSecretValue ? mask(currentValue) : (currentValue ?? "not set")}):`,
         default: currentValue ?? "",
       },
     ]);
 
-    if (typeof apiKey === "string") {
-      setNestedValue(config, selectedProvider.path, apiKey.trim());
+    const nextValue = answer[answerName];
+
+    if (typeof nextValue === "string") {
+      setNestedValue(config, selectedProvider.path, nextValue.trim());
     }
 
     const { shouldContinue } = await inquirer.prompt([
@@ -145,13 +167,13 @@ async function runSetupWizard(): Promise<void> {
 
   console.log("\nSetup complete.");
   console.log(`Config saved to: ${getConfigPaths().configFile}`);
-  console.log("Run `browser-pilot` to start the server.\n");
+  console.log("Run `browserpilot` to start the server.\n");
 }
 
 const program = new Command();
 
 program
-  .name("browser-pilot")
+  .name("browserpilot")
   .description("Browser Pilot server CLI")
   .action(async () => {
     await startServer();
