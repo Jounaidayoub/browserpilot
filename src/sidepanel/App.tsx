@@ -24,7 +24,7 @@ function AppContent() {
 
 export default function App() {
   return (
-    <ThemeProvider defaultTheme="system" storageKey="tiny-ui-theme">
+    <ThemeProvider defaultTheme="light" storageKey="tiny-ui-theme">
       <SettingsProvider>
         <AppContent />
       </SettingsProvider>
