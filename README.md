@@ -7,7 +7,7 @@ an agent that lives in your browser sidepanel to handle and automate browsing ta
 ### 1. Install Extension
 
 **From Release (Recommended)**
-1. Download the latest release from [GitHub Releases](https://github.com/your-repo/releases)
+1. Download the latest release from [GitHub Releases](https://github.com/Jounaidayoub/browserpilot/releases/)
 2. Extract the ZIP file
 3. Open Chrome → `chrome://extensions/`
 4. Enable **Developer mode** → **Load unpacked**

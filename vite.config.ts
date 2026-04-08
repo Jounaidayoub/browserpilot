@@ -24,8 +24,8 @@ export default defineConfig({
   optimizeDeps: {},
   build: {
     // commonjsOptions: { include: ["pixelmatch"] },
-    minify: false,
-    sourcemap: true,
+    minify: true,
+    sourcemap: false,
   },
   server: {
     cors: {
