@@ -1,14 +1,13 @@
 {
   "name": "@ayoubj/browserpilot",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "type": "module",
   "main": "./dist/index.js",
   "bin": {
-    "browserpilot": "./bin/browserpilot.js"
+    "browserpilot": "./dist/cli.js"
   },
   "files": [
-    "dist",
-    "bin"
+    "dist"
   ],
   "scripts": {
     "gen:tools": "node ./scripts/copy-tool-definitions.mjs",
