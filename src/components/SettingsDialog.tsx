@@ -16,11 +16,11 @@ import { useSettings } from "@/contexts/SettingsContext";
 import { useProviderConnection } from "@/hooks/useProviderConnection";
 import { DEFAULT_SERVER_URL } from "@/lib/serverConfig";
 
-export function SettingsDialog({ 
-    open, 
-    onOpenChange 
-}: { 
-    open: boolean; 
+export function SettingsDialog({
+    open,
+    onOpenChange
+}: {
+    open: boolean;
     onOpenChange: (open: boolean) => void;
 }) {
     const { serverUrl, isConnected, setServerUrl } = useSettings();
@@ -79,15 +79,14 @@ export function SettingsDialog({
                         </div>
                         <div className="rounded-md border bg-muted/30 p-3">
                             <p className="text-xs text-muted-foreground">
-                                Reminder: run the BrowserPilot server (via <code className="text-[11px]">browserpilot</code>) before connecting this UI.
-                                Setup steps are in the README: {" "}
+                                Reminder: run the <code className="text-[11px]">browserpilot</code> server, steps are in the {" "}
                                 <a
                                     href="https://github.com/Jounaidayoub/browserpilot?tab=readme-ov-file#2-setup-server-global-install-first"
                                     target="_blank"
                                     rel="noreferrer"
                                     className="underline underline-offset-2"
                                 >
-                                    Server setup guide
+                                    README
                                 </a>.
                             </p>
                         </div>
