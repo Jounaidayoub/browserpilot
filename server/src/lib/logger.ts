@@ -3,8 +3,14 @@ function parseDebugFlag(value: string | undefined): boolean {
   return ["1", "true", "yes", "on", "*"].includes(value.toLowerCase());
 }
 
+let debugEnabled = parseDebugFlag(process.env.BROWSERPILOT_DEBUG) || parseDebugFlag(process.env.DEBUG);
+
+export function setLogLevel(debug: boolean): void {
+  debugEnabled = debug;
+}
+
 export function isDebugEnabled(): boolean {
-  return parseDebugFlag(process.env.BROWSERPILOT_DEBUG) || parseDebugFlag(process.env.DEBUG);
+  return debugEnabled;
 }
 
 export function debugLog(...args: unknown[]): void {

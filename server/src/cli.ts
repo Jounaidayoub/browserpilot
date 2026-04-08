@@ -2,6 +2,7 @@ import { Command } from "commander";
 import inquirer from "inquirer";
 import { getConfigPaths, readConfig, writeConfigAtomic, ensureConfigDir, hasConfigFile } from "./config/file-config";
 import { startServer } from "./server";
+import { isDebugEnabled, setLogLevel } from "./lib/logger";
 
 type ProviderPrompt = {
   path: ["providers", "openai" | "anthropic" | "google" | "openrouter" | "githubCopilot", "apiKey" | "baseUrl"];
@@ -192,10 +193,7 @@ program
   .option("-d, --debug", "Enable debug logging")
   .action(async () => {
     const options = program.opts<{ debug?: boolean }>();
-
-    if (options.debug) {
-      process.env.BROWSERPILOT_DEBUG = "true";
-    }
+    setLogLevel(options.debug ?? isDebugEnabled());
 
     const shouldRunFirstSetup = !hasConfigFile();
     if (shouldRunFirstSetup) {
@@ -208,17 +206,19 @@ program
       }
     }
 
-    await startServer({ debug: Boolean(options.debug) });
+    await startServer();
   });
 
 program
   .command("setup")
   .description("Run interactive setup wizard")
   .action(async () => {
+    const options = program.opts<{ debug?: boolean }>();
+    setLogLevel(options.debug ?? isDebugEnabled());
+
     const startNow = await runSetupWizard();
     if (startNow) {
-      const options = program.opts<{ debug?: boolean }>();
-      await startServer({ debug: Boolean(options.debug) });
+      await startServer();
     }
   });
 

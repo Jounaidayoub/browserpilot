@@ -4,15 +4,8 @@ import { env } from "./config/env";
 import { initMCP } from "./lib/mcp-client.ts";
 import { debugError, debugLog, isDebugEnabled } from "./lib/logger.ts";
 
-type ServerOptions = {
-  debug?: boolean;
-};
-
-export async function startServer(options?: ServerOptions): Promise<void> {
-  const debug = options?.debug ?? isDebugEnabled();
-  if (debug) {
-    process.env.BROWSERPILOT_DEBUG = "true";
-  }
+export async function startServer(): Promise<void> {
+  const debug = isDebugEnabled();
   const app = createApp({ debug });
 
   initMCP()
