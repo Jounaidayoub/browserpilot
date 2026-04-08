@@ -1,6 +1,6 @@
 import { z } from "zod";
 import type { ToolSet } from "ai";
-import { toolDefinitions } from "browser-assistant-extension/tools/definitions";
+import { toolDefinitions } from "../generated/tool-definitions/definitions/index";
 
 /**
  * Maps extension tool definitions to AI SDK ToolSet format.
