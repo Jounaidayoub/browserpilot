@@ -1,121 +1,114 @@
 import { randomUUID } from "node:crypto";
-import { db } from "../db/index.ts";
-import { providerKeys, oauthFlows } from "../db/schema.ts";
-import { eq, and, desc, type InferSelectModel, type InferInsertModel } from "drizzle-orm";
+import { readConfig, readOAuthStore, type OAuthFlowStatus as StoredFlowStatus, type StoredOAuthFlow, writeConfigAtomic, writeOAuthStoreAtomic } from "../config/file-config";
 
 export type ProviderId = "default" | "openrouter";
-export type OAuthFlowStatus = "pending" | "completed" | "error";
+export type OAuthFlowStatus = StoredFlowStatus;
 
-// Infer types from Drizzle schema
-export type OAuthFlow = InferSelectModel<typeof oauthFlows>;
-export type InsertOAuthFlow = InferInsertModel<typeof oauthFlows>;
+export interface OAuthFlow {
+  state: string;
+  provider: ProviderId;
+  status: OAuthFlowStatus;
+  error: string | null;
+  createdAt: number;
+  expiresAt: number;
+}
 
-export type ProviderKey = InferSelectModel<typeof providerKeys>;
-export type InsertProviderKey = InferInsertModel<typeof providerKeys>;
+export interface InsertOAuthFlow extends OAuthFlow {}
+
+export interface ProviderKey {
+  id: string;
+  provider: ProviderId;
+  apiKey: string;
+  createdAt: number;
+  updatedAt: number;
+}
+
+export interface InsertProviderKey extends ProviderKey {}
 
 const FLOW_TTL_MS = 10 * 60 * 1000;
 
 export function dbNow(): number {
-    return Date.now();
+  return Date.now();
 }
 
 export async function createOAuthFlow(provider: ProviderId): Promise<OAuthFlow> {
-    const now = dbNow();
-    const flow: InsertOAuthFlow = {
-        state: randomUUID(),
-        provider,
-        status: "pending",
-        error: null,
-        createdAt: now,
-        expiresAt: now + FLOW_TTL_MS,
-    };
+  const now = dbNow();
+  const flow: OAuthFlow = {
+    state: randomUUID(),
+    provider,
+    status: "pending",
+    error: null,
+    createdAt: now,
+    expiresAt: now + FLOW_TTL_MS,
+  };
 
-    await db.insert(oauthFlows).values(flow);
+  const store = readOAuthStore();
+  store.flows.push(flow as StoredOAuthFlow);
+  writeOAuthStoreAtomic(store);
 
-    // Fetch and return the actual row from the database
-    const inserted = await db
-        .select()
-        .from(oauthFlows)
-        .where(eq(oauthFlows.state, flow.state))
-        .get();
-
-    if (!inserted) {
-        throw new Error("Failed to create OAuth flow");
-    }
-
-    return inserted;
+  return flow;
 }
 
 export async function getOAuthFlow(state: string): Promise<OAuthFlow | null> {
-    const row = await db
-        .select()
-        .from(oauthFlows)
-        .where(eq(oauthFlows.state, state))
-        .get();
-    
-    return row ?? null;
+  const store = readOAuthStore();
+  return store.flows.find((flow) => flow.state === state) ?? null;
 }
 
 export async function updateOAuthFlowStatus(
-    state: string,
-    status: OAuthFlowStatus,
-    error: string | null
+  state: string,
+  status: OAuthFlowStatus,
+  error: string | null
 ): Promise<void> {
-    await db.update(oauthFlows)
-        .set({ status, error })
-        .where(eq(oauthFlows.state, state));
+  const store = readOAuthStore();
+  const flow = store.flows.find((item) => item.state === state);
+
+  if (!flow) {
+    return;
+  }
+
+  flow.status = status;
+  flow.error = error;
+  writeOAuthStoreAtomic(store);
 }
 
-export async function upsertProviderKey(
-    provider: ProviderId,
-    apiKey: string
-): Promise<void> {
-    const now = dbNow();
-    const id = randomUUID();
-    
-    await db.insert(providerKeys)
-        .values({
-            id,
-            provider,
-            apiKey,
-            createdAt: now,
-            updatedAt: now,
-        })
-        .onConflictDoUpdate({
-            target: [providerKeys.provider],
-            set: {
-                apiKey,
-                updatedAt: now,
-            },
-        });
+export async function upsertProviderKey(provider: ProviderId, apiKey: string): Promise<void> {
+  const config = readConfig();
+
+  if (provider === "openrouter") {
+    config.providers.openrouter.apiKey = apiKey;
+  }
+
+  writeConfigAtomic(config);
 }
 
-export async function getProviderKey(
-    provider: ProviderId
-): Promise<ProviderKey | null> {
-    const row = await db
-        .select()
-        .from(providerKeys)
-        .where(
-            eq(providerKeys.provider, provider)
-        )
-        .get();
-    
-    return row ?? null;
+export async function getProviderKey(provider: ProviderId): Promise<ProviderKey | null> {
+  const config = readConfig();
+
+  let apiKey: string | undefined;
+
+  if (provider === "openrouter") {
+    apiKey = config.providers.openrouter.apiKey;
+  }
+
+  if (!apiKey) {
+    return null;
+  }
+
+  const now = dbNow();
+  return {
+    id: provider,
+    provider,
+    apiKey,
+    createdAt: now,
+    updatedAt: now,
+  };
 }
 
-export async function getLatestOAuthFlow(
-    provider: ProviderId
-): Promise<OAuthFlow | null> {
-    const row = await db
-        .select()
-        .from(oauthFlows)
-        .where(
-            eq(oauthFlows.provider, provider)
-        )
-        .orderBy(desc(oauthFlows.createdAt))
-        .limit(1)
-        .get();
-    
-    return row ?? null;
+export async function getLatestOAuthFlow(provider: ProviderId): Promise<OAuthFlow | null> {
+  const store = readOAuthStore();
+  const flows = store.flows
+    .filter((flow) => flow.provider === provider)
+    .sort((a, b) => b.createdAt - a.createdAt);
+
+  return flows[0] ?? null;
 }

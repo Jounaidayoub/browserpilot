@@ -24,15 +24,19 @@ Then load `dist/` folder as above.
 
 ```bash
 cd server
-cp .env.example .env
-# Edit .env with your API keys (see config options below)
-
 pnpm install
-pnpm run migrate
-pnpm run dev
+npx browser-pilot setup
 ```
 
-Server runs at `http://localhost:8080`
+The setup wizard writes your configuration and provider keys to platform-specific config files.
+
+Start server:
+
+```bash
+npx browser-pilot
+```
+
+Server runs at `http://localhost:8080` by default.
 
 ### 3. Open Sidepanel
 
@@ -42,15 +46,21 @@ Press `Ctrl+Shift+K` (or `Cmd+Shift+K` on Mac) or click the extension icon → "
 
 ## Configuration
 
-Create `server/.env`:
+Browser Pilot stores plain-text JSON config in your home config directory:
 
-| Variable | Description |
-|----------|-------------|
-| `PORT` | Server port (default: 8080) |
-| `OPENAI_API_KEY` | OpenAI key |
-| `ANTHROPIC_API_KEY` | Anthropic key |
-| `GOOGLE_GENERATIVE_AI_API_KEY` | Google AI key |
-| `DB_FILE_NAME` | SQLite database path |
+- **Linux**: `${XDG_CONFIG_HOME:-~/.config}/browser-pilot/config.json`
+- **macOS**: `~/Library/Application Support/browser-pilot/config.json`
+- **Windows**: `%APPDATA%\\browser-pilot\\config.json`
+
+OAuth flow records are stored in `oauth.json` in the same directory.
+
+Useful commands:
+
+```bash
+npx browser-pilot setup
+npx browser-pilot config:list
+npx browser-pilot config:path
+```
 
 ---
 
