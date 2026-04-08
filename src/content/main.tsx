@@ -1,24 +1,6 @@
-import { convertHtmlToMarkdown } from "dom-to-semantic-markdown";
 console.log("[CRXJS] Hello world from content script!");
-console.log("we are setting up message listener");
-chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
-  console.log(`[CRXJS LOG]: ${message.message}`, "snder:", _sender);
-  if (message?.action === "get_tab_content_md") {
-    const MD = convertHtmlToMarkdown(document.body.outerHTML, {
-      extractMainContent: true,
-      // refifyUrls:true,
-      // urlMap:urlMap,
-      //we look more on this token efficency later, use in a refercne for the bae url
-      //and let the llm contruct link if needed(i dunot if this is a good idea) but it saves tokens
-    });
-    console.debug("Converted Markdown content:", MD);
-    sendResponse({ content: MD });
-    return;
-  }
-  sendResponse({ received: true });
-});
-console.log("message listener set up complete");
 
+// Sidepanel keyboard shortcut
 let panel = false;
 document.addEventListener("keydown", (e) => {
   if (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "s") {
@@ -34,6 +16,7 @@ document.addEventListener("keydown", (e) => {
   }
 });
 
+// Element inspector message forwarding
 window.addEventListener("message", (event) => {
   if (event.source !== window) return;
 
@@ -56,12 +39,3 @@ window.addEventListener("message", (event) => {
       });
   }
 });
-
-// const container = document.createElement('div')
-// container.id = 'crxjs-app'
-// document.body.appendChild(container)
-// createRoot(container).render(
-//   <StrictMode>
-//     <App />
-//   </StrictMode>,
-// )

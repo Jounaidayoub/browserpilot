@@ -15,7 +15,10 @@ dist-ssr
 directories
 docs
 DOCS/
-
+.claude/
+CLAUDE.md
+coverage
+.opencode
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
@@ -26,3 +29,8 @@ DOCS/
 *.njsproj
 *.sln
 *.sw?
+
+# Server
+server/node_modules
+server/dist
+server/.env

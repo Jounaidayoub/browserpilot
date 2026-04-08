@@ -1,12 +1,12 @@
 import { z } from "zod";
 
-export interface Tool<ToolInput extends z.ZodType | null> {
+// Empty input helper - used by tools that take no parameters
+export const emptyInput = z.object({});
+
+// Definition only - no execute, no browser deps
+// This is safe to import in server context
+export interface ToolDefinition<TInput extends z.ZodType = z.ZodType> {
   name: string;
   description: string;
-  inputSchema: ToolInput;
-  execute: (input: z.infer<ToolInput>) => Promise<string>;
-  //for now the output schema is always string, since tools return stringified json
-  //need a better handelling later
+  inputSchema: TInput;
 }
-
-export const emptyInput = z.object({});

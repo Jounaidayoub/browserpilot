@@ -1,6 +1,5 @@
-import { TableOfContents } from "lucide-react";
 import { ZodError } from "zod";
-import { fetchTabsMeta } from "./Tabs";
+import { services as defaultServices, type IServices } from "@/services";
 
 export const formatZodIssues = (error: ZodError) =>
   error.issues
@@ -9,48 +8,45 @@ export const formatZodIssues = (error: ZodError) =>
       return path ? `${path}: ${issue.message}` : issue.message;
     })
     .join("; ");
-export const toTimestamp = (value: string | number | Date | undefined) => {
-  if (value === undefined) {
-    return undefined;
-  }
 
+export const toTimestamp = (value: string | number | Date | undefined) => {
+  if (value === undefined) return undefined;
   if (value instanceof Date) {
     const ts = value.getTime();
     return Number.isFinite(ts) ? ts : undefined;
   }
-
   const timestamp = new Date(value).getTime();
   return Number.isFinite(timestamp) ? timestamp : undefined;
 };
-export const findActiveTabId = async () => {
-  const tabs = await chrome.tabs.query({
-    active: true,
-    currentWindow: true,
-  });
 
+export const findActiveTabId = async (svc: IServices) => {
+  const tabs = await svc.tabs.query({ active: true, currentWindow: true });
   return tabs?.[0]?.id;
 };
+
 export type AddToolResultFn = <TOOL extends string>(
   args:
-    | {
-        state?: "output-available" | undefined;
-        tool: TOOL;
-        toolCallId: string;
-        output: unknown;
-        errorText?: undefined;
-      }
-    | {
-        state: "output-error";
-        tool: TOOL;
-        toolCallId: string;
-        output?: undefined;
-        errorText: string;
-      }
+    | { state?: "output-available"; tool: TOOL; toolCallId: string; output: unknown; errorText?: undefined }
+    | { state: "output-error"; tool: TOOL; toolCallId: string; output?: undefined; errorText: string }
 ) => Promise<void>;
 
-export const currentcontext = async () => {
+// Inline tab fetching to avoid circular dependency with Tabs.ts
+const fetchTabsMetaInternal = async (svc: IServices) => {
+  const tabs = await svc.tabs.query({ lastFocusedWindow: true });
+  return tabs.map((tab) => ({
+    active: tab.active,
+    id: tab.id,
+    title: tab.title,
+    url: tab.url,
+    groupid: tab.groupId,
+    index: tab.index,
+    windowid: tab.windowId,
+  }));
+};
+
+export const currentcontext = async (svc: IServices = defaultServices) => {
   console.log("fetching current context...");
-  const opentabs = await fetchTabsMeta();
+  const opentabs = await fetchTabsMetaInternal(svc);
 
   const activetabID = opentabs.find((tab) => tab.active)?.id;
 
@@ -58,14 +54,5 @@ export const currentcontext = async () => {
     return { activeTabcontent: "", opentabs };
   }
 
-  const activetabContent = await chrome.tabs
-    .sendMessage(activetabID, {
-      action: "get_tab_content_md",
-      message: `Fetching tab content for tab ID: ${activetabID}`,
-    })
-    .then((response) => {
-      return response.content as string;
-    });
-
-  return { activetabContent, opentabs };
+  return { opentabs };
 };

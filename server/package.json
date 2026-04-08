@@ -1,0 +1,25 @@
+{
+  "name": "browser-assistant-server",
+  "type": "module",
+  "scripts": {
+    "dev": "tsx watch src/index.ts",
+    "build": "tsc",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@ai-sdk/google": "^2.0.20",
+    "@ai-sdk/openai": "3.0.0-beta.25",
+    "@ai-sdk/openai-compatible": "^1.0.26",
+    "@hono/node-server": "^1.19.5",
+    "ai": "6.0.0-beta.42",
+    "better-auth": "^1.4.7",
+    "dotenv": "^17.2.3",
+    "hono": "^4.9.10",
+    "browser-assistant-extension": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^20.11.17",
+    "tsx": "^4.7.1",
+    "typescript": "^5.8.3"
+  }
+}

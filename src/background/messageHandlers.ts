@@ -1,5 +1,4 @@
 import type { CrxApplication } from "playwright-crx";
-import { executeTool } from "./playwrightTools";
 
 export type MessageHandler = (
   message: any,
