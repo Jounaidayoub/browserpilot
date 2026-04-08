@@ -13,32 +13,34 @@ an agent that lives in your browser sidepanel to handle and automate browsing ta
 4. Enable **Developer mode** → **Load unpacked**
 5. Select the extracted `dist` folder
 
-**Build from Source**
-```bash
-pnpm install
-pnpm run build
-```
-Then load `dist/` folder as above.
-
-### 2. Setup Server
+### 2. Setup Server (npx)
 
 ```bash
-cd server
-pnpm install
-npx browser-pilot setup
+npx @ayoubj/browserpilot setup
 ```
 
 The setup wizard writes your configuration and provider keys to platform-specific config files.
 
-Start server:
+Start the server:
 
 ```bash
-npx browser-pilot
+npx @ayoubj/browserpilot
 ```
 
 Server runs at `http://localhost:8080` by default.
 
-### 3. Open Sidepanel
+### 3. Development (Clone + Build)
+
+Clone/install/build is only needed if you want to develop BrowserPilot locally.
+
+```bash
+pnpm install
+pnpm run build
+```
+
+Then load `dist/` in Chrome as described above.
+
+### 4. Open Sidepanel
 
 Press `Ctrl+Shift+K` (or `Cmd+Shift+K` on Mac) or click the extension icon → "Open side panel"
 
@@ -57,9 +59,9 @@ OAuth flow records are stored in `oauth.json` in the same directory.
 Useful commands:
 
 ```bash
-npx browser-pilot setup
-npx browser-pilot config:list
-npx browser-pilot config:path
+npx @ayoubj/browserpilot setup
+npx @ayoubj/browserpilot config list
+npx @ayoubj/browserpilot
 ```
 
 ---

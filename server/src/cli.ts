@@ -59,7 +59,7 @@ async function runSetupWizard(): Promise<void> {
   let configureAnotherProvider = true;
 
   while (configureAnotherProvider) {
-    const { selectedProvider }: { selectedProvider: ProviderPrompt } = await inquirer.prompt([
+    const { selectedProvider } = await inquirer.prompt<{ selectedProvider: ProviderPrompt }>([
       {
         type: "list",
         name: "selectedProvider",

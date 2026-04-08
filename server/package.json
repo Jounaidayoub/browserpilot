@@ -6,6 +6,8 @@
   "bin": {
     "browserpilot": "./dist/cli.js"
   },
+  "repository": {"url": "https://github.com/Jounaidayoub/browserpilot"},
+  "homepage": "https://github.com/Jounaidayoub/browserpilot#readme",
   "files": [
     "dist"
   ],
