@@ -1,6 +1,6 @@
 import { Command } from "commander";
 import inquirer from "inquirer";
-import { getConfigPaths, readConfig, writeConfigAtomic, ensureConfigDir } from "./config/file-config";
+import { getConfigPaths, readConfig, writeConfigAtomic, ensureConfigDir, hasConfigFile } from "./config/file-config";
 import { startServer } from "./server";
 
 type ProviderPrompt = {
@@ -50,7 +50,7 @@ function printConfigList(): void {
   console.log(`  Generic Base URL: ${config.providers.generic.baseUrl ?? "(default)"}`);
 }
 
-async function runSetupWizard(): Promise<void> {
+async function runSetupWizard(): Promise<boolean> {
   ensureConfigDir();
   const config = readConfig();
 
@@ -167,7 +167,21 @@ async function runSetupWizard(): Promise<void> {
 
   console.log("\nSetup complete.");
   console.log(`Config saved to: ${getConfigPaths().configFile}`);
-  console.log("Run `browserpilot` to start the server.\n");
+
+  const { startNow } = await inquirer.prompt([
+    {
+      type: "confirm",
+      name: "startNow",
+      message: "Start the server now?",
+      default: true,
+    },
+  ]);
+
+  if (!startNow) {
+    console.log("Okay — next time run `browserpilot` to start the server.\n");
+  }
+
+  return startNow;
 }
 
 const program = new Command();
@@ -175,15 +189,37 @@ const program = new Command();
 program
   .name("browserpilot")
   .description("Browser Pilot server CLI")
+  .option("-d, --debug", "Enable debug logging")
   .action(async () => {
-    await startServer();
+    const options = program.opts<{ debug?: boolean }>();
+
+    if (options.debug) {
+      process.env.BROWSERPILOT_DEBUG = "true";
+    }
+
+    const shouldRunFirstSetup = !hasConfigFile();
+    if (shouldRunFirstSetup) {
+      console.log("No existing BrowserPilot configuration found. Starting first-time setup.\n");
+      const startNow = await runSetupWizard();
+
+      if (!startNow) {
+        console.log("Great. Next time just run `browserpilot`.");
+        return;
+      }
+    }
+
+    await startServer({ debug: Boolean(options.debug) });
   });
 
 program
   .command("setup")
   .description("Run interactive setup wizard")
   .action(async () => {
-    await runSetupWizard();
+    const startNow = await runSetupWizard();
+    if (startNow) {
+      const options = program.opts<{ debug?: boolean }>();
+      await startServer({ debug: Boolean(options.debug) });
+    }
   });
 
 const configCommand = program.command("config").description("Config helpers");

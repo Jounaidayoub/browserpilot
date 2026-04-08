@@ -9,11 +9,13 @@ import { configureRoutes } from "./routes/index.ts";
  * Route structure:
  * - /api/*  = public
  */
-export function createApp(): Hono {
+export function createApp(options?: { debug?: boolean }): Hono {
   const app = new Hono();
 
   // Global middleware
-  app.use("*", logger());
+  if (options?.debug) {
+    app.use("*", logger());
+  }
   app.use("*", cors());
 
   configureRoutes(app);

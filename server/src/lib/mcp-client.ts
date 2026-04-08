@@ -1,8 +1,11 @@
 import { createMCPClient } from "@ai-sdk/mcp";
 import { Experimental_StdioMCPTransport } from "@ai-sdk/mcp/mcp-stdio";
+import { debugLog } from "./logger.ts";
 
-const isWindows = process.platform === 'win32'
-isWindows && console.log('Windows detected !!')
+const isWindows = process.platform === "win32";
+if (isWindows) {
+  debugLog("[MCP] Windows detected");
+}
 const MCP_SERVER_CONFIG = isWindows ?
   {
     command: "cmd",
@@ -17,10 +20,10 @@ const MCP_SERVER_CONFIG = isWindows ?
 let cachedClient: Awaited<ReturnType<typeof createMCPClient>> | null = null;
 export async function initMCP() {
   if (!cachedClient) {
-    console.log("[MCP] Initializing client...");
+    debugLog("[MCP] Initializing client...");
     const transport = new Experimental_StdioMCPTransport(MCP_SERVER_CONFIG);
     cachedClient = await createMCPClient({ transport });
-    console.log("[MCP] Client initialized");
+    debugLog("[MCP] Client initialized");
   }
 };
 const ALLOWED_TOOLS = [
@@ -45,10 +48,10 @@ const ALLOWED_TOOLS = [
 
 export async function getMCPTools() {
   if (!cachedClient) {
-    console.log("[MCP] Creating new client...");
+    debugLog("[MCP] Creating new client...");
     const transport = new Experimental_StdioMCPTransport(MCP_SERVER_CONFIG);
     cachedClient = await createMCPClient({ transport });
-    console.log("[MCP] Client created");
+    debugLog("[MCP] Client created");
   }
 
   const allTools = await cachedClient.tools();
@@ -64,7 +67,7 @@ export async function getMCPTools() {
 
 export async function closeMCPClient(): Promise<void> {
   if (cachedClient) {
-    console.log("[MCP] Closing client...");
+    debugLog("[MCP] Closing client...");
     await cachedClient.close();
     cachedClient = null;
   }
