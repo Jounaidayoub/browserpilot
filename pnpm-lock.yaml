@@ -219,9 +219,6 @@ importers:
       ai:
         specifier: 6.0.146
         version: 6.0.146(zod@4.1.12)
-      browser-assistant-extension:
-        specifier: workspace:*
-        version: link:..
       commander:
         specifier: ^14.0.1
         version: 14.0.2
@@ -231,16 +228,25 @@ importers:
       inquirer:
         specifier: ^12.10.0
         version: 12.11.1(@types/node@20.19.27)
-      tsx:
-        specifier: ^4.7.1
-        version: 4.21.0
+      zod:
+        specifier: ^4.1.12
+        version: 4.1.12
     devDependencies:
       '@types/node':
         specifier: ^20.11.17
         version: 20.19.27
+      rollup-plugin-node-externals:
+        specifier: ^8.1.2
+        version: 8.1.2(rollup@4.52.5)
+      tsx:
+        specifier: ^4.7.1
+        version: 4.21.0
       typescript:
         specifier: ^5.8.3
         version: 5.8.3
+      vite:
+        specifier: ^7.0.5
+        version: 7.1.12(@types/node@20.19.27)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.1)
 
 packages:
 
@@ -4331,6 +4337,12 @@ packages:
 
   robust-predicates@3.0.2:
     resolution: {integrity: sha512-IXgzBWvWQwE6PrDI05OvmXUIruQTcoMDzRsOd5CDvHCVLcLHMTSYvOK5Cm46kWqlV3yAbuSpBZdJ5oP5OUoStg==}
+
+  rollup-plugin-node-externals@8.1.2:
+    resolution: {integrity: sha512-EuB6/lolkMLK16gvibUjikERq5fCRVIGwD2xue/CrM8D0pz5GXD2V6N8IrgxegwbcUoKkUFI8VYCEEv8MMvgpA==}
+    engines: {node: '>= 21 || ^20.6.0 || ^18.19.0'}
+    peerDependencies:
+      rollup: ^4.0.0
 
   rollup@2.79.2:
     resolution: {integrity: sha512-fS6iqSPZDs3dr/y7Od6y5nha8dW1YnbgtsyotCVvoFGKbERG++CVRFv1meyGDE1SNItQA8BrnCw7ScdAhRJ3XQ==}
@@ -9494,6 +9506,10 @@ snapshots:
 
   robust-predicates@3.0.2: {}
 
+  rollup-plugin-node-externals@8.1.2(rollup@4.52.5):
+    dependencies:
+      rollup: 4.52.5
+
   rollup@2.79.2:
     optionalDependencies:
       fsevents: 2.3.3
@@ -10008,6 +10024,22 @@ snapshots:
     dependencies:
       jszip: 3.10.1
       vite: 7.1.12(@types/node@24.9.2)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.1)
+
+  vite@7.1.12(@types/node@20.19.27)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.1):
+    dependencies:
+      esbuild: 0.25.11
+      fdir: 6.5.0(picomatch@4.0.3)
+      picomatch: 4.0.3
+      postcss: 8.5.6
+      rollup: 4.52.5
+      tinyglobby: 0.2.15
+    optionalDependencies:
+      '@types/node': 20.19.27
+      fsevents: 2.3.3
+      jiti: 2.6.1
+      lightningcss: 1.30.2
+      tsx: 4.21.0
+      yaml: 2.8.1
 
   vite@7.1.12(@types/node@24.9.2)(jiti@2.6.1)(lightningcss@1.30.2)(tsx@4.21.0)(yaml@2.8.1):
     dependencies:
