@@ -4139,6 +4139,15 @@ packages:
     resolution: {integrity: sha512-dM0jVuXJPsDN6DvRpea484tCUaMiXWjuCn++HGTqUWzGDjv5tZkEZldAJ/UMlqRYGFrD/etByo4/xOuC/snX2A==}
     engines: {node: '>=20'}
 
+<<<<<<< HEAD
+=======
+  prebuild-install@7.1.3:
+    resolution: {integrity: sha512-8Mf2cbV7x1cXPUILADGI3wuhfqWvtiLA1iclTDbFRZkgRQS0NqsPZphna9V+HyTEadheuPmjaJMsbzKQFOzLug==}
+    engines: {node: '>=10'}
+    deprecated: No longer maintained. Please contact the author of the relevant native addon; alternatives are available.
+    hasBin: true
+
+>>>>>>> release/mvp-v1
   pretty-ms@9.3.0:
     resolution: {integrity: sha512-gjVS5hOP+M3wMm5nmNOucbIrqudzs9v/57bWRHQWLYklXqoXKrVfYW2W9+glfGsqtPgpiz5WwyEEB+ksXIx3gQ==}
     engines: {node: '>=18'}
@@ -7215,8 +7224,34 @@ snapshots:
 
   bail@2.0.2: {}
 
+<<<<<<< HEAD
   baseline-browser-mapping@2.8.22: {}
 
+=======
+  base64-js@1.5.1:
+    optional: true
+
+  baseline-browser-mapping@2.8.22: {}
+
+  better-sqlite3@12.6.2:
+    dependencies:
+      bindings: 1.5.0
+      prebuild-install: 7.1.3
+    optional: true
+
+  bindings@1.5.0:
+    dependencies:
+      file-uri-to-path: 1.0.0
+    optional: true
+
+  bl@4.1.0:
+    dependencies:
+      buffer: 5.7.1
+      inherits: 2.0.4
+      readable-stream: 3.6.2
+    optional: true
+
+>>>>>>> release/mvp-v1
   body-parser@2.2.2:
     dependencies:
       bytes: 3.1.2
@@ -7245,6 +7280,17 @@ snapshots:
       node-releases: 2.0.27
       update-browserslist-db: 1.1.4(browserslist@4.27.0)
 
+<<<<<<< HEAD
+=======
+  buffer-from@1.1.2: {}
+
+  buffer@5.7.1:
+    dependencies:
+      base64-js: 1.5.1
+      ieee754: 1.2.1
+    optional: true
+
+>>>>>>> release/mvp-v1
   bundle-name@4.1.0:
     dependencies:
       run-applescript: 7.1.0
@@ -7324,6 +7370,12 @@ snapshots:
       '@chevrotain/utils': 11.0.3
       lodash-es: 4.17.21
 
+<<<<<<< HEAD
+=======
+  chownr@1.1.4:
+    optional: true
+
+>>>>>>> release/mvp-v1
   class-variance-authority@0.7.1:
     dependencies:
       clsx: 2.1.1
@@ -7638,8 +7690,21 @@ snapshots:
     dependencies:
       character-entities: 2.0.2
 
+<<<<<<< HEAD
   dedent@1.7.1: {}
 
+=======
+  decompress-response@6.0.0:
+    dependencies:
+      mimic-response: 3.1.0
+    optional: true
+
+  dedent@1.7.1: {}
+
+  deep-extend@0.6.0:
+    optional: true
+
+>>>>>>> release/mvp-v1
   deepmerge@4.3.1: {}
 
   default-browser-id@5.0.1: {}
@@ -7735,6 +7800,14 @@ snapshots:
       iconv-lite: 0.6.3
       whatwg-encoding: 3.1.1
 
+<<<<<<< HEAD
+=======
+  end-of-stream@1.4.5:
+    dependencies:
+      once: 1.4.0
+    optional: true
+
+>>>>>>> release/mvp-v1
   enhanced-resolve@5.18.3:
     dependencies:
       graceful-fs: 4.2.11
@@ -7871,6 +7944,12 @@ snapshots:
       strip-final-newline: 4.0.0
       yoctocolors: 2.1.2
 
+<<<<<<< HEAD
+=======
+  expand-template@2.0.3:
+    optional: true
+
+>>>>>>> release/mvp-v1
   expect-type@1.3.0: {}
 
   express-rate-limit@7.5.1(express@5.2.1):
@@ -7947,6 +8026,12 @@ snapshots:
     dependencies:
       is-unicode-supported: 2.1.0
 
+<<<<<<< HEAD
+=======
+  file-uri-to-path@1.0.0:
+    optional: true
+
+>>>>>>> release/mvp-v1
   fill-range@7.1.1:
     dependencies:
       to-regex-range: 5.0.1
@@ -7981,6 +8066,12 @@ snapshots:
 
   fresh@2.0.0: {}
 
+<<<<<<< HEAD
+=======
+  fs-constants@1.0.0:
+    optional: true
+
+>>>>>>> release/mvp-v1
   fs-extra@10.1.0:
     dependencies:
       graceful-fs: 4.2.11
@@ -8041,6 +8132,12 @@ snapshots:
     dependencies:
       resolve-pkg-maps: 1.0.0
 
+<<<<<<< HEAD
+=======
+  github-from-package@0.0.0:
+    optional: true
+
+>>>>>>> release/mvp-v1
   glob-parent@5.1.2:
     dependencies:
       is-glob: 4.0.3
@@ -8243,6 +8340,12 @@ snapshots:
     dependencies:
       safer-buffer: 2.1.2
 
+<<<<<<< HEAD
+=======
+  ieee754@1.2.1:
+    optional: true
+
+>>>>>>> release/mvp-v1
   ignore@5.3.2: {}
 
   immediate@3.0.6: {}
@@ -8254,6 +8357,12 @@ snapshots:
 
   inherits@2.0.4: {}
 
+<<<<<<< HEAD
+=======
+  ini@1.3.8:
+    optional: true
+
+>>>>>>> release/mvp-v1
   inline-style-parser@0.2.4: {}
 
   inquirer@12.11.1(@types/node@20.19.27):
@@ -8961,12 +9070,24 @@ snapshots:
 
   mimic-function@5.0.1: {}
 
+<<<<<<< HEAD
+=======
+  mimic-response@3.1.0:
+    optional: true
+
+>>>>>>> release/mvp-v1
   minimatch@10.1.1:
     dependencies:
       '@isaacs/brace-expansion': 5.0.0
 
   minimist@1.2.8: {}
 
+<<<<<<< HEAD
+=======
+  mkdirp-classic@0.5.3:
+    optional: true
+
+>>>>>>> release/mvp-v1
   mlly@1.8.0:
     dependencies:
       acorn: 8.15.0
@@ -9021,8 +9142,21 @@ snapshots:
 
   nanoid@5.1.6: {}
 
+<<<<<<< HEAD
   negotiator@1.0.0: {}
 
+=======
+  napi-build-utils@2.0.0:
+    optional: true
+
+  negotiator@1.0.0: {}
+
+  node-abi@3.87.0:
+    dependencies:
+      semver: 7.7.3
+    optional: true
+
+>>>>>>> release/mvp-v1
   node-domexception@1.0.0: {}
 
   node-fetch@3.3.2:
@@ -9206,6 +9340,25 @@ snapshots:
 
   powershell-utils@0.1.0: {}
 
+<<<<<<< HEAD
+=======
+  prebuild-install@7.1.3:
+    dependencies:
+      detect-libc: 2.1.2
+      expand-template: 2.0.3
+      github-from-package: 0.0.0
+      minimist: 1.2.8
+      mkdirp-classic: 0.5.3
+      napi-build-utils: 2.0.0
+      node-abi: 3.87.0
+      pump: 3.0.3
+      rc: 1.2.8
+      simple-get: 4.0.1
+      tar-fs: 2.1.4
+      tunnel-agent: 0.6.0
+    optional: true
+
+>>>>>>> release/mvp-v1
   pretty-ms@9.3.0:
     dependencies:
       parse-ms: 4.0.0
@@ -9234,6 +9387,15 @@ snapshots:
       forwarded: 0.2.0
       ipaddr.js: 1.9.1
 
+<<<<<<< HEAD
+=======
+  pump@3.0.3:
+    dependencies:
+      end-of-stream: 1.4.5
+      once: 1.4.0
+    optional: true
+
+>>>>>>> release/mvp-v1
   qs@6.14.1:
     dependencies:
       side-channel: 1.1.0
@@ -9314,6 +9476,17 @@ snapshots:
       iconv-lite: 0.7.2
       unpipe: 1.0.0
 
+<<<<<<< HEAD
+=======
+  rc@1.2.8:
+    dependencies:
+      deep-extend: 0.6.0
+      ini: 1.3.8
+      minimist: 1.2.8
+      strip-json-comments: 2.0.1
+    optional: true
+
+>>>>>>> release/mvp-v1
   react-dom@19.2.0(react@19.2.0):
     dependencies:
       react: 19.2.0
@@ -9390,6 +9563,16 @@ snapshots:
       string_decoder: 1.1.1
       util-deprecate: 1.0.2
 
+<<<<<<< HEAD
+=======
+  readable-stream@3.6.2:
+    dependencies:
+      inherits: 2.0.4
+      string_decoder: 1.1.1
+      util-deprecate: 1.0.2
+    optional: true
+
+>>>>>>> release/mvp-v1
   recast@0.23.11:
     dependencies:
       ast-types: 0.16.1
@@ -9695,6 +9878,19 @@ snapshots:
 
   signal-exit@4.1.0: {}
 
+<<<<<<< HEAD
+=======
+  simple-concat@1.0.1:
+    optional: true
+
+  simple-get@4.0.1:
+    dependencies:
+      decompress-response: 6.0.0
+      once: 1.4.0
+      simple-concat: 1.0.1
+    optional: true
+
+>>>>>>> release/mvp-v1
   sisteransi@1.0.5: {}
 
   sonner@2.0.7(react-dom@19.2.0(react@19.2.0))(react@19.2.0):
@@ -9781,6 +9977,12 @@ snapshots:
 
   strip-final-newline@4.0.0: {}
 
+<<<<<<< HEAD
+=======
+  strip-json-comments@2.0.1:
+    optional: true
+
+>>>>>>> release/mvp-v1
   style-to-js@1.1.18:
     dependencies:
       style-to-object: 1.0.11
@@ -9809,6 +10011,26 @@ snapshots:
 
   tapable@2.3.0: {}
 
+<<<<<<< HEAD
+=======
+  tar-fs@2.1.4:
+    dependencies:
+      chownr: 1.1.4
+      mkdirp-classic: 0.5.3
+      pump: 3.0.3
+      tar-stream: 2.2.0
+    optional: true
+
+  tar-stream@2.2.0:
+    dependencies:
+      bl: 4.1.0
+      end-of-stream: 1.4.5
+      fs-constants: 1.0.0
+      inherits: 2.0.4
+      readable-stream: 3.6.2
+    optional: true
+
+>>>>>>> release/mvp-v1
   throttleit@2.1.0: {}
 
   tiny-invariant@1.3.3: {}
@@ -9873,6 +10095,14 @@ snapshots:
     optionalDependencies:
       fsevents: 2.3.3
 
+<<<<<<< HEAD
+=======
+  tunnel-agent@0.6.0:
+    dependencies:
+      safe-buffer: 5.1.2
+    optional: true
+
+>>>>>>> release/mvp-v1
   turndown-plugin-gfm@1.0.2: {}
 
   turndown@7.2.2:
