@@ -5,8 +5,7 @@ import { initMCP } from "./lib/mcp-client.ts";
 import { debugError, debugLog, isDebugEnabled } from "./lib/logger.ts";
 
 export async function startServer(): Promise<void> {
-  const debug = isDebugEnabled();
-  const app = createApp({ debug });
+  const app = createApp();
 
   initMCP()
     .then(() => {
@@ -17,7 +16,7 @@ export async function startServer(): Promise<void> {
     });
 
   console.log(`BrowserPilot server is running at http://localhost:${env.PORT}`);
-  if (debug) {
+  if (isDebugEnabled()) {
     debugLog("[debug] Request logging enabled");
   }
 

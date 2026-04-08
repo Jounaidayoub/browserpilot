@@ -2,6 +2,7 @@ import { Hono } from "hono";
 import { cors } from "hono/cors";
 import { logger } from "hono/logger";
 import { configureRoutes } from "./routes/index.ts";
+import { isDebugEnabled } from "./lib/logger.ts";
 
 /**
  * Creates and configures the Hono application
@@ -9,11 +10,11 @@ import { configureRoutes } from "./routes/index.ts";
  * Route structure:
  * - /api/*  = public
  */
-export function createApp(options?: { debug?: boolean }): Hono {
+export function createApp(): Hono {
   const app = new Hono();
 
   // Global middleware
-  if (options?.debug) {
+  if (isDebugEnabled()) {
     app.use("*", logger());
   }
   app.use("*", cors());
