@@ -6,11 +6,17 @@ export default defineManifest({
   name: pkg.name,
   version: pkg.version,
   icons: {
-    48: "public/logo.png",
+    16: "public/icon16.png",
+    32: "public/icon32.png",
+    48: "public/icon48.png",
+    128: "public/icon128.png",
   },
   action: {
     default_icon: {
-      48: "public/logo.png",
+      16: "public/icon16.png",
+      32: "public/icon32.png",
+      48: "public/icon48.png",
+      128: "public/icon128.png",
     },
     default_popup: "src/popup/index.html",
   },
@@ -18,7 +24,7 @@ export default defineManifest({
     service_worker: "src/bg.ts",
     type: "module",
   },
-  commands:{
+  commands: {
     "open-tab-next-to-current": {
       "suggested_key": {
         "windows": "Alt+T",
@@ -34,8 +40,8 @@ export default defineManifest({
       "description": "Open the side panel."
     }
   },
-  permissions: ["sidePanel", "contentSettings","tabs","tabGroups","history","activeTab","scripting","debugger","storage",""],
-  host_permissions: ["https://*/*", "http://*/*","chrome://*/*","chrome-extension://*/*"],
+  permissions: ["sidePanel", "contentSettings", "tabs", "tabGroups", "history", "activeTab", "scripting", "debugger", "storage", ""],
+  host_permissions: ["https://*/*", "http://*/*", "chrome://*/*", "chrome-extension://*/*"],
   content_scripts: [
     {
       js: ["src/content/main.tsx"],
@@ -45,6 +51,6 @@ export default defineManifest({
   side_panel: {
     default_path: "src/sidepanel/index.html",
   },
-  
+
   web_accessible_resources: [],
 });

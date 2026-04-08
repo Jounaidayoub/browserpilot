@@ -1,5 +1,5 @@
 {
-  "name": "browser-assistant-extension",
+  "name": "BrowserPilot",
   "type": "module",
   "version": "0.1.0",
   "private": true,
