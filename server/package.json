@@ -1,10 +1,10 @@
 {
-  "name": "browser-pilot",
+  "name": "@ayoubj/browserpilot",
   "version": "0.1.0",
   "type": "module",
   "main": "./dist/index.js",
   "bin": {
-    "browser-pilot": "./bin/browser-pilot.js"
+    "browserpilot": "./bin/browserpilot.js"
   },
   "files": [
     "dist",
