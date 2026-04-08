@@ -89,6 +89,17 @@ export function getConfigPaths() {
   };
 }
 
+export function hasConfigFile(): boolean {
+  const { configFile } = getConfigPaths();
+
+  try {
+    readFileSync(configFile, "utf-8");
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 export function ensureConfigDir(): void {
   mkdirSync(getConfigPaths().configDir, { recursive: true });
 }

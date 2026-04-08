@@ -8,7 +8,7 @@ import {
     DialogTitle,
 } from "@/components/ui/dialog";
 import { Badge } from "@/components/ui/badge";
-import { ExternalLink, Loader2, CheckCircle, AlertCircle, Globe } from "lucide-react";
+import { ExternalLink, Loader2, CheckCircle, AlertCircle, Globe, Copy } from "lucide-react";
 import { toast } from "sonner";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
@@ -44,6 +44,15 @@ export function SettingsDialog({
         toast.success("Server URL saved");
     };
 
+    const handleCopyCommand = async (command: string) => {
+        try {
+            await navigator.clipboard.writeText(command);
+            toast.success("Command copied");
+        } catch {
+            toast.error("Could not copy command");
+        }
+    };
+
     return (
         <Dialog open={open} onOpenChange={onOpenChange}>
             <DialogContent className="sm:max-w-[500px]">
@@ -75,6 +84,31 @@ export function SettingsDialog({
                         <div className="flex items-center gap-2 text-xs text-muted-foreground">
                             <span className={`w-2 h-2 rounded-full ${isConnected ? "bg-green-500" : "bg-red-500"}`} />
                             <span>{isConnected ? "Server connected" : "Server unreachable"}</span>
+                        </div>
+                        <div className="rounded-md border bg-muted/30 p-3 space-y-2">
+                            <p className="text-xs text-muted-foreground">
+                                Reminder: run the BrowserPilot server locally before connecting this UI.
+                            </p>
+                            <div className="space-y-1.5">
+                                <div className="flex items-center justify-between gap-2 rounded bg-background px-2 py-1.5">
+                                    <code className="text-[11px]">npm install -g @ayoubj/browserpilot</code>
+                                    <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => handleCopyCommand("npm install -g @ayoubj/browserpilot")}>
+                                        <Copy className="h-3.5 w-3.5" />
+                                    </Button>
+                                </div>
+                                <div className="flex items-center justify-between gap-2 rounded bg-background px-2 py-1.5">
+                                    <code className="text-[11px]">browserpilot</code>
+                                    <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => handleCopyCommand("browserpilot")}>
+                                        <Copy className="h-3.5 w-3.5" />
+                                    </Button>
+                                </div>
+                                <div className="flex items-center justify-between gap-2 rounded bg-background px-2 py-1.5">
+                                    <code className="text-[11px]">npx @ayoubj/browserpilot</code>
+                                    <Button size="icon" variant="ghost" className="h-6 w-6" onClick={() => handleCopyCommand("npx @ayoubj/browserpilot")}>
+                                        <Copy className="h-3.5 w-3.5" />
+                                    </Button>
+                                </div>
+                            </div>
                         </div>
                     </div>
 

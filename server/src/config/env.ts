@@ -6,9 +6,15 @@ const configuredPort = Number.parseInt(process.env.PORT ?? `${persistedConfig.se
 const port = Number.isFinite(configuredPort) ? configuredPort : 8080;
 
 const serverUrl = process.env.SERVER_URL ?? persistedConfig.server.url ?? `http://localhost:${port}`;
+const debugValue = process.env.BROWSERPILOT_DEBUG ?? process.env.DEBUG ?? "false";
+
+function isDebugEnabled(value: string): boolean {
+  return ["1", "true", "yes", "on", "*"].includes(value.toLowerCase());
+}
 
 export const env = {
   PORT: port,
+  DEBUG: isDebugEnabled(debugValue),
   SERVER_URL: serverUrl,
   OPENAI_API_KEY: process.env.OPENAI_API_KEY ?? persistedConfig.providers.openai.apiKey,
   ANTHROPIC_API_KEY: process.env.ANTHROPIC_API_KEY ?? persistedConfig.providers.anthropic.apiKey,

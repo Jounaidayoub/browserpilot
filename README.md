@@ -13,21 +13,35 @@ an agent that lives in your browser sidepanel to handle and automate browsing ta
 4. Enable **Developer mode** → **Load unpacked**
 5. Select the extracted `dist` folder
 
-### 2. Setup Server (npx)
+### 2. Setup Server (Global install first)
 
 ```bash
-npx @ayoubj/browserpilot setup
+npm install -g @ayoubj/browserpilot
+browserpilot setup
 ```
 
 The setup wizard writes your configuration and provider keys to platform-specific config files.
 
-Start the server:
+Start the server (normal mode):
 
 ```bash
+browserpilot
+```
+
+Optional debug mode (verbose logs):
+
+```bash
+browserpilot --debug
+```
+
+Or run directly with npx (no global install):
+
+```bash
+npx @ayoubj/browserpilot setup
 npx @ayoubj/browserpilot
 ```
 
-Server runs at `http://localhost:8080` by default.
+Server runs at `http://localhost:8080` by default and prints a clean running message unless debug is enabled.
 
 ### 3. Development (Clone + Build)
 
@@ -50,17 +64,19 @@ Press `Ctrl+Shift+K` (or `Cmd+Shift+K` on Mac) or click the extension icon → "
 
 Browser Pilot stores plain-text JSON config in your home config directory:
 
-- **Linux**: `${XDG_CONFIG_HOME:-~/.config}/browser-pilot/config.json`
-- **macOS**: `~/Library/Application Support/browser-pilot/config.json`
-- **Windows**: `%APPDATA%\\browser-pilot\\config.json`
+- **Linux**: `${XDG_CONFIG_HOME:-~/.config}/browserpilot/config.json`
+- **macOS**: `~/Library/Application Support/browserpilot/config.json`
+- **Windows**: `%APPDATA%\\browserpilot\\config.json`
 
 OAuth flow records are stored in `oauth.json` in the same directory.
 
 Useful commands:
 
 ```bash
-npx @ayoubj/browserpilot setup
-npx @ayoubj/browserpilot config list
+browserpilot setup
+browserpilot config list
+browserpilot
+# fallback:
 npx @ayoubj/browserpilot
 ```
 

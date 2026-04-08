@@ -6,6 +6,7 @@ import { tools } from "../tools/definitions.ts";
 import { getProviderKey, type ProviderId } from "../lib/integrations.ts";
 import { getMCPTools } from "../lib/mcp-client.ts";
 import { devToolsMiddleware } from "@ai-sdk/devtools";
+import { debugLog } from "../lib/logger.ts";
 
 /**
  * Chat request body schema
@@ -29,10 +30,10 @@ chatRoutes.post("/", async (c) => {
   const body = await c.req.json<ChatRequestBody>();
   const { messages, model, currentcontext, providerId = "default" } = body;
 
-  console.log("[Chat] Received request for model:", model);
-  console.log("[Chat] Provider:", providerId);
-  console.log("[Chat] Messages count:", messages.length);
-  //   console.log("[Chat] Context:", JSON.stringify(currentcontext, null, 2));
+  debugLog("[Chat] Received request for model:", model);
+  debugLog("[Chat] Provider:", providerId);
+  debugLog("[Chat] Messages count:", messages.length);
+  // debugLog("[Chat] Context:", JSON.stringify(currentcontext, null, 2));
   let modelInstance;
   try {
     modelInstance = getAIModel(providerId, model);
@@ -59,7 +60,7 @@ chatRoutes.post("/", async (c) => {
     messages: await convertToModelMessages(messages),
     tools: { ...mcpTools, ...tools },
     onFinish: ({ usage }) => {
-      console.log("[Chat] Token usage:", usage);
+      debugLog("[Chat] Token usage:", usage);
     },
   });
   return result.toUIMessageStreamResponse({ sendReasoning: true });

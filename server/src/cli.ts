@@ -1,7 +1,8 @@
 import { Command } from "commander";
 import inquirer from "inquirer";
-import { getConfigPaths, readConfig, writeConfigAtomic, ensureConfigDir } from "./config/file-config";
+import { getConfigPaths, readConfig, writeConfigAtomic, ensureConfigDir, hasConfigFile } from "./config/file-config";
 import { startServer } from "./server";
+import { isDebugEnabled, setLogLevel } from "./lib/logger";
 
 type ProviderPrompt = {
   path: ["providers", "openai" | "anthropic" | "google" | "openrouter" | "githubCopilot", "apiKey" | "baseUrl"];
@@ -50,7 +51,7 @@ function printConfigList(): void {
   console.log(`  Generic Base URL: ${config.providers.generic.baseUrl ?? "(default)"}`);
 }
 
-async function runSetupWizard(): Promise<void> {
+async function runSetupWizard(): Promise<boolean> {
   ensureConfigDir();
   const config = readConfig();
 
@@ -167,7 +168,21 @@ async function runSetupWizard(): Promise<void> {
 
   console.log("\nSetup complete.");
   console.log(`Config saved to: ${getConfigPaths().configFile}`);
-  console.log("Run `browserpilot` to start the server.\n");
+
+  const { startNow } = await inquirer.prompt([
+    {
+      type: "confirm",
+      name: "startNow",
+      message: "Start the server now?",
+      default: true,
+    },
+  ]);
+
+  if (!startNow) {
+    console.log("Okay — next time run `browserpilot` to start the server.\n");
+  }
+
+  return startNow;
 }
 
 const program = new Command();
@@ -175,7 +190,22 @@ const program = new Command();
 program
   .name("browserpilot")
   .description("Browser Pilot server CLI")
+  .option("-d, --debug", "Enable debug logging")
   .action(async () => {
+    const options = program.opts<{ debug?: boolean }>();
+    setLogLevel(options.debug ?? isDebugEnabled());
+
+    const shouldRunFirstSetup = !hasConfigFile();
+    if (shouldRunFirstSetup) {
+      console.log("No existing BrowserPilot configuration found. Starting first-time setup.\n");
+      const startNow = await runSetupWizard();
+
+      if (!startNow) {
+        console.log("Great. Next time just run `browserpilot`.");
+        return;
+      }
+    }
+
     await startServer();
   });
 
@@ -183,7 +213,13 @@ program
   .command("setup")
   .description("Run interactive setup wizard")
   .action(async () => {
-    await runSetupWizard();
+    const options = program.opts<{ debug?: boolean }>();
+    setLogLevel(options.debug ?? isDebugEnabled());
+
+    const startNow = await runSetupWizard();
+    if (startNow) {
+      await startServer();
+    }
   });
 
 const configCommand = program.command("config").description("Config helpers");
