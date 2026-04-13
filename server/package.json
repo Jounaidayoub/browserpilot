@@ -1,6 +1,6 @@
 {
   "name": "@ayoubj/browserpilot",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "type": "module",
   "main": "./dist/index.js",
   "bin": {
@@ -11,7 +11,8 @@
   },
   "homepage": "https://github.com/Jounaidayoub/browserpilot#readme",
   "files": [
-    "dist"
+    "dist",
+    "README.md"
   ],
   "scripts": {
     "gen:tools": "node ./scripts/copy-tool-definitions.mjs",
