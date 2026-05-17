@@ -2,6 +2,10 @@
 
 an agent that lives in your browser sidepanel to handle and automate browsing tasks , it can navigate , summrize,fill forms , work on repeptive/tedious tasks , organizing tabs , just tell it what to do ...
 
+## Demo
+
+<video src="./docs/browserpilot.mp4" controls width="100%"></video>
+
 ## Quick Start
 
 ### 1. Install Extension
