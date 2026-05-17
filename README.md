@@ -1,10 +1,14 @@
+
+
+
 # BrowserPilot
 
 an agent that lives in your browser sidepanel to handle and automate browsing tasks , it can navigate , summrize,fill forms , work on repeptive/tedious tasks , organizing tabs , just tell it what to do ...
 
 ## Demo
 
-<video src="./docs/browserpilot.mp4" controls width="100%"></video>
+https://github.com/user-attachments/assets/e21b1dab-fd75-4255-9514-34a1a1123df0
+<!-- <video src="./docs/browserpilot.mp4" controls width="100%"></video> -->
 
 ## Quick Start
 
